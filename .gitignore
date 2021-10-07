@@ -1,0 +1,6 @@
+*.a
+*.o
+*.mod
+.env
+exec/
+work/
