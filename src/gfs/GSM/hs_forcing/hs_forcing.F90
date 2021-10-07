@@ -1,18 +1,12 @@
 
 module hs_forcing_mod
 
-!-----------------------------------------------------------------------
-
-use     constants_mod, only: KAPPA, CP_AIR, GRAV
-
-use           fms_mod, only: error_mesg, FATAL, file_exist,       &
-                             open_namelist_file, check_nml_error, &
-                             mpp_pe, mpp_root_pe, close_file,     &
-                             write_version_number, stdlog,        &
-                             uppercase
-
 implicit none
 private
+
+real, parameter :: KAPPA=2./7.
+real, parameter :: CP_AIR=287.04/KAPPA
+real, parameter :: GRAV=9.8
 
 !-----------------------------------------------------------------------
 !---------- interfaces ------------
@@ -62,22 +56,20 @@ contains
 
 !#######################################################################
 
- subroutine hs_forcing ( is, ie, js, je, dt, lat, p_half, p_full, &
-                         u, v, t, r, um, vm, tm, rm, udt, vdt, tdt, rdt, &
-                         mask, kbot )
+ subroutine hs_forcing ( im, levs, dt, lat, p_half, p_full, &
+                         u, v, t, r, um, vm, tm, rm, udt, vdt, tdt, rdt)
 
 !-----------------------------------------------------------------------
-   integer, intent(in)                        :: is, ie, js, je
+   integer, intent(in)                        :: im
       real, intent(in)                        :: dt
-      real, intent(in),    dimension(:,:)     :: lat
-      real, intent(in),    dimension(:,:,:)   :: p_half, p_full
-      real, intent(in),    dimension(:,:,:)   :: u, v, t, um, vm, tm
+      real, intent(in),    dimension(1:im,1)     :: lat
+      real, intent(in),    dimension(1:im,1:levs,1)   :: p_full
+      real, intent(in),    dimension(1:im,1:levs+1,1)   :: p_half
+      real, intent(in),    dimension(1:im,1:levs,1)   :: u, v, t, um, vm, tm
       real, intent(in),    dimension(:,:,:,:) :: r, rm
       real, intent(inout), dimension(:,:,:)   :: udt, vdt, tdt
       real, intent(inout), dimension(:,:,:,:) :: rdt
 
-      real, intent(in),    dimension(:,:,:), optional :: mask
-   integer, intent(in),    dimension(:,:)  , optional :: kbot
 !-----------------------------------------------------------------------
    real, dimension(size(t,1),size(t,2))           :: ps, diss_heat
    real, dimension(size(t,1),size(t,2),size(t,3)) :: ttnd, utnd, vtnd, teq, pmass
@@ -109,19 +101,7 @@ contains
 !-----------------------------------------------------------------------
 !     rayleigh damping of wind components near the surface
 
-      call rayleigh_damping ( ps, p_full, u, v, utnd, vtnd, mask=mask )
-
-      if (do_conserve_energy) then
-         ttnd = -((um+.5*utnd*dt)*utnd + (vm+.5*vtnd*dt)*vtnd)/CP_AIR
-         tdt = tdt + ttnd
-       ! vertical integral of ke dissipation
-         if ( id_diss_heat > 0 ) then
-          do k = 1, size(t,3)
-            pmass(:,:,k) = p_half(:,:,k+1)-p_half(:,:,k)
-          enddo
-          diss_heat = CP_AIR/GRAV * sum( ttnd*pmass, 3)
-         endif
-      endif
+      call rayleigh_damping ( ps, p_full, u, v, utnd, vtnd)
 
       udt = udt + utnd
       vdt = vdt + vtnd
@@ -130,7 +110,7 @@ contains
 !-----------------------------------------------------------------------
 !     thermal forcing for held & suarez (1994) benchmark calculation
 
-      call newtonian_damping ( lat, ps, p_full, t, ttnd, teq, mask )
+      call newtonian_damping ( lat, ps, p_full, t, ttnd, teq )
 
       tdt = tdt + ttnd
 
@@ -138,40 +118,16 @@ contains
 
 !#######################################################################
 
- subroutine hs_forcing_init ( axes )
-
+ subroutine hs_forcing_init ()
 !-----------------------------------------------------------------------
 !
 !           routine for initializing the model with an
 !              initial condition at rest (u & v = 0)
 !
 !-----------------------------------------------------------------------
-
-           integer, intent(in) :: axes(4)
-
-!-----------------------------------------------------------------------
-   integer  unit, io, ierr
-
 !     ----- read namelist -----
-
-      if (file_exist('input.nml')) then
-         unit = open_namelist_file ( )
-         ierr=1; do while (ierr /= 0)
-            read  (unit, nml=hs_forcing_nml, iostat=io, end=10)
-            ierr = check_nml_error (io, 'hs_forcing_nml')
-         enddo
-  10     call close_file (unit)
-      endif
-
-!     ----- write version info and namelist to log file -----
-
-      call write_version_number (version,tagname)
-      if (mpp_pe() == mpp_root_pe()) write (stdlog(),nml=hs_forcing_nml)
-
       if (no_forcing) return
-
 !     ----- compute coefficients -----
-
       if (ka < 0.) ka = -86400.*ka
       if (ks < 0.) ks = -86400.*ks
       if (kf < 0.) kf = -86400.*kf
@@ -179,19 +135,15 @@ contains
       tka = 0.; if (ka > 0.) tka = 1./ka
       tks = 0.; if (ks > 0.) tks = 1./ks
       vkf = 0.; if (kf > 0.) vkf = 1./kf
-
 !     ----- for tracers -----
-
       if (trsink < 0.) trsink = -86400.*trsink
       trdamp = 0.; if (trsink > 0.) trdamp = 1./trsink
 
       module_is_initialized  = .true.
-
 !-----------------------------------------------------------------------
-
  end subroutine hs_forcing_init
 
-!#######################################################################
+
 
  subroutine hs_forcing_end 
 
