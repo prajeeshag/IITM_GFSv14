@@ -3,13 +3,10 @@
 
 usage (){
 	echo
-	echo $0 -c -j npes -w exp_name 
+	echo $0 -j npes 
 	echo
 	echo options:
-	echo -c : compile only 
 	echo -j npes : parallel gmake with npes	
-	echo -w exp_name : "compile [if not compiled] and create experiment directory named 'exp_name' with all neccesary scripts"
-	echo -i : "with -w, download the test input data as well"
 	exit 1;
 }
 
@@ -24,11 +21,7 @@ fi
 
 while getopts 'cdij:w:' flag; do
     case "${flag}" in
-	c) echo 'compile only' ;;
-    d) debug=".debug" ;;
     j) npes=$OPTARG ;;
-    w) workdir=$OPTARG ;;
-	i) testinp=true ;;
 	*) usage ;;
     esac
 done
