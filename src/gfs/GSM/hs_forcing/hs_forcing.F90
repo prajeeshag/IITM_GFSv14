@@ -56,24 +56,23 @@ contains
 
 !#######################################################################
 
- subroutine hs_forcing ( im, levs, dt, lat, p_half, p_full, &
-                         u, v, t, r, um, vm, tm, rm, udt, vdt, tdt, rdt)
+ subroutine hs_forcing ( im, levs, dt, lat, ps, p_full, &
+                         u, v, t, um, vm, tm, udt, vdt, tdt)
 
 !-----------------------------------------------------------------------
-   integer, intent(in)                        :: im
-      real, intent(in)                        :: dt
-      real, intent(in),    dimension(1:im,1)     :: lat
-      real, intent(in),    dimension(1:im,1:levs,1)   :: p_full
-      real, intent(in),    dimension(1:im,1:levs+1,1)   :: p_half
-      real, intent(in),    dimension(1:im,1:levs,1)   :: u, v, t, um, vm, tm
-      real, intent(in),    dimension(:,:,:,:) :: r, rm
-      real, intent(inout), dimension(:,:,:)   :: udt, vdt, tdt
-      real, intent(inout), dimension(:,:,:,:) :: rdt
+   integer, intent(in)                             :: im
+   real, intent(in)                                :: dt
+   real, intent(in),    dimension(1:im,1)          :: lat
+   real, intent(in),    dimension(1:im,1,1:levs)   :: p_full
+   real, intent(in),    dimension(1:im,1)          :: ps
+   real, intent(in),    dimension(1:im,1,1:levs)   :: u, v, t, um, vm, tm
+   real, intent(inout), dimension(1:im,1,1:levs)   :: udt, vdt, tdt
 
 !-----------------------------------------------------------------------
-   real, dimension(size(t,1),size(t,2))           :: ps, diss_heat
-   real, dimension(size(t,1),size(t,2),size(t,3)) :: ttnd, utnd, vtnd, teq, pmass
-   real, dimension(size(r,1),size(r,2),size(r,3)) :: rst, rtnd
+   real, dimension(size(t,1),size(t,2))            :: diss_heat
+   real, dimension(size(t,1),size(t,2),size(t,3))  :: ttnd, utnd, vtnd, teq, pmass
+   real, dimension(size(r,1),size(r,2),size(r,3))  :: rst, rtnd
+
    integer :: i, j, k, kb, n, num_tracers
    logical :: used
    real    :: flux, sink, value
@@ -82,20 +81,8 @@ contains
 !-----------------------------------------------------------------------
      if (no_forcing) return
 
-     if (.not.module_is_initialized) call error_mesg ('hs_forcing','hs_forcing_init has not been called', FATAL)
-
-!-----------------------------------------------------------------------
-!     surface pressure
-
-     if (present(kbot)) then
-         do j=1,size(p_half,2)
-         do i=1,size(p_half,1)
-            kb = kbot(i,j)
-            ps(i,j) = p_half(i,j,kb+1)
-         enddo
-         enddo
-     else
-            ps(:,:) = p_half(:,:,size(p_half,3))
+     if (.not.module_is_initialized) then
+       print *, 'hs_forcing : hs_forcing_init has not been called'
      endif
 
 !-----------------------------------------------------------------------
