@@ -57,7 +57,7 @@ contains
 !#######################################################################
 
  subroutine hs_forcing ( im, levs, dt, lat, ps, p_full, &
-                         u, v, t, um, vm, tm, udt, vdt, tdt)
+                         u, v, t, udt, vdt, tdt)
 
 !-----------------------------------------------------------------------
    integer, intent(in)                             :: im
@@ -65,7 +65,7 @@ contains
    real, intent(in),    dimension(1:im,1)          :: lat
    real, intent(in),    dimension(1:im,1,1:levs)   :: p_full
    real, intent(in),    dimension(1:im,1)          :: ps
-   real, intent(in),    dimension(1:im,1,1:levs)   :: u, v, t, um, vm, tm
+   real, intent(in),    dimension(1:im,1,1:levs)   :: u, v, t
    real, intent(inout), dimension(1:im,1,1:levs)   :: udt, vdt, tdt
 
 !-----------------------------------------------------------------------
