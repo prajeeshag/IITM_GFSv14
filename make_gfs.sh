@@ -1,6 +1,8 @@
 
 #!/bin/bash
 
+set -e
+
 usage (){
 	echo
 	echo $0 -j npes 
@@ -132,6 +134,29 @@ mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
 $MKMF -f -p $libname -t $MKMFTEMPLATE -o "$incs " $paths $INCLUDES
+gmake -j $npes
+echo "...............Done compiling $libname....................."
+incs=$incs"-I$builddir "
+libs="${builddir}/$libname "$libs
+
+
+libname='lib_fms.a'
+libsrc="fms/"
+builddir=$EXECDIR/$libsrc
+fmsroot=$SRCDIR/$libsrc
+paths="$fmsroot/mpp $fmsroot/include \ 
+		$fmsroot/mpp/include \
+		$fmsroot/fms $fmsroot/platform \
+		$fmsroot/memutils $fmsroot/constants \
+		$fmsroot/horiz_interp $fmsroot/mosaic \
+		$fmsroot/diag_manager $fmsroot/time_manager \
+		$fmsroot/gfs_interp"
+cppDef="-Duse_netCDF -Duse_libMPI -DENABLE_ODA -Dfms_interp"
+lib=$builddir/$libname
+mkdir -p $builddir
+cd $builddir
+echo "...............Compiling $libname.........................."
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
