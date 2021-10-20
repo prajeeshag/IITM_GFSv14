@@ -73,7 +73,8 @@
       use module_timers,only: physics_timer,timef
 
       use mpp_mod, only : mpp_init, mpp_error, FATAL, NOTE, WARNING
-      use time_manager_mod, only : time_type, set_calendar_type, THIRTY_DAY_MONTHS, JULIAN, GREGORIAN, NOLEAP
+      use time_manager_mod, only : time_type, set_calendar_type, THIRTY_DAY_MONTHS, JULIAN, &
+                                   GREGORIAN, NOLEAP, set_date, print_date
 !
       implicit none
 
@@ -239,7 +240,8 @@
       type(ESMF_Calendar) :: calendar_esmf
 
       real(kind=8) :: tbeg,tend
-      integer :: curr_time(6)
+      integer :: current_itime(6)
+      type(time_type) :: current_time
       tbeg=timef()
 
 ! initialize the error signal variables.
@@ -423,20 +425,37 @@
                          rc          = rc1)
 
       if (calendar_esmf == ESMF_CALKIND_GREGORIAN) then
-            call mpp_error(NOTE, 'setting fms time manager calendary type to GREGORIAN')
+            call mpp_error(NOTE, 'setting fms time manager calendar type to GREGORIAN')
             call set_calendar_type(GREGORIAN)
       else if (calendar_esmf == ESMF_CALKIND_360DAY ) then
-            call mpp_error(NOTE, 'setting fms time manager calendary type to THIRTY_DAY_MONTHS')
+            call mpp_error(NOTE, 'setting fms time manager calendar type to THIRTY_DAY_MONTHS')
             call set_calendar_type(THIRTY_DAY_MONTHS)
       else if (calendar_esmf == ESMF_CALKIND_JULIAN) then
-            call mpp_error(NOTE, 'setting fms time manager calendary type to JULIAN')
+            call mpp_error(NOTE, 'setting fms time manager calendar type to JULIAN')
             call set_calendar_type(JULIAN)
       else if (calendar_esmf == ESMF_CALKIND_NOLEAP) then
-            call mpp_error(NOTE, 'setting fms time manager calendary type to NOLEAP')
+            call mpp_error(NOTE, 'setting fms time manager calendar type to NOLEAP')
             call set_calendar_type(NOLEAP)
       else 
             call mpp_error(FATAL, 'Unsupported Calendar type by fms')
       endif 
+
+      call esmf_timeget(currtime, &
+            yy=current_itime(1), &
+            mm=current_itime(2), &
+            dd=current_itime(3), &
+            h=current_itime(4),  &
+            m=current_itime(5),  &
+            s=current_itime(6))
+
+      current_time = set_date( current_itime(1), &
+                               current_itime(2), &
+                               current_itime(3), &
+                               current_itime(4), &
+                               current_itime(5), &
+                               current_itime(6) )
+
+      call print_date(current_time,'Initial Time FMS')
 
       call esmf_timeintervalget(runduration,                            &
                                 h = runduration_hour, rc = rc1)
