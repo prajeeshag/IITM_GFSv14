@@ -72,8 +72,8 @@
 #ifdef INTERNAL_FILE_NML
       read (input_nml_file, test_fms_io_nml, iostat=io_status)
 #else
- if (file_exist('gfs_namelist') )then
-    call mpp_open(unit, 'gfs_namelist',form=MPP_ASCII,action=MPP_RDONLY)
+ if (file_exist('gfs_input.nml') )then
+    call mpp_open(unit, 'gfs_input.nml',form=MPP_ASCII,action=MPP_RDONLY)
     read(unit,test_fms_io_nml,iostat=io_status)
     call mpp_close (unit)
  end if

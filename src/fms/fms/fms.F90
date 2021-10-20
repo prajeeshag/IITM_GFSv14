@@ -342,7 +342,7 @@ subroutine fms_init (localcomm )
       read (input_nml_file, fms_nml, iostat=io)
       ierr = check_nml_error(io,'fms_nml')
 #else
-    if (file_exist('gfs_namelist')) then
+    if (file_exist('gfs_input.nml')) then
        unit = open_namelist_file ( )
        ierr=1; do while (ierr /= 0)
           read  (unit, nml=fms_nml, iostat=io, end=10)
@@ -600,7 +600,7 @@ end subroutine fms_end
 !       <PRE>
 !          integer :: unit, ierr, io
 !
-!          if ( file_exist('gfs_namelist') ) then
+!          if ( file_exist('gfs_input.nml') ) then
 !              unit = open_namelist_file ( )
 !              ierr=1
 !              do while (ierr > 0)

@@ -2855,12 +2855,12 @@ CONTAINS
 #ifdef INTERNAL_FILE_NML
     READ (input_nml_file, NML=diag_manager_nml, IOSTAT=mystat)
 #else
-    IF ( file_exist('gfs_namelist') ) THEN
+    IF ( file_exist('gfs_input.nml') ) THEN
        nml_unit = open_namelist_file()
        READ (nml_unit, diag_manager_nml, iostat=mystat)
        CALL close_file(nml_unit)
     ELSE
-       ! Set mystat to an arbitrary positive number if gfs_namelist does not exist.
+       ! Set mystat to an arbitrary positive number if gfs_input.nml does not exist.
        mystat = 100
     END IF
 #endif
@@ -2868,7 +2868,7 @@ CONTAINS
     
     IF ( check_nml_error(IOSTAT=mystat, NML_NAME='DIAG_MANAGER_NML') < 0 ) THEN
        IF ( mpp_pe() == mpp_root_pe() ) THEN
-          CALL error_mesg('diag_manager_mod::diag_manager_init', 'DIAG_MANAGER_NML not found in gfs_namelist.  Using defaults.',&
+          CALL error_mesg('diag_manager_mod::diag_manager_init', 'DIAG_MANAGER_NML not found in gfs_input.nml.  Using defaults.',&
                & WARNING)
        END IF
     END IF
@@ -3381,7 +3381,7 @@ PROGRAM test
   READ (input_nml_file, NML=test_diag_manager_nml, IOSTAT=io)
   ierr = check_nml_error(io, 'test_diag_manager_nml')
 #else
-  IF ( file_exist('gfs_namelist') ) THEN
+  IF ( file_exist('gfs_input.nml') ) THEN
      ierr=1
      DO WHILE (ierr > 0)
         READ(nml_unit, nml=test_diag_manager_nml, iostat=io)

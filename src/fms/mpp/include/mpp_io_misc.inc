@@ -62,13 +62,13 @@
          inquire( unit_nml,OPENED=opened )
          if( .NOT.opened )exit
       end do
-      open(unit_nml,file='gfs_namelist')
+      open(unit_nml,file='gfs_input.nml')
       read(unit_nml,mpp_io_nml,iostat=io_status)
       close(unit_nml)
 #endif
 
       if (io_status > 0) then
-         call mpp_error(FATAL,'=>mpp_io_init: Error reading gfs_namelist')
+         call mpp_error(FATAL,'=>mpp_io_init: Error reading gfs_input.nml')
       endif
 
 

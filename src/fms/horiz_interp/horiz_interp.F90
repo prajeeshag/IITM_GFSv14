@@ -261,7 +261,7 @@ contains
   read (input_nml_file, horiz_interp_nml, iostat=io)
   ierr = check_nml_error(io,'horiz_interp_nml')
 #else
-  if (file_exist('gfs_namelist')) then
+  if (file_exist('gfs_input.nml')) then
      unit = open_namelist_file ( )
      ierr=1
      do while (ierr /= 0)
@@ -1339,7 +1339,7 @@ implicit none
       read (input_nml_file, test_horiz_interp_nml, iostat=io)
       ierr = check_nml_error(io, 'test_horiz_interp_nml')
 #else
-  if (file_exist('gfs_namelist')) then
+  if (file_exist('gfs_input.nml')) then
      ierr=1
      nml_unit = open_namelist_file()
      do while (ierr /= 0)

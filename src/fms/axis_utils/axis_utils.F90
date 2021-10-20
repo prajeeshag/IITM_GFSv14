@@ -835,7 +835,7 @@ integer           :: unit, ierr, io
       read (input_nml_file, test_axis_utils_nml, iostat=io)
       ierr = check_nml_error(io,'test_axis_utils_nml')
 #else
-  if(file_exist('gfs_namelist')) then
+  if(file_exist('gfs_input.nml')) then
     unit =  open_namelist_file()
        ierr=1
     do while (ierr /= 0)

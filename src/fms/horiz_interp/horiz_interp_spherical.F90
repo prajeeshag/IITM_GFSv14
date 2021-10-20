@@ -84,7 +84,7 @@ contains
       read (input_nml_file, horiz_interp_spherical_nml, iostat=io)
       ierr = check_nml_error(io,'horiz_interp_spherical_nml') 
 #else
-    if (file_exist('gfs_namelist')) then
+    if (file_exist('gfs_input.nml')) then
        unit = open_namelist_file ( )
        ierr=1; do while (ierr /= 0)
        read  (unit, nml=horiz_interp_spherical_nml, iostat=io, end=10)

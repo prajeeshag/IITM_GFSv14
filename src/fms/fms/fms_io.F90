@@ -436,13 +436,13 @@ subroutine fms_io_init()
 #ifdef INTERNAL_FILE_NML
   read (input_nml_file, fms_io_nml, iostat=io_status)
   if (io_status > 0) then
-     call mpp_error(FATAL,'=>fms_io_init: Error reading gfs_namelist')
+     call mpp_error(FATAL,'=>fms_io_init: Error reading gfs_input.nml')
   endif
 #else
-  call mpp_open(unit, 'gfs_namelist',form=MPP_ASCII,action=MPP_RDONLY)
+  call mpp_open(unit, 'gfs_input.nml',form=MPP_ASCII,action=MPP_RDONLY)
   read(unit,fms_io_nml,iostat=io_status)
   if (io_status > 0) then
-     call mpp_error(FATAL,'=>fms_io_init: Error reading gfs_namelist')
+     call mpp_error(FATAL,'=>fms_io_init: Error reading gfs_input.nml')
   endif
   call mpp_close (unit)
 #endif
@@ -4562,7 +4562,7 @@ end subroutine set_initialized_r3d
 ! <FUNCTION NAME="open_namelist_file">
 !   <DESCRIPTION>
 ! Opens single namelist file for reading only by all PEs
-! the default file opened is called "gfs_namelist".
+! the default file opened is called "gfs_input.nml".
 !   </DESCRIPTION>
 ! <IN NAME="file" TYPE="character">
 ! name of the file to be opened
@@ -4573,7 +4573,7 @@ end subroutine set_initialized_r3d
 function open_namelist_file (file) result (unit)
   character(len=*), intent(in), optional :: file
   integer :: unit
-! local variables necessary for nesting code and alternate gfs_namelists
+! local variables necessary for nesting code and alternate gfs_input.nmls
   character(len=32) :: pelist_name
   character(len=128) :: filename
 
@@ -4591,7 +4591,7 @@ function open_namelist_file (file) result (unit)
      if ( file_exist('input_'//trim(pelist_name)//'.nml') ) then
         filename='input_'//trim(pelist_name)//'.nml'
      else
-        filename='gfs_namelist'
+        filename='gfs_input.nml'
      endif
      call mpp_open ( unit, trim(filename), form=MPP_ASCII, action=MPP_RDONLY, &
           access=MPP_SEQUENTIAL, threading=MPP_SINGLE )

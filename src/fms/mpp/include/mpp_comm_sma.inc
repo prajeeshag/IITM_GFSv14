@@ -85,13 +85,13 @@ subroutine mpp_init( flags,localcomm )
      if( .NOT.opened )exit
   end do
 
-  open(unit_nml,file='gfs_namelist', iostat=io_status)
+  open(unit_nml,file='gfs_input.nml', iostat=io_status)
   read(unit_nml,mpp_nml,iostat=io_status)
   close(unit_nml)  
 #endif
 
   if (io_status > 0) then
-     call mpp_error(FATAL,'=>mpp_init: Error reading gfs_namelist')
+     call mpp_error(FATAL,'=>mpp_init: Error reading gfs_input.nml')
   endif
 
 

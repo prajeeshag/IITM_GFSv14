@@ -1,4 +1,5 @@
 module interpred_mod
+
   use constants_mod, only : con_pi=>PI
   use mpp_mod, only : handle_error=>mpp_error, FATAL, WARNING
   use horiz_interp_mod, only: horiz_interp_type, horiz_interp_init, horiz_interp, horiz_interp_new
@@ -10,7 +11,7 @@ module interpred_mod
 
   public :: init_interpred, interp2regular_fms
 
-  integer :: me, lats_node_r, nodes_comp, ipt_lats_node_r, lonr, latr
+  integer :: lats_node_r, lonr, latr
   logical :: debug=.false., initialized_this_module=.false.
   character (len=32) :: reg2red_interp_method='conservative', red2reg_interp_method='bilinear'
   type(horiz_interp_type), allocatable :: interp2reg(:), interp2red(:)
@@ -26,35 +27,29 @@ module interpred_mod
   
   contains
   
-  subroutine init_interpred(me_in, lats_node_r_in, nodes_comp_in, ipt_lats_node_r_in, &
-                            lonr_in, latr_in, xlon, xlonf, global_lats_r, lonsperlar)
+  subroutine init_interpred(ipt_lats_node_r, xlon, xlonf, global_lats_r, lonsperlar)
     implicit none
-    integer, intent(in) :: me_in, lats_node_r_in, nodes_comp_in
-    integer, intent(in) :: lonr_in, latr_in, ipt_lats_node_r_in
-    integer, intent(in) :: global_lats_r(latr_in), lonsperlar(latr_in)
-    real, intent(in) :: xlon(lonr_in,lats_node_r_in), xlonf(lonr_in,lats_node_r_in)
+    integer, intent(in) :: ipt_lats_node_r
+    integer, intent(in) :: global_lats_r(:), lonsperlar(:)
+    real, intent(in) :: xlon(:,:), xlonf(:)
 
     real :: red_dx, reg_dx
     integer :: j, i, lat
     real :: lon_in(size(xlon,1)+1), lon_out(size(xlonf,1)+1), dlon_in, dlon_out
     integer :: istat
 
-    me = me_in
-    lats_node_r = lats_node_r_in 
-    nodes_comp = nodes_comp_in
-    ipt_lats_node_r = ipt_lats_node_r_in
-    lonr = lonr_in 
-    latr = latr_in 
+    lats_node_r = size(xlon,2)
+    lonr = size(xlon,1)
+    latr = size(global_lats_r,1) 
     
-    if(me==nodes_comp) return
     if(initialized_this_module) return
     
     call horiz_interp_init()
 
     allocate(interp2reg(lats_node_r), interp2red(lats_node_r))
     allocate(nlon(lats_node_r))
-    dlon_out = xlonf(2,1)-xlonf(1,1)
-    lon_out(1) = xlonf(1,1)-(dlon_out*0.5)
+    dlon_out = xlonf(2)-xlonf(1)
+    lon_out(1) = xlonf(1)-(dlon_out*0.5)
 
     do i = 2, size(lon_out)
        lon_out(i) = lon_out(i-1) + dlon_out
@@ -89,7 +84,6 @@ module interpred_mod
    real :: rmask(size(fi,1),size(fi,2))
    integer :: j,lons,lat
 
-    if(me==nodes_comp) return
     if(.not.initialized_this_module) &
          call handle_error(FATAL, 'Module not initialized : interp2regular')
     
@@ -114,7 +108,6 @@ module interpred_mod
    integer :: j,lons,lat
    real :: fi1(size(fi),1), f1(size(f),1), imask1(size(fi1),1)
 
-   if(me==nodes_comp) return
    if(.not.initialized_this_module) &
         call handle_error(FATAL, 'Module not initialized : interp2regular')
     

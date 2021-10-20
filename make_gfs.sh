@@ -150,7 +150,7 @@ paths="$fmsroot/mpp $fmsroot/include \
 		$fmsroot/memutils $fmsroot/constants \
 		$fmsroot/horiz_interp $fmsroot/mosaic \
 		$fmsroot/diag_manager $fmsroot/time_manager \
-		$fmsroot/gfs_interp"
+		$fmsroot/gfs_diag_manager"
 cppDef="-Duse_netCDF -Duse_libMPI -DENABLE_ODA -Dfms_interp"
 lib=$builddir/$libname
 mkdir -p $builddir

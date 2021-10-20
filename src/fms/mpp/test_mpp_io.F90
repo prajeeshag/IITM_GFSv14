@@ -69,13 +69,13 @@ program test
      unit = unit + 1
      if( unit.EQ.100 )call mpp_error( FATAL, 'Unable to locate unit number.' )
   end do
-  open( unit=unit, file='gfs_namelist', iostat=io_status)
+  open( unit=unit, file='gfs_input.nml', iostat=io_status)
   read( unit,test_mpp_io_nml, iostat=io_status )
   close(unit)
 #endif
 
       if (io_status > 0) then
-         call mpp_error(FATAL,'=>test_mpp_io: Error reading gfs_namelist')
+         call mpp_error(FATAL,'=>test_mpp_io: Error reading gfs_input.nml')
       endif
 
 

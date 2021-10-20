@@ -1266,7 +1266,7 @@ end function rarray_to_char
 !
 ! ! parameter defining length of character variables 
 !   integer, parameter :: INPUT_STR_LENGTH = 256
-! ! public variable needed for reading gfs_namelist from an internal file
+! ! public variable needed for reading gfs_input.nml from an internal file
 !   character(len=INPUT_STR_LENGTH), dimension(:), allocatable, public :: input_nml_file
 !
 
@@ -1274,7 +1274,7 @@ end function rarray_to_char
 ! subroutine READ_INPUT_NML
 !
 !
-! Reads an existing gfs_namelist into a character array and broadcasts
+! Reads an existing gfs_input.nml into a character array and broadcasts
 ! it to the non-root mpi-tasks. This allows the use of reads from an
 ! internal file for namelist settings (requires 2003 compliant compiler)  
 !
@@ -1304,7 +1304,7 @@ end function rarray_to_char
     filename='input_'//trim(pelist_name)//'.nml'
     inquire(FILE=filename, EXIST=file_exist)
     if (.not. file_exist ) then
-       filename='gfs_namelist'
+       filename='gfs_input.nml'
     endif
     num_lines = get_ascii_file_num_lines(filename, INPUT_STR_LENGTH)
     allocate(input_nml_file(num_lines))

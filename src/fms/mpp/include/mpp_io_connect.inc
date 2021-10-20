@@ -75,7 +75,7 @@
 !   <PRE>
 !      namelist / nml / ...
 !   ...
-!      call mpp_open( unit, 'gfs_namelist', action=MPP_RDONLY )
+!      call mpp_open( unit, 'gfs_input.nml', action=MPP_RDONLY )
 !      read(unit,nml)
 !   </PRE>
 !
