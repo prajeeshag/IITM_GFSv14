@@ -76,7 +76,8 @@
       use time_manager_mod, only : time_type, set_calendar_type, THIRTY_DAY_MONTHS, JULIAN, &
                                    GREGORIAN, NOLEAP, set_date, print_date
 
-      use gfs_diag_manager_mod, only : init_gfs_diag_manager, set_current_time, write_diag_post_nml
+      use gfs_diag_manager_mod, only : init_gfs_diag_manager, set_current_time, write_diag_post_nml, &
+                                       end_gfs_diag_manager
       use diag_register_gsmphys_mod, only: register_diag_gsmphys
 !
       implicit none
@@ -932,6 +933,8 @@
       type(gfs_physics_internal_state), pointer     :: int_state  
       integer                                       :: rc1, rcfinal
       real(kind=8) :: tbeg,tend
+      type(esmf_time)                    :: currtime
+      integer :: current_itime(6)
       
       tbeg=timef()
 
@@ -974,6 +977,26 @@
       tend=timef()
       physics_timer(3)%elapsed = physics_timer(3)%elapsed               &
      &                              + (tend -tbeg)
+      call esmf_clockget(clock,                                         &
+                         currtime    = currtime,                        &
+                         rc          = rc1)
+      call esmf_timeget(currtime, &
+            yy=current_itime(1), &
+            mm=current_itime(2), &
+            dd=current_itime(3), &
+            h=current_itime(4),  &
+            m=current_itime(5),  &
+            s=current_itime(6))
+
+      call set_current_time( current_itime(1), &
+                             current_itime(2), &
+                             current_itime(3), &
+                             current_itime(4), &
+                             current_itime(5), &
+                             current_itime(6) )
+      
+      call end_gfs_diag_manager()
+
       end subroutine gfs_phy_finalize
 
 ! end of the gfs esmf grid component module.

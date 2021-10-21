@@ -348,10 +348,8 @@ module gfs_diag_manager_mod
     
   end subroutine update_opdata_3d
 
-  subroutine end_gfs_diag_manager(Time)
-    type(time_type), intent(in) :: Time
-
-    call diag_manager_end(Time)
+  subroutine end_gfs_diag_manager()
+    call diag_manager_end(currtime)
   end subroutine end_gfs_diag_manager
 
 end module gfs_diag_manager_mod
