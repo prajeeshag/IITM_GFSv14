@@ -66,6 +66,30 @@ echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
 libs="${builddir}/$libname "$libs
 
+
+libname='lib_fms.a'
+libsrc="fms/"
+builddir=$EXECDIR/$libsrc
+fmsroot=$SRCDIR/$libsrc
+paths="$fmsroot/mpp $fmsroot/include \ 
+		$fmsroot/mpp/include \
+		$fmsroot/fms $fmsroot/platform \
+		$fmsroot/memutils $fmsroot/constants \
+		$fmsroot/horiz_interp $fmsroot/mosaic \
+		$fmsroot/diag_manager $fmsroot/time_manager \
+		$fmsroot/gfs_diag_manager"
+cppDef="-Duse_netCDF -Duse_libMPI -DENABLE_ODA -Dfms_interp"
+lib=$builddir/$libname
+mkdir -p $builddir
+cd $builddir
+echo "...............Compiling $libname.........................."
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8 -check all" $paths
+gmake -j $npes
+echo "...............Done compiling $libname....................."
+incs=$incs"-I$builddir "
+libs="${builddir}/$libname "$libs
+
+
 libname='lib_gsmphys.a'
 libsrc="gfs/GSM/gsmphys"
 builddir=$EXECDIR/$libsrc
@@ -140,27 +164,6 @@ incs=$incs"-I$builddir "
 libs="${builddir}/$libname "$libs
 
 
-libname='lib_fms.a'
-libsrc="fms/"
-builddir=$EXECDIR/$libsrc
-fmsroot=$SRCDIR/$libsrc
-paths="$fmsroot/mpp $fmsroot/include \ 
-		$fmsroot/mpp/include \
-		$fmsroot/fms $fmsroot/platform \
-		$fmsroot/memutils $fmsroot/constants \
-		$fmsroot/horiz_interp $fmsroot/mosaic \
-		$fmsroot/diag_manager $fmsroot/time_manager \
-		$fmsroot/gfs_diag_manager"
-cppDef="-Duse_netCDF -Duse_libMPI -DENABLE_ODA -Dfms_interp"
-lib=$builddir/$libname
-mkdir -p $builddir
-cd $builddir
-echo "...............Compiling $libname.........................."
-$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths
-gmake -j $npes
-echo "...............Done compiling $libname....................."
-incs=$incs"-I$builddir "
-libs="${builddir}/$libname "$libs
 
 
 libname='lib_dyn.a'

@@ -41,8 +41,8 @@ module gfs_diag_manager_mod
 
       currtime = set_date(yy, mm, dd, h, m, s)
 
-      if (mpp_pe() == mpp_root_pe()) &
-         call print_date(currtime, 'FMS diag manager current time:')
+      ! if (mpp_pe() == mpp_root_pe()) &
+      !    call print_date(currtime, 'FMS diag manager current time:')
 
    end subroutine set_current_time
 
@@ -104,7 +104,6 @@ module gfs_diag_manager_mod
     
       call set_diag_global_att(decomp=tmp)
 
-      n_nlevs = 1
       ! n_nlevs = 2
     
       ! nlevs(1,1) = size(ak5,1)

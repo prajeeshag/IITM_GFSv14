@@ -1250,8 +1250,8 @@
 
               call gbphys                                               &
 !  ---  inputs
-     &      ( njeff,ngptc,levs,lsoil,lsm,ntrac,ncld,ntoz,ntcw,ntke,     &
-     &        ntiw,ntlnc,ntinc,                                         &
+     &      ( lon,lan,njeff,ngptc,levs,lsoil,lsm,ntrac,ncld,ntoz,ntcw,  &
+     &        ntke,ntiw,ntlnc,ntinc,                                    &
      &        nmtvr,nrcm,levozp,lonr,latr,jcap,                         &
      &        num_p3d,num_p2d,npdf3d,ncnvcld3d,                         &
      &        kdt,lat,me,pl_coeff,nlons_v,ncw,flgmin,crtrh,cdmbgwd,     &

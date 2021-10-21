@@ -743,7 +743,7 @@
 !!   - Calculate precipitable water and water vapor mass change due to all physics for the column
 !!   - Deallocate arrays for SHOC scheme, deep convective scheme, and Morrison et al. microphysics
       subroutine gbphys                                                 &
-     &    ( im,ix,levs,lsoil,lsm,ntrac,ncld,ntoz,ntcw,ntke,             &
+     &    ( istrt,lan,im,ix,levs,lsoil,lsm,ntrac,ncld,ntoz,ntcw,ntke,   &
      &      ntiw,ntlnc,ntinc,                                           &
      &      nmtvr,nrcm,ko3,lonr,latr,jcap,                              &
      &      num_p3d,num_p2d,npdf3d,ncnvcld3d,                           &
@@ -806,6 +806,8 @@
      &,                      rhc_max, dxmin, dxinv, pa2mb, rlapse
       use module_nst_water_prop, only: get_dtzm_2d
       use cs_conv, only : cs_convr
+      use diag_register_gsmphys_mod, only: id_ta, id_tas
+      use gfs_diag_manager_mod, only: update_opdata
 
       implicit none
 !
@@ -824,7 +826,7 @@
 !  note: lgocart is the logical flag for in-line gocart;
 
       integer, intent(in) :: ix,   im,   levs, lsoil,   lsm,     ntrac, &
-     &                       ncld, ntiw, ntlnc, ntinc,                  &
+     &                       ncld, ntiw, ntlnc, ntinc, istrt, lan,      &
      &                       ntoz, ntcw, nmtvr,   nrcm,    ko3,         &
      &                       lonr, latr, jcap, num_p3d, num_p2d, kdt,   &
      &                       me,   pl_coeff, lat, npdf3d, ncnvcld3d,    &
@@ -3669,6 +3671,9 @@
      &,             CNV_DQLDT, clcn,    cnv_fice
      &,             cnv_ndrop, cnv_nice)
 !     endif
+
+      call update_opdata(id_ta, gt0(1:im,:), istrt, im, lan)
+      call update_opdata(id_tas, gt0(1:im,1), istrt, im, lan)
 
       return
 !...................................

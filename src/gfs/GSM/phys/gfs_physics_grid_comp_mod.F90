@@ -77,6 +77,7 @@
                                    GREGORIAN, NOLEAP, set_date, print_date
 
       use gfs_diag_manager_mod, only : init_gfs_diag_manager, set_current_time
+      use diag_register_gsmphys_mod, only: register_diag_gsmphys
 !
       implicit none
 
@@ -458,6 +459,8 @@
                              current_itime(4), &
                              current_itime(5), &
                              current_itime(6) )
+
+      call register_diag_gsmphys()
 
       call esmf_timeintervalget(runduration,                            &
                                 h = runduration_hour, rc = rc1)
