@@ -1,26 +1,30 @@
 module gfs_diag_manager_mod
 
+   use mpp_mod, only: handle_error=>mpp_error, FATAL, WARNING, NOTE, &
+                      mpp_pe, mpp_root_pe
+   use mpp_io_mod, only: mpp_open, mpp_close, mpp_write_meta, MPP_OVERWR, MPP_SINGLE, &
+                         axistype, MPP_NETCDF, mpp_write
+   use fms_io_mod,       only: fms_io_init, write_data
+   use constants_mod,    only: RAD_TO_DEG, PI
+   use time_manager_mod, only: time_type, print_date, set_date
    use diag_manager_mod, only: diag_manager_init, diag_manager_end 
    use diag_manager_mod, only: diag_axis_init, register_static_field
    use diag_manager_mod, only: register_diag_field, send_data
    use diag_manager_mod, only: set_diag_global_att
-   use time_manager_mod, only: time_type
-   use constants_mod, only: RAD_TO_DEG
-   use mpp_mod, only : handle_error=>mpp_error, FATAL, WARNING, NOTE
-   use diag_data_mod, only: fill_value=>CMOR_MISSING_VALUE
+   use diag_data_mod,    only: fill_value=>CMOR_MISSING_VALUE
+   use interpred_mod,    only: init_interpred
 
    implicit none
    private
 
-   integer, public :: lon_id, lat_id, lev_id
+   integer :: lon_id, lat_id, lev_id
    integer :: lonr, latr, lats_node_r
    integer :: max_nlevs=100, n_nlevs=0, total_eles=0
    integer, allocatable :: nlevs(:,:)
-   type(time_type), public :: currtime
+   type(time_type) :: currtime
   
-   public :: init_output_manager
-   public :: end_output_manager
-   public :: register_var, update_opdata, register_static
+   public :: init_gfs_diag_manager, end_gfs_diag_manager, register_var, &
+             update_opdata, register_static, set_current_time
 
    interface update_opdata
       module procedure update_opdata_2d_o
@@ -32,29 +36,62 @@ module gfs_diag_manager_mod
   
    contains
 
-   subroutine init_output_manager(ipt_lats_node_r, xlat, xlon, xlonf, ak5, bk5, global_lats_r, lonsperlar, Time)
+   subroutine set_current_time(yy,mm,dd,h,m,s)
+      integer, intent(in) :: yy, mm, dd, h, m, s 
+
+      currtime = set_date(yy, mm, dd, h, m, s)
+
+      if (mpp_pe() == mpp_root_pe()) &
+         call print_date(currtime, 'FMS diag manager current time:')
+
+   end subroutine set_current_time
+
+   subroutine init_gfs_diag_manager(ipt_lats_node_r, xlat, xlon, ak5, bk5, global_lats_r, lonsperlar)
       integer, intent(in) :: ipt_lats_node_r
-      real, intent(in) :: xlat(:), xlonf(:), xlon(:,:)
+      real, intent(in) :: xlat(:), xlon(:,:)
       real, intent(in) :: ak5(:), bk5(:)
       integer, intent(in) :: global_lats_r(:), lonsperlar(:)
-      type(time_type), intent(in) :: Time
-    
-      integer :: i, lev_id, id
-      logical :: used
-      integer :: tmp(size(xlat,1)+1)
-      Character (len=32) :: tmpc
 
-      lonr = size(xlonf,1)
+      real :: xlonf(size(xlon,1)), dlon
+    
+      integer :: i, lev_id, id, k
+      integer :: tmp(size(xlat,1)+1), nk, ounit
+      Character (len=32) :: tmpc
+      logical :: used
+      type(axistype) :: ak_axis, bk_axis
+      real :: rtmp(size(ak5,1))
+
+      nk = size(ak5,1)
+      if (mpp_pe()==mpp_root_pe()) then
+         call mpp_open(ounit,'ak_bk.nc',action=MPP_OVERWR, &
+               form=MPP_NETCDF,threading=MPP_SINGLE)
+         rtmp = [(ak5(k),k=nk,1,-1)] * 1000. ! cb -> Pascal
+         call mpp_write_meta(ounit, ak_axis, 'ak', 'Pascal', 'coef_a', data=rtmp)
+         rtmp = [(bk5(k),k=nk,1,-1)]
+         call mpp_write_meta(ounit, bk_axis, 'bk', '1', 'coef_b', data=rtmp)
+         call mpp_write(ounit,ak_axis)
+         call mpp_write(ounit,bk_axis)
+         call mpp_close(ounit)
+      endif
+
+      lonr = size(xlon,1)
       lats_node_r = size(xlat,1)
       latr = size(global_lats_r,1)
+
+      dlon = 2. * PI / lonr
+      xlonf = 0.
+
+      do i = 2, lonr
+         xlonf(i) = xlonf(i-1) + dlon
+      end do
 
       call diag_manager_init()
       call init_interpred(ipt_lats_node_r, xlon, xlonf, global_lats_r, lonsperlar)
 
-      lon_id = diag_axis_init(name='lon', data=xlonf(:)*RAD_TO_DEG, units='degrees_east' , cart_name='X', &
-           long_name='longitude')
-      lat_id = diag_axis_init(name='lat', data=xlat(:)*RAD_TO_DEG, units='degrees_north' , cart_name='Y', &
-           long_name='latitude')
+      lon_id = diag_axis_init(name='lon', data=xlonf(:)*RAD_TO_DEG, &
+                  units='degrees_east' , cart_name='X', long_name='longitude')
+      lat_id = diag_axis_init(name='lat', data=xlat(:)*RAD_TO_DEG, &
+                  units='degrees_north' , cart_name='Y', long_name='latitude')
 
       allocate(nlevs(2,max_nlevs))
 
@@ -67,39 +104,39 @@ module gfs_diag_manager_mod
     
       call set_diag_global_att(decomp=tmp)
 
-      n_nlevs = 2
+      n_nlevs = 1
+      ! n_nlevs = 2
     
-      nlevs(1,1) = size(ak5,1)
-      write(tmpc,*) size(ak5,1)
-      tmpc=trim(adjustl(tmpc))
-      nlevs(2,1) = diag_axis_init(name='lev'//trim(tmpc), data=(/(real(i),i=1,size(ak5,1))/), units='', &
-              cart_name='Z', long_name='levels')
-      lev_id = nlevs(2,1)
-      id = register_static_field('gfs', 'coef_ai', (/lev_id/), units='Pa')
-      used = send_data(id,ak5*1000.0)
+      ! nlevs(1,1) = size(ak5,1)
+      ! write(tmpc,*) size(ak5,1)
+      ! tmpc=trim(adjustl(tmpc))
+      ! nlevs(2,1) = diag_axis_init(name='lev'//trim(tmpc), data=(/(real(i),i=1,size(ak5,1))/), units='', &
+      !         cart_name='Z', long_name='levels')
+      ! lev_id = nlevs(2,1)
+      ! id = register_static_field('gfs', 'coef_ai', (/lev_id/), units='Pa')
+      ! used = send_data(id,ak5*1000.0)
     
-      id = register_static_field('gfs', 'coef_bi', (/lev_id/))
-      used = send_data(id,bk5)
+      ! id = register_static_field('gfs', 'coef_bi', (/lev_id/))
+      ! used = send_data(id,bk5)
 
-      nlevs(1,2) = size(ak5,1)-1
-      write(tmpc,*) size(ak5,1)-1
-      tmpc=trim(adjustl(tmpc))
-      nlevs(2,2) = diag_axis_init(name='lev'//trim(tmpc), data=(/(real(i),i=1,size(ak5,1)-1)/), units='', &
-           cart_name='Z', long_name='levels')
-      lev_id = nlevs(2,2)
+      ! nlevs(1,2) = size(ak5,1)-1
+      ! write(tmpc,*) size(ak5,1)-1
+      ! tmpc=trim(adjustl(tmpc))
+      ! nlevs(2,2) = diag_axis_init(name='lev'//trim(tmpc), data=(/(real(i),i=1,size(ak5,1)-1)/), units='', &
+      !      cart_name='Z', long_name='levels')
+      ! lev_id = nlevs(2,2)
    
-      id = register_static_field('gfs', 'coef_a', (/lev_id/), units='Pa')
-      used = send_data(id,(ak5(1:size(ak5)-1)+ak5(2:size(ak5)))*0.5*1000.0)
+      ! id = register_static_field('gfs', 'coef_a', (/lev_id/), units='Pa')
+      ! used = send_data(id,(ak5(1:size(ak5)-1)+ak5(2:size(ak5)))*0.5*1000.0)
 
-      id = register_static_field('gfs', 'coef_b', (/lev_id/))
-      used = send_data(id,(bk5(1:size(bk5)-1)+bk5(2:size(bk5)))*0.5)
+      ! id = register_static_field('gfs', 'coef_b', (/lev_id/))
+      ! used = send_data(id,(bk5(1:size(bk5)-1)+bk5(2:size(bk5)))*0.5)
 
-   end subroutine init_output_manager
+   end subroutine init_gfs_diag_manager
 
-   integer function register_var(name, time, long_name, units, range, standard_name,  levs, mask, wgt)
+   integer function register_var(name, long_name, units, range, standard_name,  levs, mask, wgt)
 
       character (len=*), intent(in) :: name
-      type(time_type), intent(in) :: time
       character (len=*), intent(in), optional :: long_name, units
       real, intent(in), optional :: range(2)
       character (len=*), intent(in), optional :: standard_name
@@ -116,7 +153,8 @@ module gfs_diag_manager_mod
 
       if (.not.present(levs)) then
          register_var = register_diag_field('gfs', trim(name), (/lon_id, lat_id/), &
-              time, long_name, units, fill_value, range, wgt1, standard_name, mask=mask, red2reg=.true., total_elements=total_eles)
+              currtime, long_name, units, fill_value, range, wgt1, standard_name, &
+              mask=mask, red2reg=.true., total_elements=total_eles)
       else
          n=0
          do i = 1, n_nlevs
@@ -140,7 +178,8 @@ module gfs_diag_manager_mod
          lev_id = nlevs(2,n)
 
          register_var = register_diag_field('gfs', name, (/lon_id, lat_id, lev_id/), &
-              time, long_name, units, fill_value, range, wgt1, standard_name, mask=mask, red2reg=.true., total_elements=total_eles*levs)
+              currtime, long_name, units, fill_value, range, wgt1, standard_name, &
+              mask=mask, red2reg=.true., total_elements=total_eles*levs)
 
       endif
 
@@ -160,7 +199,8 @@ module gfs_diag_manager_mod
 
     if (.not.present(levs)) then
        register_static = register_static_field('gfs', trim(name), (/lon_id, lat_id/), &
-            long_name, units, fill_value, range, wgt, standard_name, mask=mask, red2reg=.true., total_elements=total_eles)
+            long_name, units, fill_value, range, wgt, standard_name, mask=mask, red2reg=.true., &
+            total_elements=total_eles)
     else
        n=0
        do i = 1, n_nlevs
@@ -184,7 +224,8 @@ module gfs_diag_manager_mod
        lev_id = nlevs(2,n)
 
        register_static = register_static_field('gfs', name, (/lon_id, lat_id, lev_id/), &
-            long_name, units, fill_value, range, wgt, standard_name, mask=mask, red2reg=.true., total_elements=total_eles*levs)
+            long_name, units, fill_value, range, wgt, standard_name, mask=mask, red2reg=.true., &
+            total_elements=total_eles*levs)
        
     endif
           
@@ -252,10 +293,9 @@ module gfs_diag_manager_mod
     
   end subroutine update_opdata_3d_o
 
-  subroutine update_opdata_2d(field_id, field, time, wgt)
+  subroutine update_opdata_2d(field_id, field, wgt)
     integer, intent(in) :: field_id
     real, intent(in) :: field(:,:)
-    type(time_type), intent(in), optional :: Time
     real, intent(in), optional :: wgt(:,:)
     !local
     logical :: used
@@ -264,19 +304,18 @@ module gfs_diag_manager_mod
     if (field_id<=0) return
 
     if (.not.present(wgt)) then
-       used = send_data(field_id, field(:,:), time)
+       used = send_data(field_id, field(:,:), currtime)
     else
        mask = .false.
        where(wgt>0.0) mask=.true.
-       used = send_data(field_id, field(:,:), time, mask=mask, weight=wgt)
+       used = send_data(field_id, field(:,:), currtime, mask=mask, weight=wgt)
     endif
           
   end subroutine update_opdata_2d
 
-  subroutine update_opdata_3d(field_id, field, time, wgt)
+  subroutine update_opdata_3d(field_id, field, wgt)
     integer, intent(in) :: field_id
     real, intent(in) :: field(:,:,:)
-    type(time_type), intent(in), optional :: Time
     real, intent(in), optional :: wgt(:,:,:)
     !local
     logical :: used
@@ -285,19 +324,19 @@ module gfs_diag_manager_mod
     if (field_id<=0) return
 
     if(.not.present(wgt)) then
-       used = send_data(field_id, field(:,:,:), time)
+       used = send_data(field_id, field(:,:,:), currtime)
     else
        mask =.false.
        where(wgt>0.0)mask=.true.
-       used = send_data(field_id, field(:,:,:), time, mask=mask, weight=wgt)
+       used = send_data(field_id, field(:,:,:), currtime, mask=mask, weight=wgt)
     endif
     
   end subroutine update_opdata_3d
 
-  subroutine end_output_manager(Time)
+  subroutine end_gfs_diag_manager(Time)
     type(time_type), intent(in) :: Time
 
     call diag_manager_end(Time)
-  end subroutine end_output_manager
+  end subroutine end_gfs_diag_manager
 
 end module gfs_diag_manager_mod

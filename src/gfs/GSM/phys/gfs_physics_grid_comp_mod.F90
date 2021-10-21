@@ -48,8 +48,8 @@
                                 global_lats_ptr, lonsperlat_ptr
 ! modules for internal coupling
       use resol_def,                      only: lonr, latr, kdt_start
-      use layout1,                        only: me, lats_node_r, lats_node_r_max
-      USE ESMF
+      use layout1,                        only: me, lats_node_r, lats_node_r_max, ipt_lats_node_r
+      use coordinate_def,                 only: ak5, bk5
 
       use gfs_physics_err_msg_mod,        ONLY: gfs_physics_err_msg,        &
                                                 gfs_physics_err_msg_final
@@ -60,7 +60,6 @@
       USE gfs_physics_internal_state_mod, ONLY: gfs_physics_internal_state, &
                                                 gfs_phy_wrap
       USE mpi_def,                        ONLY: mpi_comm_all,quilting
-      USE layout1,                        ONLY: me
       USE date_def,                       ONLY: idate, fhour
       USE namelist_physics_def,           ONLY: fhini, fhmax, lssav,ndfi,ldfi
 !jw
@@ -72,9 +71,12 @@
       use wam_f107_kp_mod,                ONLY: f107_kp_interval, kdt_3h
       use module_timers,only: physics_timer,timef
 
+      use constants_mod, only : RAD_TO_DEG
       use mpp_mod, only : mpp_init, mpp_error, FATAL, NOTE, WARNING
       use time_manager_mod, only : time_type, set_calendar_type, THIRTY_DAY_MONTHS, JULIAN, &
                                    GREGORIAN, NOLEAP, set_date, print_date
+
+      use gfs_diag_manager_mod, only : init_gfs_diag_manager, set_current_time
 !
       implicit none
 
@@ -241,7 +243,6 @@
 
       real(kind=8) :: tbeg,tend
       integer :: current_itime(6)
-      type(time_type) :: current_time
       tbeg=timef()
 
 ! initialize the error signal variables.
@@ -425,19 +426,19 @@
                          rc          = rc1)
 
       if (calendar_esmf == ESMF_CALKIND_GREGORIAN) then
-            call mpp_error(NOTE, 'setting fms time manager calendar type to GREGORIAN')
+            call mpp_error(NOTE, 'setting FMS time manager calendar type to GREGORIAN')
             call set_calendar_type(GREGORIAN)
       else if (calendar_esmf == ESMF_CALKIND_360DAY ) then
-            call mpp_error(NOTE, 'setting fms time manager calendar type to THIRTY_DAY_MONTHS')
+            call mpp_error(NOTE, 'setting FMS time manager calendar type to THIRTY_DAY_MONTHS')
             call set_calendar_type(THIRTY_DAY_MONTHS)
       else if (calendar_esmf == ESMF_CALKIND_JULIAN) then
-            call mpp_error(NOTE, 'setting fms time manager calendar type to JULIAN')
+            call mpp_error(NOTE, 'setting FMS time manager calendar type to JULIAN')
             call set_calendar_type(JULIAN)
       else if (calendar_esmf == ESMF_CALKIND_NOLEAP) then
-            call mpp_error(NOTE, 'setting fms time manager calendar type to NOLEAP')
+            call mpp_error(NOTE, 'setting FMS time manager calendar type to NOLEAP')
             call set_calendar_type(NOLEAP)
       else 
-            call mpp_error(FATAL, 'Unsupported Calendar type by fms')
+            call mpp_error(FATAL, 'Unsupported Calendar type by FMS')
       endif 
 
       call esmf_timeget(currtime, &
@@ -448,14 +449,15 @@
             m=current_itime(5),  &
             s=current_itime(6))
 
-      current_time = set_date( current_itime(1), &
-                               current_itime(2), &
-                               current_itime(3), &
-                               current_itime(4), &
-                               current_itime(5), &
-                               current_itime(6) )
+      call init_gfs_diag_manager(ipt_lats_node_r, int_state%xlat(1,:), int_state%xlon, &
+                                 ak5, bk5, int_state%global_lats_r, int_state%lonsperlar)
 
-      call print_date(current_time,'Initial Time FMS')
+      call set_current_time( current_itime(1), &
+                             current_itime(2), &
+                             current_itime(3), &
+                             current_itime(4), &
+                             current_itime(5), &
+                             current_itime(6) )
 
       call esmf_timeintervalget(runduration,                            &
                                 h = runduration_hour, rc = rc1)
@@ -628,7 +630,7 @@
       integer                            :: i
       character*10                       :: vname
       real(kind=8) :: tbeg,tend
-      integer :: curr_time(6)
+      integer :: current_itime(6)
       tbeg=timef()
 !
 ! initialize the error signal variables.
@@ -688,6 +690,21 @@
                          currtime    = currtime,                        &
                          stoptime    = stoptime,                        &
                          rc          = rc1)
+
+      call esmf_timeget(currtime, &
+            yy=current_itime(1), &
+            mm=current_itime(2), &
+            dd=current_itime(3), &
+            h=current_itime(4),  &
+            m=current_itime(5),  &
+            s=current_itime(6))
+
+      call set_current_time( current_itime(1), &
+                             current_itime(2), &
+                             current_itime(3), &
+                             current_itime(4), &
+                             current_itime(5), &
+                             current_itime(6) )
 
       call gfs_physics_err_msg(rc1,'esmf clockget',rc)
 
@@ -895,6 +912,7 @@
       type(gfs_physics_internal_state), pointer     :: int_state  
       integer                                       :: rc1, rcfinal
       real(kind=8) :: tbeg,tend
+      
       tbeg=timef()
 
 !eop
