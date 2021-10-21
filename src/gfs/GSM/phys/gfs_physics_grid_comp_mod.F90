@@ -76,7 +76,7 @@
       use time_manager_mod, only : time_type, set_calendar_type, THIRTY_DAY_MONTHS, JULIAN, &
                                    GREGORIAN, NOLEAP, set_date, print_date
 
-      use gfs_diag_manager_mod, only : init_gfs_diag_manager, set_current_time
+      use gfs_diag_manager_mod, only : init_gfs_diag_manager, set_current_time, write_diag_post_nml
       use diag_register_gsmphys_mod, only: register_diag_gsmphys
 !
       implicit none
@@ -243,7 +243,7 @@
       type(ESMF_Calendar) :: calendar_esmf
 
       real(kind=8) :: tbeg,tend
-      integer :: current_itime(6)
+      integer :: current_itime(6), stop_itime(6), dt_sec, calendar_type
       tbeg=timef()
 
 ! initialize the error signal variables.
@@ -423,21 +423,26 @@
                          runduration = runduration,                     &
                          starttime   = starttime,                       &
                          currtime    = currtime,                        &
+                         stoptime    = stoptime,                        &
                          calendar    = calendar_esmf,                   &
                          rc          = rc1)
 
       if (calendar_esmf == ESMF_CALKIND_GREGORIAN) then
             call mpp_error(NOTE, 'setting FMS time manager calendar type to GREGORIAN')
             call set_calendar_type(GREGORIAN)
+            calendar_type = GREGORIAN
       else if (calendar_esmf == ESMF_CALKIND_360DAY ) then
             call mpp_error(NOTE, 'setting FMS time manager calendar type to THIRTY_DAY_MONTHS')
             call set_calendar_type(THIRTY_DAY_MONTHS)
+            calendar_type = THIRTY_DAY_MONTHS
       else if (calendar_esmf == ESMF_CALKIND_JULIAN) then
             call mpp_error(NOTE, 'setting FMS time manager calendar type to JULIAN')
             call set_calendar_type(JULIAN)
+            calendar_type = JULIAN
       else if (calendar_esmf == ESMF_CALKIND_NOLEAP) then
             call mpp_error(NOTE, 'setting FMS time manager calendar type to NOLEAP')
             call set_calendar_type(NOLEAP)
+            calendar_type = NOLEAP
       else 
             call mpp_error(FATAL, 'Unsupported Calendar type by FMS')
       endif 
@@ -450,8 +455,20 @@
             m=current_itime(5),  &
             s=current_itime(6))
 
+      call esmf_timeget(stoptime, &
+            yy=stop_itime(1), &
+            mm=stop_itime(2), &
+            dd=stop_itime(3), &
+            h=stop_itime(4),  &
+            m=stop_itime(5),  &
+            s=stop_itime(6))
+
+      call esmf_timeintervalget(timestep, s=dt_sec)
+
       call init_gfs_diag_manager(ipt_lats_node_r, int_state%xlat(1,:), int_state%xlon, &
                                  ak5, bk5, int_state%global_lats_r, int_state%lonsperlar)
+
+      call write_diag_post_nml(current_itime, stop_itime, dt_sec, calendar_type)
 
       call set_current_time( current_itime(1), &
                              current_itime(2), &

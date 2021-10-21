@@ -220,6 +220,18 @@ $MKMF -f -p $exename -t $MKMFTEMPLATE -o "$incs" -l "$libs" $paths $INCLUDES
 make -j $npes 
 echo '...............Done Compiling GFS.....................'
 
+exename='mppncc_gfs'
+libsrc="mppncc_gfs"
+builddir=$EXECDIR/$libsrc
+paths=$SRCDIR/$libsrc
+lib=$builddir/$libname
+mkdir -p $builddir
+cd $builddir
+cppDef="-Dlib_mppnccp2r -Duse_libMPI"
+echo "...............Compiling $exename....................."
+$MKMF -c "$cppDef" -f -p $exename -t $MKMFTEMPLATE -o "$incs" -l "$libs" $paths $INCLUDES
+make -j $npes 
+echo "...............Done Compiling $exename....................."
 
 # echo "#-------------------------MAKE RUN_NCCOMBINEP2R--------------------------------------"
 # cppDef="-Dlib_mppnccp2r -Duse_libMPI"

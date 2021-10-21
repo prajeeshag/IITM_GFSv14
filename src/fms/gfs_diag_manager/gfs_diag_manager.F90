@@ -3,7 +3,7 @@ module gfs_diag_manager_mod
    use mpp_mod, only: handle_error=>mpp_error, FATAL, WARNING, NOTE, &
                       mpp_pe, mpp_root_pe
    use mpp_io_mod, only: mpp_open, mpp_close, mpp_write_meta, MPP_OVERWR, MPP_SINGLE, &
-                         axistype, MPP_NETCDF, mpp_write
+                         axistype, MPP_NETCDF, mpp_write, MPP_ASCII
    use fms_io_mod,       only: fms_io_init, write_data
    use constants_mod,    only: RAD_TO_DEG, PI
    use time_manager_mod, only: time_type, print_date, set_date
@@ -24,7 +24,7 @@ module gfs_diag_manager_mod
    type(time_type) :: currtime
   
    public :: init_gfs_diag_manager, end_gfs_diag_manager, register_var, &
-             update_opdata, register_static, set_current_time
+             update_opdata, register_static, set_current_time, write_diag_post_nml
 
    interface update_opdata
       module procedure update_opdata_2d_o
@@ -35,6 +35,22 @@ module gfs_diag_manager_mod
   
   
    contains
+
+   subroutine write_diag_post_nml(startdate, enddate, deltim, calendar_type)
+      integer, intent(in) :: startdate(6), enddate(6), deltim, calendar_type
+
+      integer :: ounit
+
+      namelist/diag_post_nml/ startdate, calendar_type, deltim, enddate
+
+      if (mpp_pe()==mpp_root_pe()) then
+         call mpp_open(ounit,'diag_post.nml',action=MPP_OVERWR, &
+               form=MPP_ASCII,threading=MPP_SINGLE)
+         write(ounit,nml=diag_post_nml)
+         call mpp_close(ounit)
+      endif
+
+   end subroutine write_diag_post_nml
 
    subroutine set_current_time(yy,mm,dd,h,m,s)
       integer, intent(in) :: yy, mm, dd, h, m, s 
