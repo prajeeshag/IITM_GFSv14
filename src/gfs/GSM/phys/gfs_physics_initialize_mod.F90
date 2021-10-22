@@ -975,7 +975,6 @@
 !       write(0,*)' gis_phy%lonsperlar2=',gis_phy%lonsperlar
 !       write(0,*)' returning from gfs_physics_initialize'
 !
-      print *, 'gfs_comm: test in gfs_physics_initialize: ', me
       if (comp_task) then
         allocate(ilats(gis_phy%lats_node_r))
         do j = 1, gis_phy%lats_node_r                              

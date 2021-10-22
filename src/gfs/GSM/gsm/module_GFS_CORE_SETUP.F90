@@ -16,6 +16,10 @@
       USE ESMF
       USE module_DM_PARALLEL_GFS  ,only: SETUP_SERVERS_GFS
       USE module_INCLUDE
+
+      use mpp_mod, only: mpp_init
+      use fms_mod, only: fms_init
+      use fms_io_mod, only: fms_io_init
 !
 !-----------------------------------------------------------------------
 !
@@ -150,6 +154,10 @@
       CALL ESMF_vmget(vm                                  &
                      ,mpicommunicator=mpi_intra           &  !<-- the global communicator
                      ,rc             =RC)
+
+      call mpp_init(localcomm=mpi_intra)
+      call fms_init()
+      call fms_io_init()
 !
       CALL mpi_comm_dup(mpi_intra,mpi_intra_b,rc)
 !
@@ -181,8 +189,6 @@
       END IF
       wrt_num_pes_fcst = num_pes_fcst
 
-      print *, 'gfs_comm: test in module_GFS_CORE_SETUP: num_pes_fcst, num_pes_tot :', num_pes_fcst, num_pes_tot 
-      
       allocate(petlist_fcst(num_pes_fcst))
       petlist_fcst(1:num_pes_fcst) = petlistvm(1:num_pes_fcst)
       last_fcst_pe     = maxval(petlist_fcst(1:num_pes_fcst) )

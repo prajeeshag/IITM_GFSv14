@@ -79,7 +79,7 @@ module gfs_diag_manager_mod
 
       nk = size(ak5,1)
       if (mpp_pe()==mpp_root_pe()) then
-         call mpp_open(ounit,'ak_bk.nc',action=MPP_OVERWR, &
+         call mpp_open(ounit,'ak_bk_out.nc',action=MPP_OVERWR, &
                form=MPP_NETCDF,threading=MPP_SINGLE)
          rtmp = [(ak5(k),k=nk,1,-1)] * 1000. ! cb -> Pascal
          call mpp_write_meta(ounit, ak_axis, 'ak', 'Pascal', 'coef_a', data=rtmp)

@@ -397,7 +397,7 @@
                       rc       = rc1)
       me = int_state%me
 
-      call mpp_init(localcomm=mpi_comm_all)
+      ! call mpp_init(localcomm=mpi_comm_all)
 
       call gfs_physics_err_msg(rc1,'get me and nodes from vm',rc)
 

@@ -31,6 +31,10 @@
      &,                                 fhrot
       USE gfs_dyn_layout1      , ONLY : lats_node_a
       use layout_grid_tracers ,  only : rgt_a,rgt_h,xhalo,yhalo
+
+#ifdef HS_Forcing
+      use held_suarez_init_mod, only: held_suarez_init
+#endif
 !
       IMPLICIT NONE
 !!
@@ -120,8 +124,25 @@ c$$$     X          P_ZQ  =11*LEVS+3*LEVH+6)  !      ZQE/O(LNTE/OD,2)
 !
       if (me == 0) write(0,*)' cread=',cread
 
+#ifdef HS_Forcing
+
+        call held_suarez_init(idate,1,restart_run,
+     &               TRIE_LS(1,1,P_GZ ), TRIE_LS(1,1,P_QM ),
+     &               TRIE_LS(1,1,P_TEM), TRIE_LS(1,1,P_DIM),
+     &               TRIE_LS(1,1,P_ZEM), TRIE_LS(1,1,P_RM ),
+     &               TRIO_LS(1,1,P_GZ ), TRIO_LS(1,1,P_QM ),
+     &               TRIO_LS(1,1,P_TEM), TRIO_LS(1,1,P_DIM),
+     &               TRIO_LS(1,1,P_ZEM), TRIO_LS(1,1,P_RM ),
+     &               grid_gr,
+     &               LS_NODE,LS_NODES,MAX_LS_NODES,
+     &               PDRYINI,IPRINT,
+     &               global_lats_a,lats_nodes_a,lonsperlat,
+     &               epse, epso, plnew_a, plnow_a,
+     &               snnp1ev, snnp1od)
+
+#else
       if(nemsio_in) then
-        if (me == 0) write(0,*)'read in nemsio file,cread=',trim(cread)
+        if (me == 0) write(*,*)'read in nemsio file,cread=',trim(cread)
 
         CALL TREADEO_nemsio_slg(cread,IDATE,1,restart_run,
      &               TRIE_LS(1,1,P_GZ ), TRIE_LS(1,1,P_QM ),
@@ -145,6 +166,8 @@ c$$$     X          P_ZQ  =11*LEVS+3*LEVH+6)  !      ZQE/O(LNTE/OD,2)
 !    &,' p_gz=',TRIE_LS(1,1,P_GZ ),' p_qm=',TRIE_LS(1,1,P_QM ),
 !    &' p_tem=',TRIE_LS(1,1,P_TEM)
       else
+        if (me==0)
+     &   write(*,*)'read in non-nemsio file,cread=',trim(cread)
         CALL TREADEO_slg(N1,FHOUR,IDATE,
      &               TRIE_LS(1,1,P_GZ ), TRIE_LS(1,1,P_QM ),
      &               TRIE_LS(1,1,P_TEM), TRIE_LS(1,1,P_DIM),
@@ -156,7 +179,8 @@ c$$$     X          P_ZQ  =11*LEVS+3*LEVH+6)  !      ZQE/O(LNTE/OD,2)
      &               SNNP1EV,SNNP1OD,PDRYINI,IPRINT,
      &               cread)
       endif
- 
+
+#endif 
       if(me == 0) PRINT 9877, N1,FHOUR
  9877 FORMAT(1H ,'N1,FHOUR AFTER TREAD',1(I4,1X),F6.2)
  

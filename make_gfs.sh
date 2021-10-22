@@ -52,6 +52,8 @@ INCLUDES="$SRCDIR/gfs/includes/"
 incs=" "
 libs=" "
 
+cppDef="-Duse_netCDF -Duse_libMPI -DENABLE_ODA -Dfms_interp -DHS_Forcing"
+
 libname='lib_share.a'
 libsrc="gfs/GSM/share"
 builddir=$EXECDIR/$libsrc
@@ -60,7 +62,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -p $libname -t $MKMFTEMPLATE -o "$incs" $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs" $paths $INCLUDES
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
@@ -78,7 +80,6 @@ paths="$fmsroot/mpp $fmsroot/include \
 		$fmsroot/horiz_interp $fmsroot/mosaic \
 		$fmsroot/diag_manager $fmsroot/time_manager \
 		$fmsroot/gfs_diag_manager"
-cppDef="-Duse_netCDF -Duse_libMPI -DENABLE_ODA -Dfms_interp"
 lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
@@ -98,7 +99,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths $INCLUDES
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
@@ -112,7 +113,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths $INCLUDES
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
@@ -127,7 +128,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -p $libname -t $MKMFTEMPLATE -o "$incs  -r8" $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs  -r8" $paths $INCLUDES
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
@@ -142,7 +143,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -p $libname -t $MKMFTEMPLATE -o "$incs " $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs " $paths $INCLUDES
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
@@ -157,13 +158,11 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -p $libname -t $MKMFTEMPLATE -o "$incs " $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs " $paths $INCLUDES
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
 libs="${builddir}/$libname "$libs
-
-
 
 
 libname='lib_dyn.a'
@@ -174,7 +173,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -p $libname -t $MKMFTEMPLATE -o "$incs  -r8" $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs  -r8" $paths $INCLUDES
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
@@ -188,7 +187,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths $INCLUDES
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
@@ -202,7 +201,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths $INCLUDES
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
@@ -216,7 +215,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo '...............Compiling GFS.....................'
-$MKMF -f -p $exename -t $MKMFTEMPLATE -o "$incs" -l "$libs" $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $exename -t $MKMFTEMPLATE -o "$incs" -l "$libs" $paths $INCLUDES
 make -j $npes 
 echo '...............Done Compiling GFS.....................'
 
