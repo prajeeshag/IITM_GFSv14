@@ -152,6 +152,10 @@
       use gfs_physics_aoi_var_mod
       use module_CPLFIELDS, only: NImportFields
 
+#ifdef HS_Forcing
+      use hs_forcing_mod, only: hs_forcing_init
+#endif
+
 !#ifndef IBM
 !     USE omp_lib
 !#endif
@@ -217,6 +221,10 @@
                           gis_phy%thermodyn_id, gis_phy%sfcpress_id,    &
                           gis_phy%nam_gfs_phy%nlunit, me,               &
                           gis_phy%nam_gfs_phy%gfs_phy_namelist)
+
+#ifdef HS_Forcing
+      call hs_forcing_init()
+#endif
 
 !     if (me == 0) write(0,*)' after compns_physics ntke=', gis_phy%ntke
 !
@@ -438,6 +446,8 @@
       else
         nrcm = 2
       endif
+
+#ifndef HS_Forcing
 !
 !     write(0,*)' before ozone read'
       if (ntoz <= 0) then      ! Diagnostic ozone
@@ -473,6 +483,7 @@
         if (allocated(pl_time4)) deallocate(pl_time4)
       endif
       dphiozc = -(blatc+blatc)/(latsozc-1)
+#endif
 !
       if (me  == 0) then
 

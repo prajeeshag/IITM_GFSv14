@@ -1,6 +1,10 @@
 
 module hs_forcing_mod
 
+
+use diag_register_gsmphys_mod, only: id_ta, id_ua, id_va, id_ps
+use gfs_diag_manager_mod, only: update_opdata
+
 implicit none
 private
 
@@ -54,24 +58,21 @@ real, parameter :: GRAV=9.8
 
 contains
 
-!#######################################################################
-
- subroutine hs_forcing ( im, levs, dt, lat, ps, p_full, &
+subroutine hs_forcing ( istrt, lan, im, levs, dt, lat, ps, p_full, &
                          u, v, t, udt, vdt, tdt)
 
 !-----------------------------------------------------------------------
-   integer, intent(in)                             :: im
+   integer, intent(in)                             :: istrt, lan, im, levs
    real, intent(in)                                :: dt
-   real, intent(in),    dimension(1:im,1)          :: lat
-   real, intent(in),    dimension(1:im,1,1:levs)   :: p_full
-   real, intent(in),    dimension(1:im,1)          :: ps
+   real, intent(in),    dimension(1:im,1)          :: lat ! latitude in radians
+   real, intent(in),    dimension(1:im,1,1:levs)   :: p_full ! Pressure in Pascals
+   real, intent(in),    dimension(1:im,1)          :: ps ! Surface pressure in Pascals
    real, intent(in),    dimension(1:im,1,1:levs)   :: u, v, t
-   real, intent(inout), dimension(1:im,1,1:levs)   :: udt, vdt, tdt
+   real, intent(out), dimension(1:im,1,1:levs)   :: udt, vdt, tdt
 
 !-----------------------------------------------------------------------
    real, dimension(size(t,1),size(t,2))            :: diss_heat
    real, dimension(size(t,1),size(t,2),size(t,3))  :: ttnd, utnd, vtnd, teq, pmass
-   real, dimension(size(r,1),size(r,2),size(r,3))  :: rst, rtnd
 
    integer :: i, j, k, kb, n, num_tracers
    logical :: used
@@ -90,8 +91,8 @@ contains
 
       call rayleigh_damping ( ps, p_full, u, v, utnd, vtnd)
 
-      udt = udt + utnd
-      vdt = vdt + vtnd
+      udt = u + utnd * dt
+      vdt = v + vtnd * dt
 
 
 !-----------------------------------------------------------------------
@@ -99,7 +100,14 @@ contains
 
       call newtonian_damping ( lat, ps, p_full, t, ttnd, teq )
 
-      tdt = tdt + ttnd
+      tdt = t + ttnd * dt
+
+      ! print *, 'maxval - ta, va, ua, ps: ', maxval(tdt), maxval(udt), maxval(vdt), maxval(ps)
+      
+      call update_opdata(id_ta, tdt(1:im,1,:), istrt, im, lan)
+      call update_opdata(id_ua, udt(1:im,1,:), istrt, im, lan)
+      call update_opdata(id_va, vdt(1:im,1,:), istrt, im, lan)
+      call update_opdata(id_ps, ps(1:im,1), istrt, im, lan)
 
  end subroutine hs_forcing
 

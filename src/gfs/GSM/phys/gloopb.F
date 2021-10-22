@@ -127,6 +127,9 @@
       use efield,                 only: efield_init
       use mersenne_twister
       use module_timers,only: physics_timer,timef
+#ifdef HS_Forcing
+      use hs_forcing_mod, only: hs_forcing
+#endif
 
       implicit none
       include 'mpif.h'
@@ -564,6 +567,7 @@
 !
 ! do ozone i/o and latitudinal interpolation to local gaussian lats
 !
+#ifndef HS_Forcing
       if (.not.use_nuopc) then
       if (ntoz > 0) then
        call ozinterpol(me,lats_node_r,lats_node_r,idate,fhour,
@@ -574,6 +578,7 @@
      &                  jindx1_h,jindx2_h,h2oplin,h2oplout,ddy_h)
       endif
       endif
+#endif
 !---------------------------main latitude loop starts---------------------------------
 !
 
@@ -1248,6 +1253,17 @@
 !     write(0,*)' calling gbphys for lan=',lan
 !    &,'dlw=', flx_fld%sfcdlw(lon,lan),  flx_fld%tsflw (lon,lan)
 
+#ifdef HS_Forcing
+
+          call hs_forcing ( lon, lan, njeff, levs, dtp, xlat(lon,lan), 
+     &        pgr(1:njeff), prsl(1:njeff,:), gu(1:njeff,:), 
+     &        gv(1:njeff,:), gt(1:njeff,:), adu(1:njeff,:), 
+     &        adv(1:njeff,:), adt(1:njeff,:) )
+              
+              adr = 0.
+
+#else
+
               call gbphys                                               &
 !  ---  inputs
      &      ( lon,lan,njeff,ngptc,levs,lsoil,lsm,ntrac,ncld,ntoz,ntcw,  &
@@ -1356,6 +1372,7 @@
      &        aoi_tseai,      aoi_psurfi                                &
      &        )
 
+#endif
             end if  ! use_nuopc
 
             if (nn < nsphys) then

@@ -598,6 +598,7 @@
 
         endif   ! if cplflx
 
+#ifndef HS_Forcing
         if (lsswr .or. lslwr) then         ! Radiation Call!
 ! idea add by hmhj
           if(lsidea) then
@@ -634,6 +635,7 @@
      &                              + (tend -tbeg)
 
         endif
+#endif
 !
 !!
 !*       call gloopb ( grid_gr,

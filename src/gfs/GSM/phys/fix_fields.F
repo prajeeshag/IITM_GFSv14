@@ -158,6 +158,7 @@
         endif
       endif
       NEEDORO=1
+#ifndef HS_Forcing
       CALL read_mtn_hprim_oz(sfc_fld%SLMSK,HPRIME,NEEDORO,sfc_fld%ORO,
      &                       sfc_fld%oro_uf,IOZONDP,OZPLIN,
      &                       GLOBAL_LATS_R,LONSPERLAR)
@@ -188,6 +189,7 @@
      &                    jindx1_h, jindx2_h, ddy_h)
         endif
       endif
+#endif
 !      
       call lonlat_para(global_lats_r,xlon,xlat,lonsperlar)
 !!     
