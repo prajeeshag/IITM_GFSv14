@@ -303,15 +303,19 @@
         cfile  = trim(int_state%nam_gfs_dyn%sig_ini)
         cfile2 = trim(int_state%nam_gfs_dyn%sig_ini2)
       endif
-
+#ifdef HS_Forcing
+     yy=2000; mm=1; dd=1; hh=0; mns=0; sec=0;
+     int_state%kfhour=0
+#else
       call gfs_dynamics_start_time_get(                                 &
                         yy, mm, dd, hh, mns, sec, int_state%kfhour,     &
                         int_state%n1,int_state%n2,int_state%grib_inp,   &
                         cfile,cfile2,int_state%nemsio_in,               &
                         int_state%me,                                   &
                         int_state%restart_run,rc1)
+
       call gfs_dynamics_err_msg(rc1,'getting the start time',rc)
- 
+#endif 
       advancecount4        = nint(real(int_state%kfhour) * 3600.0 /     &
                                        int_state%nam_gfs_dyn%deltim)
       int_state%phour      = advancecount4 *                            &

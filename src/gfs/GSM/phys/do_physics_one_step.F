@@ -228,6 +228,7 @@
                 endif
               enddo
             enddo
+#ifndef HS_Forcing
        if (use_nuopc) then
         call set_gcycle_data(
      &     mdl_parm, dyn_parm, sfc_prop,cld_prop, tbddata,
@@ -248,6 +249,7 @@
      &                ipt_lats_node_r,idate,phour,fhcyc,
      &                xlon ,xlat, sfc_fld, ialb,isot,ivegsrc)
        endif
+#endif
 !$omp parallel do private(i,j)
             do j = 1, lats_node_r
               do i = 1, lonr
@@ -271,6 +273,7 @@
             enddo
 
           else            ! when nst analysis is off
+#ifndef HS_Forcing
        if (use_nuopc) then
         call set_gcycle_data(
      &     mdl_parm, dyn_parm, sfc_prop,cld_prop, tbddata,
@@ -291,6 +294,7 @@
      &                ipt_lats_node_r,idate,phour,fhcyc,
      &                xlon ,xlat, sfc_fld, ialb,isot,ivegsrc)
        endif
+#endif
           endif    ! if ( nst_anl) then
         endif      ! if (nscyc > 0 .and.
 !

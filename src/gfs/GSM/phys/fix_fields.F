@@ -29,6 +29,7 @@
       use gfs_physics_sfc_flx_mod
       use gfs_physics_nst_var_mod
       use idea_composition,             only: pr_idea,gg,amgms,prsilvl
+
       IMPLICIT NONE
 !!     
       TYPE(Sfc_Var_Data)  :: sfc_fld
@@ -75,6 +76,7 @@
       sfc_fld%ORO = 0.
       NEEDORO     = 0
 
+#ifndef HS_Forcing
       if (fhini == fhrot) then
         if (me == 0) print *,' call read_sfc CREAD=',cread
      &,   'nemsio_in=',nemsio_in
@@ -89,6 +91,7 @@
           call read_sfc(sfc_fld,NEEDORO,NREAD,
      &                  CREAD,GLOBAL_LATS_R,LONSPERLAR)
         endif
+
 !nst   input
         if (nstf_name(1) > 0) then
           nst_fld%slmsk = sfc_fld%slmsk
@@ -158,7 +161,7 @@
         endif
       endif
       NEEDORO=1
-#ifndef HS_Forcing
+
       CALL read_mtn_hprim_oz(sfc_fld%SLMSK,HPRIME,NEEDORO,sfc_fld%ORO,
      &                       sfc_fld%oro_uf,IOZONDP,OZPLIN,
      &                       GLOBAL_LATS_R,LONSPERLAR)

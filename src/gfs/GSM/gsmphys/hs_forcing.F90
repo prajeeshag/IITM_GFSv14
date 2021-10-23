@@ -1,7 +1,7 @@
 
 module hs_forcing_mod
 
-
+use mpp_mod, only: mpp_error, NOTE, FATAL, WARNING
 use diag_register_gsmphys_mod, only: id_ta, id_ua, id_va, id_ps
 use gfs_diag_manager_mod, only: update_opdata
 
@@ -122,6 +122,8 @@ subroutine hs_forcing ( istrt, lan, im, levs, dt, lat, ps, p_full, &
 !-----------------------------------------------------------------------
 !     ----- read namelist -----
       if (no_forcing) return
+
+      call mpp_error(NOTE,'Using Held & Suarez Physics')
 !     ----- compute coefficients -----
       if (ka < 0.) ka = -86400.*ka
       if (ks < 0.) ks = -86400.*ks

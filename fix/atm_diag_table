@@ -1,0 +1,14 @@
+"GFS_v14"
+1850 01 01 00 00 00
+
+# --> output files
+
+  "gfs_out%4yr%2mo%2dy%2hr%2mi%2sc", 1, "hours", 1, "hours", "time", 1, "hours",
+
+# <-- output files
+
+
+  gfs, ta, ta, 'gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+  gfs, ua, ua, 'gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+  gfs, va, va, 'gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+  gfs, ps, ps, 'gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2

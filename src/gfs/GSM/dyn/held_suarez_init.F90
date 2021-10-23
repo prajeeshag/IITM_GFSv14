@@ -35,7 +35,7 @@ module held_suarez_init_mod
   real(kind=kind_evod), parameter :: pa2cb=0.001
   real(kind=kind_evod), parameter :: rkapi=1.0/rkap, rkapp1=1.0+rkap
 
-  character(len=32) :: vcoordfile='ak_bk.nc'
+  character(len=32) :: vcoordfile='INPUT/ak_bk.nc'
 
   public :: held_suarez_init
 

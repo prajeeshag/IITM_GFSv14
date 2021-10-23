@@ -322,6 +322,13 @@
       call esmf_logwrite("getting the start time",                      &
                           ESMF_LOGMSG_INFO, rc = rc1)
 
+#ifdef HS_Forcing
+
+      yy=2000; mm=1; dd=1; hh=0; mns=0; sec=0
+      int_state%kfhour=0; fhini=0
+      idate(:) = [0, 1, 1, 2000]
+
+#else
       call gfs_physics_start_time_get(                                  &
                         yy, mm, dd, hh, mns, sec, int_state%kfhour,     &
 !--get init time
@@ -329,6 +336,7 @@
                         int_state%n3, int_state%nam_gfs_phy%sfc_ini,rc1)
  
       call gfs_physics_err_msg(rc1,'getting the start time',rc)
+#endif
  
       advancecount4    = nint(real(int_state%kfhour) * 3600.0 /         &
                               int_state%nam_gfs_phy%deltim)
