@@ -115,7 +115,7 @@
   do n=101,201
     inquire(n,opened=opened)
     if(.not.opened)then
-      open(n,file='model_configure',status='old')  !<-- Open configure file
+      open(n,file='atm_namelist.rc',status='old')  !<-- Open configure file
       exit
     endif
   enddo

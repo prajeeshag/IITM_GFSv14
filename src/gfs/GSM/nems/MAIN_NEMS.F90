@@ -215,7 +215,7 @@
       CF_MAIN=ESMF_ConfigCreate(rc=RC)
 !
       CALL ESMF_ConfigLoadFile(config  =CF_MAIN                         &  !<-- The Configure object
-                              ,filename='model_configure'               &  !<-- The name of the configure file 
+                              ,filename='atm_namelist.rc'               &  !<-- The name of the configure file 
                               ,rc      =RC)
       ESMF_ERR_ABORT(RC)
 ! ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -232,7 +232,7 @@
 ! ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !
       NEMS_GRID_COMP=ESMF_GridCompCreate(name        ='NEMS Grid Comp'  &  !<-- NEMS component name
-                                        ,configFile  ='model_configure' &  !<-- Link the user-created configure file.
+                                        ,configFile  ='atm_namelist.rc' &  !<-- Link the user-created configure file.
                                         ,rc          =RC)
       ESMF_ERR_ABORT(RC)
 ! ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

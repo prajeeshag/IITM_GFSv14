@@ -297,7 +297,7 @@
       CF_NEMS=ESMF_ConfigCreate(rc=RC)
 !
       CALL ESMF_ConfigLoadFile(config   = CF_NEMS                       &  !<-- The configure object
-                              ,filename = 'model_configure'             &  !<-- The name of the configure file
+                              ,filename = 'atm_namelist.rc'             &  !<-- The name of the configure file
                               ,rc       = RC)
       ESMF_ERR_RETURN(RC,RC_INIT)
 !-----------------------------------------------------------------------
