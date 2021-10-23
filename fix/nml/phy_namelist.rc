@@ -65,8 +65,8 @@ start_second:            0
 nhours_fcst:             24
 restart:                 .false.
 nhours_fcst1:            24
-im:                      512
-jm:                      256
+im:                      _NLON_
+jm:                      _NLAT_
 global:                  .true.
 nhours_dfini:            3
 adiabatic:               .false.

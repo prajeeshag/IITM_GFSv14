@@ -9,21 +9,24 @@ usage (){
 	echo
 	echo options:
 	echo -j npes : parallel gmake with npes	
+	# echo -o real, hs_forcing : compile real model or hs_forcing (default real)
 	exit 1;
 }
 
 
 debug=""
 npes=1
-workdir='none'
 
 if [[ -z "$@" ]]; then
 	usage
 fi
 
-while getopts 'cdij:w:' flag; do
+type='real'
+
+while getopts 'j:' flag; do
     case "${flag}" in
     j) npes=$OPTARG ;;
+	# o) type=$OPTARG ;;
 	*) usage ;;
     esac
 done
@@ -37,12 +40,12 @@ if [ ! -f .env ]; then
 	echo ".env file does not exist. Run init.sh first."
 	exit
 fi
+
 source .env
 
 source $rootdir/bin/env.$MACH
 
 EXE="gfs.exe"
-
 EXECDIR="$rootdir/exec"
 SRCDIR="$rootdir/src"
 MKMF="$rootdir/bin/mkmf"
@@ -232,43 +235,3 @@ $MKMF -c "$cppDef" -f -p $exename -t $MKMFTEMPLATE -o "$incs" -l "$libs" $paths 
 make -j $npes 
 echo "...............Done Compiling $exename....................."
 
-# echo "#-------------------------MAKE RUN_NCCOMBINEP2R--------------------------------------"
-# cppDef="-Dlib_mppnccp2r -Duse_libMPI"
-# exe=run_mppnccp2r
-# paths="$rootdir/src/postproc/mppnccombinep2r"
-# export LD=$FC
-# mkdir -p $execdir/$exe
-# cd $execdir/$exe
-
-# OPTS="-I$execdir/lib_fms"
-
-# LIBS="$execdir/lib_fms/lib_fms.a"
-
-# $mkmf -c "$cppDef" -f -p ${exe} -t $mkmftemplate -o "$OPTS" -l "$LIBS"  $paths
-# make -j $npes
-# echo "#--------------------------------------------------------------------------------"
-
-# filestocopy="data_table diag_table input.nml run_mppnccombine.sh odtm_submit.pbs"
-
-# if [ "$workdir" != "none" ]; then
-# 	wrkdir="$rootdir/work/$workdir"
-# 	if [ -d "$wrkdir" ]; then
-# 		echo "Work directory $wrkdir already exist!!"
-# 		exit
-# 	fi
-# 	mkdir -p $wrkdir
-#   mkdir -p $wrkdir/INPUT 
-#   mkdir -p $wrkdir/RESTART
-#   mkdir -p $wrkdir/OUTPUT
-
-# 	for f in $filestocopy; do
-# 		cp $rootdir/scripts/$f $wrkdir/
-# 		sed -i "s|_ROOTDIR_|$rootdir|g" $wrkdir/$f
-# 		sed -i "s|_EXPNAME_|$workdir|g" $wrkdir/$f
-# 		echo "Copying $f ..."
-#   	done
-
-# 	echo 
-# 	echo "Experiment directory is created: $wrkdir"
-# 	echo
-# fi

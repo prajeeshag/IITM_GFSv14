@@ -16,7 +16,7 @@ WCLOCK="240"
 #--------------------------------------------------------------------------------   
 #-------------------------------------------------------------------------------- 
 
-rootdir=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14
+rootdir=_ROOTDIR_
 
 # nproc - number of processors for postproc
 nproc=36
@@ -27,7 +27,7 @@ while getopts 'p:n:' flag; do
     esac
 done
 
-JOBNAME='GFSv14_nccombine'
+JOBNAME='_EXPNAME_'
 RUNNCCP2R=$rootdir/exec/mppncc_gfs/mppncc_gfs
 WCLOCK=$((WCLOCK*2))
 ppn=36
@@ -57,15 +57,15 @@ cat <<EOFy > $tfile
 #PBS -q $queue
 #PBS -l nodes=$nnodes:ppn=$ppn
 #PBS -l walltime=${WCLOCK}:00:00
-#PBS -N ${JOBNAME}_post
+#PBS -N ${JOBNAME}_mppncc
 #PBS -j oe
 
 ulimit -c unlimited
 set -xu
 cd \$PBS_O_WORKDIR
-source $rootdir/bin/env.pratyush_intel
+source $rootdir/bin/env._MACH_
 
-aprun -n $nproc $RUNNCCP2R &> ${JOBNAME}.mppncc.out
+aprun -n $nproc $RUNNCCP2R &> mppncc.out
 
 EOFy
 
