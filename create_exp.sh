@@ -6,7 +6,7 @@ usage (){
 	echo $0 -r model_resolution -e experiment_directory_name 
 	echo
 	echo options:
-	echo -r model_resolution : available resolutions are T254
+	echo -r model_resolution : available resolutions are T254 TCO765 TCO1534
 	echo -e experiment_directory_name 
 	exit 1;
 }
@@ -36,6 +36,8 @@ fi
 
 case "${res}" in
     T254) jcap="254"; t="T"; nlon="512"; nlat="256";;
+    TCO765) jcap="765"; t="TCO"; nlon="3088"; nlat="1536";;
+    TCO1534) jcap="1534"; t="TCO"; nlon="6156"; nlat="3070";;
     *) usage;;
 esac
 
@@ -71,6 +73,7 @@ sed -i "s|_ROOTDIR_|$rootdir|g" *
 sed -i "s|_MACH_|$MACH|g" *
 
 mkdir -p $expdir/INPUT
+mkdir -p $expdir/OUTPUT
 cp $fixdir/diag_table/* $expdir/
 cp $fixdir/lonsperlat/lonsperlat.dat.$t$jcap $expdir/lonsperlat.dat
 cp $fixdir/vcoord/ak_bk_64l.nc $expdir/INPUT/ak_bk.nc 

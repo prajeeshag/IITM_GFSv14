@@ -226,9 +226,6 @@
       call hs_forcing_init()
 #endif
 
-       print *, 'after hs_forcing_init'
-       call mpi_barrier(mc_comp,ierr)
-
 !     if (me == 0) write(0,*)' after compns_physics ntke=', gis_phy%ntke
 !
 !     This is also called in nuopc_phys_init, don't run twice if using the wrapper
@@ -263,8 +260,6 @@
        enddo
       endif
 
-       call mpi_barrier(mc_comp,ierr)
-!
       nlunit    = gis_phy%nam_gfs_phy%nlunit
       ntrac     = gis_phy%ntrac
       nxpt      = gis_phy%nxpt
@@ -815,8 +810,6 @@
 !!
 !       write(0,*)' gis_phy%lonsperlar2b=',gis_phy%lonsperlar
 !       write(0,*)' before fix_fields'
-       print *, 'before fix_fields'
-       call mpi_barrier(mc_comp,ierr)
 
       call fix_fields(gis_phy%LONSPERLAR, gis_phy%GLOBAL_LATS_R,             &
                       gis_phy%XLON,       gis_phy%XLAT,     gis_phy%sfc_fld, &
@@ -828,9 +821,6 @@
                       gis_phy%nam_gfs_phy%grd_ini,                           &
                       gis_phy%nam_gfs_phy%nst_ini,                           &
                       nblck, gis_phy%phy_f3d, gis_phy%phy_f2d )
-
-       print *, 'after fix_fields'
-       call mpi_barrier(mc_comp,ierr)
 
 !      print *,' GISXLAT=',gis_phy%XLAT(1,:)
 !       write(0,*)' after fix_fields'

@@ -488,6 +488,8 @@
 !           'regular alarm=',ESMF_AlarmIsEnabled(alarm = ALARM_OUTPUT, rc = RC), &
 !           ESMF_AlarmIsRinging(alarm = ALARM_OUTPUT,rc = Rc)
 
+#ifndef HS_Forcing
+
         outputdyn: IF((LALARM .or. LSPC) .AND. LWRTGRDCMP) THEN
         tbeg=timef()
 !       if (mype == 0) print *,' bf WRITE_ASYNC_GFS,NTIMESTEP=',NTIMESTEP,  &
@@ -501,6 +503,7 @@
         general_timer(10)%elapsed = general_timer(10)%elapsed         &
      &                            + (tend -tbeg)
         END IF outputdyn
+#endif
 !
 !
         lskipif: if(.not. LSKIP) then                    ! if true, skip physics

@@ -136,6 +136,8 @@
 !     write(0,*)' before lan loop kau,kav,kat,kap,kaz=',
 !    &            kau,kav,kat,kap,kaz
 
+      print *, 'lon_dim_a,lot_loc,lats_dim_a,lonf=',
+     &          lon_dim_a,lot_loc,lats_dim_a,lonf
       allocate(for_gr_a_1(lon_dim_a,lot_loc,lats_dim_a))
       allocate(for_gr_a_2(lonf,     lot_loc,lats_dim_a))
 

@@ -330,6 +330,7 @@
 !
 !---------------------------------------------------------------------------
 !
+#ifndef HS_Forcing
       if (first) then
         allocate (acv(lonr,lats_node_r))
         allocate (acvb(lonr,lats_node_r))
@@ -513,6 +514,7 @@
 !       write(0,*)' gb_ini_time=',gb_ini_time*1.0e-3,' me=',me
 
       endif
+#endif
 !
       if (semilag) then
         nsphys = max(int(tstep/dtphys),1)
@@ -982,7 +984,7 @@
             endif
 
           do nn=1,nsphys             ! physics sub-steps
-
+#ifndef HS_Forcing
             if (imfdeepcnv <= 0 .or. cal_pre) then
               if (random_clds) then
                 nnr = (nn-1)*nrcm
@@ -1000,7 +1002,7 @@
               endif
             endif
 !            lonbnd=lon+njeff-1
-
+#endif
             if (use_nuopc) then
 !> The setphys method packs the non-radiation physics containers with the items required by the non-radiation physics.
 !! 1. dyn_parm \% setphys: dynamic_parameters
@@ -1714,7 +1716,7 @@
      &                          + (tend -tbeg)
       call excht(lats_nodes_r, global_lats_r, trcj, trcg)
 
-
+#ifndef HS_Forcing
 !$omp parallel do private(n,lat,tem)
       do n=1,ntrac
         if (fixtrc(n)) then
@@ -1749,7 +1751,7 @@
 !    &,           ' sumtrc=',sumtrc(n,:),' me=',me
         endif
       enddo
-
+#endif
 !
       if (allocated(indxr))    deallocate (indxr)
       return
