@@ -3,12 +3,12 @@
 
 # --> output files
 
-  "gfs_out%4yr%2mo%2dy%2hr%2mi%2sc", 1, "hours", 1, "hours", "time", 1, "hours",
+"OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc", 1, "days", 1, "days", "time", 1, "days",
 
 # <-- output files
 
 
-  gfs, ta, ta, 'gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
-  gfs, ua, ua, 'gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
-  gfs, va, va, 'gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
-  gfs, ps, ps, 'gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+gfs, ta, ta, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+gfs, ua, ua, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+gfs, va, va, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+gfs, ps, ps, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
