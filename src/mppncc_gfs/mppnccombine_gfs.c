@@ -259,6 +259,8 @@ int nccp2r(int argc, char *argv[])
   int peWidth = -1;                /* Width of PE number in uncombined file extension */
   size_t blksz = 65536;            /* netCDF block size */
 
+  // format = (NC_NOCLOBBER | NC_64BIT_OFFSET);
+  format = (NC_NOCLOBBER | NC_NETCDF4 | NC_CLASSIC_MODEL);
   /* Check the command-line arguments */
   if (argc < 2)
   {
@@ -398,7 +400,8 @@ int nccp2r(int argc, char *argv[])
         free(ncoutfile);
         return (1);
       }
-      status = nc__create(outfilename, format, 0, &blksz, &ncoutfile->ncfid);
+      // status = nc__create(outfilename, format, 0, &blksz, &ncoutfile->ncfid);
+      status = nc_create(outfilename, format, &ncoutfile->ncfid);
       if (status == (-1))
       {
         fprintf(stderr, "Error: cannot create the output netCDF file!\n");
@@ -811,6 +814,8 @@ int process_file(char *ncname, unsigned char appendnc,
   int decomp_len;
 
   int retval;
+  int status;
+
   if (print_mem_usage)
     check_mem_usage();
 
@@ -1026,6 +1031,8 @@ int process_file(char *ncname, unsigned char appendnc,
       ncattname(ncinfile->ncfid, NC_GLOBAL, n, attname);
       if (!strcmp(attname, "NumFilesInSet"))
         continue;
+      else if (!strcmp(attname, "decomp"))
+        continue;
       else if (!strcmp(attname, "filename"))
         ncattput(ncoutfile->ncfid, NC_GLOBAL, attname, NC_CHAR,
                  strlen(outncname), (void *)outncname);
@@ -1041,7 +1048,13 @@ int process_file(char *ncname, unsigned char appendnc,
     }
 
     /* Definitions done */
-    nc__enddef(ncoutfile->ncfid, headerpad, 4, 0, 4);
+    // nc__enddef(ncoutfile->ncfid, headerpad, 4, 0, 4);
+    status = nc_enddef(ncoutfile->ncfid);
+    if (status != NC_NOERR)
+    {
+      fprintf(stderr, "Error: Error while nc_enddef!, error code= %d \n", status);
+      return (1);
+    };
   }
 
   /* Copy all data values of the dimensions and variables to memory */
@@ -1274,8 +1287,8 @@ int process_vars(struct fileinfo *ncinfile, struct fileinfo *ncoutfile,
                nctypelen(ncinfile->datatype[v]) * recsize);
       if (ncvarput(ncoutfile->ncfid, v, outstart, count, values) == (-1))
       {
-        fprintf(stderr, "Error: cannot write variable \"%s\"'s values!\n",
-                ncinfile->varname[v]);
+        fprintf(stderr, "Error: cannot write variable \"%s\"'s \"%d\"'s values!\n",
+                ncinfile->varname[v], count);
         return (1);
       }
     }
