@@ -67,14 +67,15 @@ else
     exit 1
 fi
 
-fixdir=$rootdir/fix
+nmldir=$rootdir/nml_tbl
 scriptdir=$rootdir/scripts
-expdir=$rootdir/work/$expname
+FIXDIR="/scratch/cccr/prajeesh/GFSv14_fix/fix_am"
+EXPDIR=$rootdir/work/$expname
 EXE=$rootdir/exec/$EXETYPEdir/gfs/GSM/nems/gfs.exe
 
-cd $expdir/
-cp $scriptdir/* $expdir/
-cp $fixdir/nml/* $expdir/
+cd $EXPDIR/
+cp $scriptdir/* $EXPDIR/
+cp $nmldir/nml/* $EXPDIR/
 sed -i "s/_NLON_/$NLON/g" *
 sed -i "s/_NLAT_/$NLAT/g" *
 sed -i "s/_JCAP_/$JCAP/g" *
@@ -82,10 +83,10 @@ sed -i "s/_EXPNAME_/$expname/g" *
 sed -i "s|_ROOTDIR_|$rootdir|g" *
 sed -i "s|_EXE_|$EXE|g" *
 sed -i "s|_MACH_|$MACH|g" *
-cp $fixdir/diag_table/* $expdir/
+cp $nmldir/diag_table/* $EXPDIR/
 
-mkdir -p $expdir/INPUT
-mkdir -p $expdir/OUTPUT
+mkdir -p $EXPDIR/INPUT
+mkdir -p $EXPDIR/OUTPUT
 
 
 ln -sf $FIXDIR/ak_bk_64l.nc $EXPDIR/INPUT/ak_bk.nc
@@ -119,4 +120,6 @@ if [[ "$EXETYPE" == "real" ]]; then
     ln -sf $FIXDIR/global_snoclim.1.875.grb $EXPDIR/INPUT/global_snoclim.1.875.grb
 fi
 
-echo "Experiment directory created"
+echo "Experiment $expname created"
+echo "Directory = $EXPDIR"
+echo "Resolution = $res"
