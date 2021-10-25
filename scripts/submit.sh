@@ -28,9 +28,7 @@ export OMP_NUM_THREADS=$threads
 export NTHREADS=$threads
 
 cd $PBS_O_WORKDIR
-rm -f OUTPUT.NEMS errfile.NEMS GFSv14_low.*
-rm -f FLX.F* LOG.F* NST.F* SIG.F* SFC.F* PET*
 
-EXE=$rootdir/exec/gfs/GSM/nems/gfs.exe
+EXE=_EXE_
 
 aprun -j1 -n 64 -N 4 -cc depth $EXE 1> OUTPUT.NEMS 2> errfile.NEMS

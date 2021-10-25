@@ -36,7 +36,10 @@
 !     ****************************
       nmtn = 24
       IF (me == iop) THEN   
+        open(nmtn,file='global_mtnvar.f77',
+     &  status='OLD', form='UNFORMATTED')
         READ(nmtn) buffm
+        close(nmtn)
 !!      do k=1,nmtvr
 !!        write(200) buffm(:,:,k)
 !!      enddo

@@ -3,26 +3,30 @@ set -e
 
 usage (){
 	echo
-	echo $0 -r model_resolution -e experiment_directory_name 
+	echo $0 -r model_resolution -e exec_type -o experiment_directory_name 
 	echo
-	echo options:
-	echo -r model_resolution : available resolutions are T254 TCO765 TCO1534
-	echo -e experiment_directory_name 
+	echo "options:"
+	echo "-r model_resolution : available resolutions are T254 TCO765 TCO1534"
+    echo "-e exec_type: real or hs_forcing [default: real]"
+	echo "-o experiment_directory_name"
 	exit 1;
 }
 
 
-res="T254"
+res=""
 expname=""
+EXETYPE="real"
 
 if [[ -z "$@" ]]; then
 	usage
 fi
 
-while getopts 'r:e:' flag; do
+
+while getopts 'r:e:o:' flag; do
     case "${flag}" in
-    e) expname=$OPTARG ;;
+    o) expname=$OPTARG ;;
     r) res=$OPTARG ;;
+    e) EXETYPE=$OPTARG ;;
 	*) usage ;;
     esac
 done
@@ -30,14 +34,20 @@ done
 shift $(($OPTIND - 1))
 opts=$@
 
+case "${EXETYPE}" in
+	hs_forcing) EXETYPEdir="HS" ;;
+	real) EXETYPEdir="real" ;;
+	*) usage ;;
+esac
+
 if [[ -z "$expname" ]]; then
     usage
 fi
 
 case "${res}" in
-    T254) jcap="254"; t="T"; nlon="512"; nlat="256";;
-    TCO765) jcap="765"; t="TCO"; nlon="3088"; nlat="1536";;
-    TCO1534) jcap="1534"; t="TCO"; nlon="6156"; nlat="3070";;
+    T254) JCAP="254"; t="T"; NLON="512"; NLAT="256";;
+    TCO765) JCAP="765"; t="TCO"; NLON="3088"; NLAT="1536";;
+    TCO1534) JCAP="1534"; t="TCO"; NLON="6156"; NLAT="3070";;
     *) usage;;
 esac
 
@@ -60,23 +70,53 @@ fi
 fixdir=$rootdir/fix
 scriptdir=$rootdir/scripts
 expdir=$rootdir/work/$expname
-
+EXE=$rootdir/exec/$EXETYPEdir/gfs/GSM/nems/gfs.exe
 
 cd $expdir/
 cp $scriptdir/* $expdir/
 cp $fixdir/nml/* $expdir/
-sed -i "s/_NLON_/$nlon/g" *
-sed -i "s/_NLAT_/$nlat/g" *
-sed -i "s/_JCAP_/$jcap/g" *
+sed -i "s/_NLON_/$NLON/g" *
+sed -i "s/_NLAT_/$NLAT/g" *
+sed -i "s/_JCAP_/$JCAP/g" *
 sed -i "s/_EXPNAME_/$expname/g" *
 sed -i "s|_ROOTDIR_|$rootdir|g" *
+sed -i "s|_EXE_|$EXE|g" *
 sed -i "s|_MACH_|$MACH|g" *
+cp $fixdir/diag_table/* $expdir/
 
 mkdir -p $expdir/INPUT
 mkdir -p $expdir/OUTPUT
-cp $fixdir/diag_table/* $expdir/
-cp $fixdir/lonsperlat/lonsperlat.dat.$t$jcap $expdir/lonsperlat.dat
-cp $fixdir/vcoord/ak_bk_64l.nc $expdir/INPUT/ak_bk.nc 
 
+
+ln -sf $FIXDIR/ak_bk_64l.nc $EXPDIR/INPUT/ak_bk.nc
+ln -sf $FIXDIR/global_lonsperlat.t$JCAP.$NLON.$NLAT.txt $EXPDIR/lonsperlat.dat
+
+if [[ "$EXETYPE" == "real" ]]; then
+    ln -sf $FIXDIR/global_mtnvar.t$JCAP.$NLON.$NLAT.f77 $EXPDIR/global_mtnvar.f77
+    ln -sf $FIXDIR/global_vegtype.igbp.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/INPUT/global_vegtype.igbp.rg.grb
+    ln -sf $FIXDIR/global_soiltype.statsgo.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/INPUT/global_soiltype.statsgo.rg.grb
+    ln -sf $FIXDIR/global_mxsnoalb.uariz.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/INPUT/global_mxsnoalb.uariz.rg.grb
+    ln -sf $FIXDIR/global_snowfree_albedo.bosu.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/INPUT/global_snowfree_albedo.bosu.rg.grb
+    ln -sf $FIXDIR/global_soilmgldas.t$JCAP.$NLON.$NLAT.grb $EXPDIR/INPUT/global_soilmgldas.grb
+    ln -sf $FIXDIR/global_orography.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/orography
+    ln -sf $FIXDIR/global_orography_uf.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/orography_uf
+
+    ln -sf $FIXDIR/global_o3prdlos.f77 $EXPDIR/global_o3prdlos.f77
+    ln -sf $FIXDIR/global_climaeropac_global.txt $EXPDIR/aerosol.dat
+    ln -sf $FIXDIR/global_solarconstant_noaa_an.txt $EXPDIR/solarconstant_noaa_an.txt
+    ln -sf $FIXDIR/fix_co2_proj/global_co2historicaldata_2018.txt $EXPDIR/co2historicaldata_2018.txt
+    ln -sf $FIXDIR/global_albedo4.1x1.grb $EXPDIR/INPUT/global_albedo4.1x1.grb
+    ln -sf $FIXDIR/global_tg3clim.2.6x1.5.grb $EXPDIR/INPUT/global_tg3clim.2.6x1.5.grb
+    ln -sf $FIXDIR/global_vegfrac.0.144.decpercent.grb $EXPDIR/INPUT/global_vegfrac.0.144.decpercent.grb
+    ln -sf $FIXDIR/seaice_newland.grb $EXPDIR/INPUT/seaice_newland.grb
+    ln -sf $FIXDIR/global_glacier.2x2.grb $EXPDIR/INPUT/global_glacier.2x2.grb
+    ln -sf $FIXDIR/global_maxice.2x2.grb $EXPDIR/INPUT/global_maxice.2x2.grb
+    ln -sf $FIXDIR/global_shdmin.0.144x0.144.grb $EXPDIR/INPUT/global_shdmin.0.144x0.144.grb
+    ln -sf $FIXDIR/global_shdmax.0.144x0.144.grb $EXPDIR/INPUT/global_shdmax.0.144x0.144.grb
+    ln -sf $FIXDIR/global_slope.1x1.grb $EXPDIR/INPUT/global_slope.1x1.grb
+    ln -sf $FIXDIR/RTGSST.1982.2012.monthly.clim.grb $EXPDIR/INPUT/RTGSST.1982.2012.monthly.clim.grb
+    ln -sf $FIXDIR/CFSR.SEAICE.1982.2012.monthly.clim.grb $EXPDIR/INPUT/CFSR.SEAICE.1982.2012.monthly.clim.grb
+    ln -sf $FIXDIR/global_snoclim.1.875.grb $EXPDIR/INPUT/global_snoclim.1.875.grb
+fi
 
 echo "Experiment directory created"

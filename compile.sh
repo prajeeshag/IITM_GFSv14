@@ -9,24 +9,19 @@ usage (){
 	echo
 	echo options:
 	echo -j npes : parallel gmake with npes	
-	# echo -o real, hs_forcing : compile real model or hs_forcing (default real)
+	echo -e exec_type : Executable type [real or hs_forcing] \(default real\)
 	exit 1;
 }
 
 
 debug=""
-npes=1
-
-if [[ -z "$@" ]]; then
-	usage
-fi
-
+npes=8
 type='real'
 
-while getopts 'j:' flag; do
+while getopts 'j:o:' flag; do
     case "${flag}" in
     j) npes=$OPTARG ;;
-	# o) type=$OPTARG ;;
+	o) type=$OPTARG ;;
 	*) usage ;;
     esac
 done
@@ -34,6 +29,12 @@ done
 shift $(($OPTIND - 1))
 
 opts=$@
+
+case "${type}" in
+	hs_forcing) typedir="HS";  cppDefextra="-DHS_Forcing" ;;
+	real) typedir="real"; cppDefextra="" ;;
+	*) usage ;;
+esac
 
 echo '...............Setting up environment.....................'
 if [ ! -f .env ]; then
@@ -47,6 +48,7 @@ source $rootdir/bin/env.$MACH
 
 EXE="gfs.exe"
 EXECDIR="$rootdir/exec"
+TYPEEXECDIR="$EXECDIR/$typedir"
 SRCDIR="$rootdir/src"
 MKMF="$rootdir/bin/mkmf"
 MKMFTEMPLATE="$rootdir/bin/mkmf.template.$MACH$debug"
@@ -55,7 +57,7 @@ INCLUDES="$SRCDIR/gfs/includes/"
 incs=" "
 libs=" "
 
-cppDef="-Duse_netCDF -Duse_libMPI -DENABLE_ODA -Dfms_interp -DHS_Forcing"
+cppDef="-Duse_netCDF -Duse_libMPI -DENABLE_ODA -Dfms_interp "$cppDefextra
 
 libname='lib_share.a'
 libsrc="gfs/GSM/share"
@@ -96,7 +98,7 @@ libs="${builddir}/$libname "$libs
 
 libname='lib_gsmphys.a'
 libsrc="gfs/GSM/gsmphys"
-builddir=$EXECDIR/$libsrc
+builddir=$TYPEEXECDIR/$libsrc
 paths=$SRCDIR/$libsrc
 lib=$builddir/$libname
 mkdir -p $builddir
@@ -110,7 +112,7 @@ libs="${builddir}/$libname "$libs
 
 libname='lib_util.a'
 libsrc="gfs/GSM/libutil"
-builddir=$EXECDIR/$libsrc
+builddir=$TYPEEXECDIR/$libsrc
 paths=$SRCDIR/$libsrc
 lib=$builddir/$libname
 mkdir -p $builddir
@@ -125,7 +127,7 @@ libs="${builddir}/$libname "$libs
 
 libname='lib_post_stub.a'
 libsrc="gfs/GSM/post_stub"
-builddir=$EXECDIR/$libsrc
+builddir=$TYPEEXECDIR/$libsrc
 paths=$SRCDIR/$libsrc
 lib=$builddir/$libname
 mkdir -p $builddir
@@ -140,7 +142,7 @@ libs="${builddir}/$libname "$libs
 
 libname='lib_io.a'
 libsrc="gfs/GSM/io"
-builddir=$EXECDIR/$libsrc
+builddir=$TYPEEXECDIR/$libsrc
 paths=$SRCDIR/$libsrc
 lib=$builddir/$libname
 mkdir -p $builddir
@@ -155,7 +157,7 @@ libs="${builddir}/$libname "$libs
 
 libname='lib_sigio.a'
 libsrc="gfs/GSM/sigio"
-builddir=$EXECDIR/$libsrc
+builddir=$TYPEEXECDIR/$libsrc
 paths=$SRCDIR/$libsrc
 lib=$builddir/$libname
 mkdir -p $builddir
@@ -170,7 +172,7 @@ libs="${builddir}/$libname "$libs
 
 libname='lib_dyn.a'
 libsrc="gfs/GSM/dyn"
-builddir=$EXECDIR/$libsrc
+builddir=$TYPEEXECDIR/$libsrc
 paths=$SRCDIR/$libsrc
 lib=$builddir/$libname
 mkdir -p $builddir
@@ -184,7 +186,7 @@ libs="${builddir}/$libname "$libs
 
 libname='lib_phys.a'
 libsrc="gfs/GSM/phys"
-builddir=$EXECDIR/$libsrc
+builddir=$TYPEEXECDIR/$libsrc
 paths=$SRCDIR/$libsrc
 lib=$builddir/$libname
 mkdir -p $builddir
@@ -198,7 +200,7 @@ libs="${builddir}/$libname "$libs
 
 libname='lib_gsm.a'
 libsrc="gfs/GSM/gsm"
-builddir=$EXECDIR/$libsrc
+builddir=$TYPEEXECDIR/$libsrc
 paths=$SRCDIR/$libsrc
 lib=$builddir/$libname
 mkdir -p $builddir
@@ -212,7 +214,7 @@ libs="${builddir}/$libname "$libs
 
 exename='gfs.exe'
 libsrc="gfs/GSM/nems"
-builddir=$EXECDIR/$libsrc
+builddir=$TYPEEXECDIR/$libsrc
 paths=$SRCDIR/$libsrc
 lib=$builddir/$libname
 mkdir -p $builddir

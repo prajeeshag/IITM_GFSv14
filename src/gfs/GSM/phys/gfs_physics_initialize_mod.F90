@@ -465,6 +465,7 @@
         timeoz    = 1
         pl_coeff  = 0
       else                       ! Prognostic Ozone
+        open(kozpl,file='global_o3prdlos.f77',status='OLD',form='UNFORMATTED')
         rewind (kozpl)
         read (kozpl) pl_coeff, latsozp, levozp, timeoz
         allocate (pl_lat(latsozp), pl_pres(levozp),pl_time(timeoz+1), stat = ierr)
@@ -472,6 +473,7 @@
         rewind (kozpl)
         read (kozpl) pl_coeff, latsozp, levozp, timeoz, pl_lat4, pl_pres4,  &
                      pl_time4
+      !   close(kozpl)
         pl_pres(:) = pl_pres4(:)
         pl_lat(:)  = pl_lat4(:)
         pl_time(:) = pl_time4(:)

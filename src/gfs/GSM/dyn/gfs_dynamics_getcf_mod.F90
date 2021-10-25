@@ -196,8 +196,8 @@
                'gfs dynamics getcf','deltim',rcfinal)
 
       if (int_state%nam_gfs_dyn%total_member <= 1) then
-        int_state%nam_gfs_dyn%grid_ini  = 'grid_ini'
-        int_state%nam_gfs_dyn%grid_ini2 = 'grid_ini2'
+        int_state%nam_gfs_dyn%grid_ini  = 'sig_ini'
+        int_state%nam_gfs_dyn%grid_ini2 = 'sig_ini2'
         int_state%nam_gfs_dyn%sig_ini  = 'sig_ini'
         int_state%nam_gfs_dyn%sig_ini2 = 'sig_ini2'
       else

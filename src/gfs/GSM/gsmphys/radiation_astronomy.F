@@ -417,7 +417,8 @@
 
           inquire (file=solar_fname, exist=file_exist)
           if ( .not. file_exist ) then
-            print *,' !!! ERROR! Can not find solar constant file!!!'
+            print *,' !!! ERROR! Can not find solar constant file!!! '
+     &         //trim(solar_fname)
             stop
           else
             iyr = iyear

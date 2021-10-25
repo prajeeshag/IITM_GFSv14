@@ -673,7 +673,7 @@
 
       restart: IF(RESTARTED_RUN .or. fhrot > 0) THEN                       !<-- If this is a restarted run, set the current time
 !
-        RESTART_FILENAME = 'grid_ini'
+        RESTART_FILENAME = 'sig_ini'
         CALL NEMSIO_INIT()
         CALL NEMSIO_OPEN(GFILE,trim(RESTART_FILENAME),'read',iret=IRTN)
         if ( irtn /= 0 )                                       &

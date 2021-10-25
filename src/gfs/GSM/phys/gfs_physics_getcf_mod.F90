@@ -177,7 +177,7 @@
 
       if (int_state%nam_gfs_phy%total_member <= 1) then
         int_state%nam_gfs_phy%sfc_ini  = 'sfc_ini'
-        int_state%nam_gfs_phy%grd_ini  = 'grid_ini'
+        int_state%nam_gfs_phy%grd_ini  = 'sig_ini'
         int_state%nam_gfs_phy%nst_ini  = 'nst_ini'
       else
         write(int_state%nam_gfs_phy%sfc_ini, 				&

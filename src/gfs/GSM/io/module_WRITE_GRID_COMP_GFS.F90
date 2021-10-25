@@ -185,9 +185,7 @@
 ! ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !-----------------------------------------------------------------------
 !
-      IF(RC_WRT==ESMF_SUCCESS)THEN
-        WRITE(6,*)"PASS: Write_Register."
-      ELSE
+      IF(RC_WRT/=ESMF_SUCCESS)THEN
         WRITE(6,*)"FAIL: Write_Register."
       ENDIF
 !
