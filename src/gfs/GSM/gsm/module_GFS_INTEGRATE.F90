@@ -488,7 +488,7 @@
 !           'regular alarm=',ESMF_AlarmIsEnabled(alarm = ALARM_OUTPUT, rc = RC), &
 !           ESMF_AlarmIsRinging(alarm = ALARM_OUTPUT,rc = Rc)
 
-#ifndef HS_Forcing
+#ifndef NO_Nems_IO
 
         outputdyn: IF((LALARM .or. LSPC) .AND. LWRTGRDCMP) THEN
         tbeg=timef()

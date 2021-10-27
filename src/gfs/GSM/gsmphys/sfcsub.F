@@ -2754,10 +2754,13 @@
         if (me == 0) write(6,*) 'idim,jdim=',idim,jdim
      &,                ' gaus=',gaus,' blno=',blno,' blto=',blto
       else
-        if (me ==. 0) write(6,*) 'idim,jdim=',idim,jdim
-     &,                ' gaus=',gaus,' blno=',blno,' blto=',blto
         write(6,*) ' error in getgb : jret=',jret
         write(6,*) ' kpds(13)=',kpds(13),' kpds(15)=',kpds(15)
+        ! if (me == 0) then
+        !    write(6,*) 'idim,jdim=',idim,jdim
+        !    write(6,*) 'gaus=',gaus,' blno=',blno
+        !    write(6,*) ' blto=',blto
+        ! endif
         call abort
       endif
 !
@@ -7863,6 +7866,7 @@ cjfe
 !
       return
       end subroutine clima
+
       subroutine fixrdc(lugb,fngrib,kpds5,kpds7,mon,slmask,
      &                 gdata,len,iret
      &,                imsk, jmsk, slmskh, gaus,blno, blto
@@ -8034,6 +8038,7 @@ cjfe
 !
       return
       end
+
       subroutine fixrda(lugb,fngrib,kpds5,slmask,
      &                  iy,im,id,ih,fh,gdata,len,iret
      &,                 imsk, jmsk, slmskh, gaus,blno, blto

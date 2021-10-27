@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 set -e
@@ -35,6 +34,8 @@ case "${type}" in
 	real) typedir="real"; cppDefextra="" ;;
 	*) usage ;;
 esac
+
+cppDefextra=$cppDefextra" -DNO_Nems_IO"
 
 echo '...............Setting up environment.....................'
 if [ ! -f .env ]; then
@@ -178,7 +179,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs  -r8" $paths $INCLUDES
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths $INCLUDES
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "

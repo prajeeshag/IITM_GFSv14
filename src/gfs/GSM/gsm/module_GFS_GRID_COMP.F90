@@ -1512,7 +1512,7 @@
 ! ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
       CALL ERR_MSG(RC, MESSAGE_CHECK, RC_FINAL)
 ! ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-#ifndef HS_Forcing
+#ifndef NO_Nems_IO
       if (LWRTGRDCMP) then
         CALL WRITE_ASYNC_GFS(gfs_int_state%WRT_COMPs              &
                             ,gfs_int_state%exp_gfs_dyn            &

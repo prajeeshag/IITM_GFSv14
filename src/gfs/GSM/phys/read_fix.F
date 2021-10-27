@@ -8,6 +8,11 @@
       use ozne_def,  ONLY: latsozp, levozp, timeoz, pl_coeff
       USE machine,   ONLY: kind_io8, kind_io4
       use namelist_physics_def, only: use_ufo, griboro
+
+      use mpp_mod, only: mpp_error, FATAL
+      use fms_io_mod, only: field_size, read_data, file_exist, 
+     &      field_exist
+
       implicit none
 
 !
@@ -22,8 +27,10 @@
  
       real (kind=kind_io8), allocatable :: buffo(:,:), buff2(:,:)
       real (kind=kind_io4), allocatable :: buff1(:,:), buffm(:,:,:)
+      real (kind=kind_io8), allocatable :: buffmr(:,:,:)
+      real, allocatable :: buff1r(:,:)
       integer kmsk0(lonr,lats_node_r)
-      integer i,j,k,nmtn,needoro,iop,iret
+      integer i,j,k,nmtn,needoro,iop,iret, siz(4)
 !
       kmsk0 = 0
 !     iop = nodes_comp - 1
@@ -31,18 +38,27 @@
 
       allocate (buffo(lonr,lats_node_r), buff2(lonr,lats_node_r))
       allocate (buff1(lonr,latr), buffm(lonr,latr,nmtvr))
+      allocate (buff1r(lonr,latr))
+      allocate (buffmr(lonr,latr,nmtvr))
 !
 !     Read HPRIME from file MTNVAR
 !     ****************************
       nmtn = 24
       IF (me == iop) THEN   
+        if (file_exist('global_mtnvar.nc')) then
+           if (.not.field_exist('global_mtnvar.nc','mtn'))
+     &       call mpp_error(FATAL,'field mtn not in global_mtnvar.nc')
+           call field_size('global_mtnvar.nc','mtn',siz)
+           if (siz(1)/=lonr.or.siz(2)/=latr.or.siz(3)/=nmtvr)
+     &       call mpp_error(FATAL,'dim size mismatch for mtnvar')
+           call read_data('global_mtnvar.nc','mtn',buffmr)
+           buffm=buffmr
+        else
         open(nmtn,file='global_mtnvar.f77',
      &  status='OLD', form='UNFORMATTED')
         READ(nmtn) buffm
         close(nmtn)
-!!      do k=1,nmtvr
-!!        write(200) buffm(:,:,k)
-!!      enddo
+        endif
       ENDIF
       DO k=1,nmtvr
         call split2d_phys(buffm(1,1,k),buffo,global_lats_r,iop)
@@ -75,7 +91,16 @@
       if(needoro.eq.1) then
 
         IF( me == iop) then
-          if (griboro) then
+       
+          if (file_exist('orography.nc')) then
+            if (.not.field_exist('orography.nc','var8'))
+     &        call mpp_error(FATAL,'var8 not in orography.nc')
+            call field_size('orography.nc','var8',siz)
+            if (siz(1)/=lonr.or.siz(2)/=latr) 
+     &        call mpp_error(FATAL,'orography.nc dimension mismatch')
+            call read_data('orography.nc','var8',buff1r)
+            buff1 = buff1r
+          elseif (griboro) then
             CALL ORORD(101,lonr,latr,buff1,'orography')
             print *,'read grb orography'
           else
@@ -85,6 +110,7 @@
             print *,'read binary orography'
             close(101)
           endif
+
         endif
         call split2d_phys(buff1,buffo,global_lats_r,iop)
         CALL interpred_phys(1,kmsk0,buffo,oro,global_lats_r,lonsperlar)
@@ -92,7 +118,18 @@
 !                                  read unfiltered orography
       if (use_ufo) then
         IF( me == iop) then
-          if (griboro) then
+          if (file_exist('orography_uf.nc')) then
+            if (.not.field_exist('orography_uf.nc','var8'))
+     &      call mpp_error(FATAL,'var8 not in orography_uf.nc')
+
+            call field_size('orography_uf.nc','var8',siz)
+
+            if (siz(1)/=lonr.or.siz(2)/=latr) 
+     &      call mpp_error(FATAL,'orography_uf.nc dimension mismatch')
+
+            call read_data('orography_uf.nc','var8',buff1r)
+            buff1 = buff1r
+          elseif (griboro) then
             CALL ORORD(101,lonr,latr,buff1,'orography_uf')
             print *,'read grb orography_uf'
           else
@@ -109,7 +146,7 @@
       else
         oro_uf = 0.0
       endif
-      deallocate(buff1, buffm, buffo, buff2)
+      deallocate(buff1, buff1r, buffm, buffo, buff2, buffmr)
 
       RETURN
       END

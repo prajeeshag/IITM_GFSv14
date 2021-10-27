@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+FIXDIR="/scratch/cccr/prajeesh/GFSv14_fix/fix_am"
+
 usage (){
 	echo
 	echo $0 -r model_resolution -e exec_type -o experiment_directory_name 
@@ -67,14 +69,15 @@ else
     exit 1
 fi
 
+
 nmldir=$rootdir/nml_tbl
 scriptdir=$rootdir/scripts
-FIXDIR="/scratch/cccr/prajeesh/GFSv14_fix/fix_am"
 EXPDIR=$rootdir/work/$expname
 EXE=$rootdir/exec/$EXETYPEdir/gfs/GSM/nems/gfs.exe
 
 cd $EXPDIR/
-cp $scriptdir/* $EXPDIR/
+cp $scriptdir/submit.sh $EXPDIR/
+cp $scriptdir/run_mppnccombine.sh $EXPDIR/
 cp $nmldir/nml/* $EXPDIR/
 sed -i "s/_NLON_/$NLON/g" *
 sed -i "s/_NLAT_/$NLAT/g" *
