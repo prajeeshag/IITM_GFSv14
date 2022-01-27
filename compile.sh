@@ -238,3 +238,16 @@ $MKMF -c "$cppDef" -f -p $exename -t $MKMFTEMPLATE -o "$incs" -l "$libs" $paths 
 make -j $npes 
 echo "...............Done Compiling $exename....................."
 
+
+exename='mtn_oro'
+libsrc="preprocessing/mtn_oro"
+builddir=$EXECDIR/$libsrc
+paths=$SRCDIR/$libsrc
+lib=$builddir/$libname
+mkdir -p $builddir
+cd $builddir
+cppDef=" -Duse_libMPI"
+echo "...............Compiling $exename....................."
+$MKMF -c "$cppDef" -f -p $exename -t $MKMFTEMPLATE -o "$incs" -l "$libs" $paths $INCLUDES
+make -j $npes 
+echo "...............Done Compiling $exename....................."
