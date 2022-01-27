@@ -35,7 +35,7 @@ case "${type}" in
 	*) usage ;;
 esac
 
-cppDefextra=$cppDefextra" -DNO_Nems_IO"
+# cppDefextra=$cppDefextra" -DNO_Nems_IO"
 
 echo '...............Setting up environment.....................'
 if [ ! -f .env ]; then
