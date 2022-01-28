@@ -248,6 +248,6 @@ mkdir -p $builddir
 cd $builddir
 cppDef=" -Duse_libMPI"
 echo "...............Compiling $exename....................."
-$MKMF -c "$cppDef" -f -p $exename -t $MKMFTEMPLATE -o "$incs" -l "$libs" $paths $INCLUDES
+$MKMF -c "$cppDef" -f -p $exename -t $MKMFTEMPLATE -o "$incs -r8" -l "$libs" $paths $INCLUDES
 make -j $npes 
 echo "...............Done Compiling $exename....................."

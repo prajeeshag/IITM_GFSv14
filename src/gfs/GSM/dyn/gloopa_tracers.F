@@ -973,19 +973,6 @@
           i_2   = lon+njeff-1
           i_2m  = lon+ngptcs-1
 
-!          if (sum(ug_h)/=sum(ug_h))
-!     &      call mpp_error(WARNING,'NaN in ug_h')
-!          if (sum(vg_h)/=sum(vg_h))
-!     &      call mpp_error(WARNING,'NaN in vg_h')
-!          if (sum(ww_h)/=sum(ww_h))
-!     &      call mpp_error(WARNING,'NaN in ww_h')
-!          if (sum(ug_m)/=sum(ug_m))
-!     &      call mpp_error(WARNING,'NaN in ug_m')
-!          if (sum(vg_m)/=sum(vg_m))
-!     &      call mpp_error(WARNING,'NaN in vg_m')
-!          if (sum(ww_m)/=sum(ww_m))
-!     &      call mpp_error(WARNING,'NaN in ww_m')
-
           call slgscan_h(i_1, i_2, i_2m, s_lat_in_pe, n_lat_in_pe,
      &                   j, lat, lon_dim_h,
      &                   deltim, iter_slg, etamid, lats_node_a,
