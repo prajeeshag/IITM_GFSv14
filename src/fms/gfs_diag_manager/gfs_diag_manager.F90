@@ -6,9 +6,9 @@ module gfs_diag_manager_mod
                          axistype, MPP_NETCDF, mpp_write, MPP_ASCII
    use fms_io_mod,       only: fms_io_init, write_data
    use constants_mod,    only: RAD_TO_DEG, PI
-   use time_manager_mod, only: time_type, print_date, set_date
-   use diag_manager_mod, only: diag_manager_init, diag_manager_end 
-   use diag_manager_mod, only: diag_axis_init, register_static_field
+   use time_manager_mod, only: time_type, print_date, set_date, set_time, print_time
+   use diag_manager_mod, only: diag_manager_init, diag_manager_end, diag_send_complete
+   use diag_manager_mod, only: diag_axis_init, register_static_field, diag_manager_set_time_end
    use diag_manager_mod, only: register_diag_field, send_data
    use diag_manager_mod, only: set_diag_global_att
    use diag_data_mod,    only: fill_value=>CMOR_MISSING_VALUE
@@ -17,14 +17,17 @@ module gfs_diag_manager_mod
    implicit none
    private
 
+   integer, public :: id_pr=0, id_ts=0, id_tas=0
+   integer, public :: id_ta=0, id_ua=0, id_va=0, id_ps=0
+
    integer :: lon_id, lat_id, lev_id
    integer :: lonr, latr, lats_node_r
    integer :: max_nlevs=100, n_nlevs=0, total_eles=0
    integer, allocatable :: nlevs(:,:)
-   type(time_type) :: currtime
+   type(time_type) :: currtime, time_step
   
    public :: init_gfs_diag_manager, end_gfs_diag_manager, register_var, &
-             update_opdata, register_static, set_current_time, write_diag_post_nml
+             update_opdata, register_static, set_current_time, gfs_diag_send_complete
 
    interface update_opdata
       module procedure update_opdata_2d_o
@@ -35,6 +38,21 @@ module gfs_diag_manager_mod
   
   
    contains
+
+   subroutine init_gfs_diag(levs)
+      integer, intent(in) :: levs
+
+      id_pr = register_var('pr', 'Railfall', '?')
+      id_ts = register_var('ts', 'Surface Temperature', 'K')
+      id_tas = register_var('tas', 'Near-Surface Air Temperature', 'K')
+      id_ta = register_var('ta', 'Temperature', 'K', levs=levs)
+      id_ua = register_var('ua', 'Temperature', 'm/s', levs=levs)
+      id_va = register_var('va', 'Temperature', 'm/s', levs=levs)
+      id_ps = register_var('ps', 'Surface Pressure', 'Pascals')
+
+   end subroutine init_gfs_diag
+
+
 
    subroutine write_diag_post_nml(startdate, enddate, deltim, calendar_type)
       integer, intent(in) :: startdate(6), enddate(6), deltim, calendar_type
@@ -62,11 +80,15 @@ module gfs_diag_manager_mod
 
    end subroutine set_current_time
 
-   subroutine init_gfs_diag_manager(ipt_lats_node_r, xlat, xlon, ak5, bk5, global_lats_r, lonsperlar)
+   subroutine init_gfs_diag_manager(ipt_lats_node_r, xlat, xlon, ak5, bk5, &
+                     global_lats_r, lonsperlar, dt_sec, curr_itime, stop_itime, &
+                     calendar_type)
       integer, intent(in) :: ipt_lats_node_r
       real, intent(in) :: xlat(:), xlon(:,:)
       real, intent(in) :: ak5(:), bk5(:)
       integer, intent(in) :: global_lats_r(:), lonsperlar(:)
+      integer, intent(in) :: curr_itime(6), stop_itime(6), calendar_type, dt_sec
+
 
       real :: xlonf(size(xlon,1)), dlon
     
@@ -120,36 +142,26 @@ module gfs_diag_manager_mod
     
       call set_diag_global_att(decomp=tmp)
 
-      ! n_nlevs = 2
-    
-      ! nlevs(1,1) = size(ak5,1)
-      ! write(tmpc,*) size(ak5,1)
-      ! tmpc=trim(adjustl(tmpc))
-      ! nlevs(2,1) = diag_axis_init(name='lev'//trim(tmpc), data=(/(real(i),i=1,size(ak5,1))/), units='', &
-      !         cart_name='Z', long_name='levels')
-      ! lev_id = nlevs(2,1)
-      ! id = register_static_field('gfs', 'coef_ai', (/lev_id/), units='Pa')
-      ! used = send_data(id,ak5*1000.0)
-    
-      ! id = register_static_field('gfs', 'coef_bi', (/lev_id/))
-      ! used = send_data(id,bk5)
+      call set_current_time(curr_itime(1), curr_itime(2), curr_itime(3), &
+                            curr_itime(4), curr_itime(5), curr_itime(6))
 
-      ! nlevs(1,2) = size(ak5,1)-1
-      ! write(tmpc,*) size(ak5,1)-1
-      ! tmpc=trim(adjustl(tmpc))
-      ! nlevs(2,2) = diag_axis_init(name='lev'//trim(tmpc), data=(/(real(i),i=1,size(ak5,1)-1)/), units='', &
-      !      cart_name='Z', long_name='levels')
-      ! lev_id = nlevs(2,2)
-   
-      ! id = register_static_field('gfs', 'coef_a', (/lev_id/), units='Pa')
-      ! used = send_data(id,(ak5(1:size(ak5)-1)+ak5(2:size(ak5)))*0.5*1000.0)
+      call print_date(currtime, 'gfs diag manager start time')
 
-      ! id = register_static_field('gfs', 'coef_b', (/lev_id/))
-      ! used = send_data(id,(bk5(1:size(bk5)-1)+bk5(2:size(bk5)))*0.5)
+      call diag_manager_set_time_end(set_date(stop_itime(1), stop_itime(2), stop_itime(3), &
+                                 stop_itime(4), stop_itime(5), stop_itime(6) ))
+      call write_diag_post_nml(curr_itime, stop_itime, dt_sec, calendar_type)
+      time_step = set_time(dt_sec)
+
+      call init_gfs_diag(nk-1)
 
    end subroutine init_gfs_diag_manager
 
-   integer function register_var(name, long_name, units, range, standard_name,  levs, mask, wgt)
+
+   subroutine gfs_diag_send_complete()
+      call diag_send_complete(time_step)
+   end subroutine gfs_diag_send_complete
+
+   integer function register_var(name, long_name, units, range, standard_name, levs, mask, wgt)
 
       character (len=*), intent(in) :: name
       character (len=*), intent(in), optional :: long_name, units

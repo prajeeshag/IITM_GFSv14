@@ -76,9 +76,8 @@
       use time_manager_mod, only : time_type, set_calendar_type, THIRTY_DAY_MONTHS, JULIAN, &
                                    GREGORIAN, NOLEAP, set_date, print_date
 
-      use gfs_diag_manager_mod, only : init_gfs_diag_manager, set_current_time, write_diag_post_nml, &
-                                       end_gfs_diag_manager
-      use diag_register_gsmphys_mod, only: register_diag_gsmphys
+      use gfs_diag_manager_mod, only : init_gfs_diag_manager, set_current_time, &
+                                       end_gfs_diag_manager, gfs_diag_send_complete
 !
       implicit none
 
@@ -475,18 +474,8 @@
       call esmf_timeintervalget(timestep, s=dt_sec)
 
       call init_gfs_diag_manager(ipt_lats_node_r, int_state%xlat(1,:), int_state%xlon, &
-                                 ak5, bk5, int_state%global_lats_r, int_state%lonsperlar)
-
-      call write_diag_post_nml(current_itime, stop_itime, dt_sec, calendar_type)
-
-      call set_current_time( current_itime(1), &
-                             current_itime(2), &
-                             current_itime(3), &
-                             current_itime(4), &
-                             current_itime(5), &
-                             current_itime(6) )
-
-      call register_diag_gsmphys()
+                                 ak5, bk5, int_state%global_lats_r, int_state%lonsperlar, &
+                                 dt_sec, current_itime, stop_itime, calendar_type)
 
       call esmf_timeintervalget(runduration,                            &
                                 h = runduration_hour, rc = rc1)
@@ -846,6 +835,8 @@
       call gfs_physics_run(int_state, rc = rc1)
 !
       call gfs_physics_err_msg(rc1,'run the gfs_physics_run',rc)
+
+      call gfs_diag_send_complete()
 !
 !
 ! transfer the gfs export fields in the internal state 

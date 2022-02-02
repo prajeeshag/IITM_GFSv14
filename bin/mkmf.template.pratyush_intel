@@ -15,7 +15,7 @@ LIBS = -lstdc++
 
 OPTS= -g -traceback -openmp -lpthread -convert big_endian -assume byterecl -fp-model precise \
         -ftz -fast-transcendentals -no-prec-div -no-prec-sqrt -align array64byte \
-        -assume buffered_stdout -fpp -mkl -xCORE-AVX2 
+        -assume buffered_stdout -fpp -mkl -xCORE-AVX2 -save-temps 
 
 CFLAGS = 
 

@@ -806,8 +806,7 @@
      &,                      rhc_max, dxmin, dxinv, pa2mb, rlapse
       use module_nst_water_prop, only: get_dtzm_2d
       use cs_conv, only : cs_convr
-      use diag_register_gsmphys_mod, only: id_ta, id_tas
-      use gfs_diag_manager_mod, only: update_opdata
+      use gfs_diag_manager_mod, only: update_opdata, id_ta, id_tas
 
       implicit none
 !
