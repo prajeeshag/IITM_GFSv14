@@ -278,7 +278,7 @@ subroutine mpp_exit()
   if( pe.EQ.root_pe )write( out_unit,* )'MPP_STACK high water mark=', mpp_stack_hwm
   if(mpp_comm_private == MPI_COMM_WORLD ) call MPI_FINALIZE(error)
 
-
+  module_is_initialized = .FALSE.
 
   return
 end subroutine mpp_exit

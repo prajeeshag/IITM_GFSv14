@@ -83,14 +83,7 @@ C
 C$$$
 CFPP$ NOCONCUR F
       PROGRAM MAIN
-      use mpp_mod, only: mpp_init, mpp_exit
-      use fms_mod, only: fms_init, fms_end
-      use fms_io_mod, only: fms_io_init, fms_io_exit
-
-      call mpp_init()
-      call fms_init()
-      call fms_io_init()
-
+      
       READ(5,*) MTNRES,IM,JM,NM,NR,NF0,NF1,EFAC,BLAT
 ! --- MTNRES defines the input (highest) elev resolution
 ! --- =1 is topo30 30" in units of 1/2 minute.
@@ -106,14 +99,10 @@ CFPP$ NOCONCUR F
       print *, ' Starting terr12 mtnlm7_slm30.f  IMN,JMN:',IMN,JMN
       CALL TERSUB(IMN,JMN,IM,JM,NM,NR,NF0,NF1,NW,EFAC,BLAT)
 
-      call fms_io_exit()
-      call fms_end()
-      call mpp_exit()
-
       END PROGRAM MAIN
 
       SUBROUTINE TERSUB(IMN,JMN,IM,JM,NM,NR,NF0,NF1,NW,EFAC,BLAT)
-      use fms_io_mod, only: write_data
+      use module_mod, only: create_file_name, write_data
       include 'machine.h'
 C
       PARAMETER(PI=3.14159265358979)
@@ -144,6 +133,7 @@ C
       integer  maxc3,maxc4,maxc5,maxc6,maxc7,maxc8
       integer lonsperlat(jm/2),itest,jtest
       complex ffj(im/2+1)
+      character (len=128) :: fname
        allocate (ZAVG(IMN,JMN))
        allocate (ZSLM(IMN,JMN))
        allocate (GICE(IMN+1,3601))
@@ -964,22 +954,32 @@ C
 
 
 C   check antarctic pole 
-      DO J = 1,JM
-      DO I = 1,numi(j)
+      DO I = 1,numi(JM)
          if ( i .le. 21 .and. i .ge. 1 )then
-         if (j .eq. JM )write(6,153)i,j,ORO(i,j),ELVMAX(i,j),SLM(i,j)
+         write(6,153)i,JM,ORO(i,jm),ELVMAX(i,jm),SLM(i,jm)
   153 format(1x,' ORO,ELVMAX(i=',i4,' j=',i4,')=',2E14.5,f5.1)
          endif
       ENDDO
-      ENDDO
+      print *, 'Going to write netcdf field'
 C       OUTPUT NETCDF FIELDS
         print *,' OUTPUT NETCDF FIELDS'
-        call write_data('global_orography','var8',ORF)
-        call write_data('global_orography_uf','var8',ORO)
-        call write_data('global_mtnvar','mtn',HPRIME)
+        fname = 'global_orography'
+        call create_file_name(fname,NM,IM,JM)
+        call write_data(fname,'var8',ORF)
+        fname = 'global_orography_uf'
+        call create_file_name(fname,NM,IM,JM)
+        call write_data(fname,'var8',ORO)
+        fname = 'global_mtnvar'
+        call create_file_name(fname,NM,IM,JM)
+        call write_data(fname,'mtn',HPRIME)
+        fname = 'global_slmask'
+        call create_file_name(fname,NM,IM,JM)
+        call write_data(fname,'slmask',SLM)
 ! --- OCLSM is real(4) write only if ocean mask is present
         if ( mskocn .eq. 1 ) then
-         call write_data('ocean_mask','oclsm',real(OCLSM))
+         fname = 'ocean_mask'
+         call create_file_name(fname,NM,IM,JM)
+         call write_data(fname,'oclsm',real(OCLSM))
         endif
        call minmxj(IM,JM,ORO,'     ORO')
       print *,' IM=',IM,' JM=',JM,' SPECTR=',SPECTR

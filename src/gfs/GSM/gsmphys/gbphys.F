@@ -806,7 +806,8 @@
      &,                      rhc_max, dxmin, dxinv, pa2mb, rlapse
       use module_nst_water_prop, only: get_dtzm_2d
       use cs_conv, only : cs_convr
-      use gfs_diag_manager_mod, only: update_opdata, id_ta, id_tas
+      use gfs_diag_manager_mod, only: update_opdata, id_ta, id_tas, 
+     &    id_prc, id_pr
 
       implicit none
 !
@@ -3673,6 +3674,8 @@
 
       call update_opdata(id_ta, gt0(1:im,:), istrt, im, lan)
       call update_opdata(id_tas, gt0(1:im,1), istrt, im, lan)
+      call update_opdata(id_pr, rain(1:im), istrt, im, lan)
+      call update_opdata(id_prc, rainc(1:im), istrt, im, lan)
 
       return
 !...................................

@@ -1,0 +1,32 @@
+GFS_LIB=/scratch/cccr/prajeesh/GFSv14/lib
+
+INCS=\
+-I/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/incmod/sigio_4 \
+-I/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/incmod/sfcio_4 \
+-I$(GFS_LIB)/landsfcutil/v2.1.0/landsfcutil/v2.1.0/include/landsfcutil_v2.1.0_d \
+-I/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/incmod/nemsio \
+-I$(GFS_LIB)/nemsiogfs/v2.0.1/intel/include/nemsiogfs_v2.0.1 \
+-I$(GFS_LIB)/gfsio/v1.1.0/intel/include/gfsio_4 \
+-I$(GFS_LIB)/ip/v3.0.0/ip/v3.0.0/include/ip_v3.0.0_d
+
+EXTLIBS = \
+$(GFS_LIB)/gfsio/v1.1.0/intel/libgfsio_4.a \
+$(GFS_LIB)/nemsiogfs/v2.0.1/intel/libnemsiogfs_v2.0.1.a \
+/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libnemsio.a \
+/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libsigio_4.a \
+/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libsfcio_4.a \
+$(GFS_LIB)/landsfcutil/v2.1.0/landsfcutil/v2.1.0/liblandsfcutil_v2.1.0_d.a \
+$(GFS_LIB)/ip/v3.0.0/ip/v3.0.0/libip_v3.0.0_d.a \
+/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libsp_d.a \
+/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libw3emc_d.a \
+/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libw3nco_d.a \
+/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libbacio_4.a
+
+OPTS = -i4 -O3 -r8  -convert big_endian -fp-model precise -g -traceback -save-temps -openmp -auto
+
+FFLAGS = $(OPTS) $(INCS)
+LDFLAGS= $(OPTS) $(EXTLIBS) $(ESMF_LIB) $(LIBS)
+
+FC = ftn 
+CC = cc
+LD = ftn

@@ -17,8 +17,7 @@ module gfs_diag_manager_mod
    implicit none
    private
 
-   integer, public :: id_pr=0, id_ts=0, id_tas=0
-   integer, public :: id_ta=0, id_ua=0, id_va=0, id_ps=0
+   integer, public :: id_tas=0, id_ta=0, id_pr=0, id_prc=0
 
    integer :: lon_id, lat_id, lev_id
    integer :: lonr, latr, lats_node_r
@@ -42,13 +41,10 @@ module gfs_diag_manager_mod
    subroutine init_gfs_diag(levs)
       integer, intent(in) :: levs
 
-      id_pr = register_var('pr', 'Railfall', '?')
-      id_ts = register_var('ts', 'Surface Temperature', 'K')
       id_tas = register_var('tas', 'Near-Surface Air Temperature', 'K')
       id_ta = register_var('ta', 'Temperature', 'K', levs=levs)
-      id_ua = register_var('ua', 'Temperature', 'm/s', levs=levs)
-      id_va = register_var('va', 'Temperature', 'm/s', levs=levs)
-      id_ps = register_var('ps', 'Surface Pressure', 'Pascals')
+      id_pr = register_var('pr', 'Precipitation', 'kg/m2/sec')
+      id_prc = register_var('prc', 'Convective Precipitation', 'kg/m2/sec')
 
    end subroutine init_gfs_diag
 

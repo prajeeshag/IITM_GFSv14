@@ -1,4 +1,4 @@
-
+GFS_LIB=/scratch/cccr/prajeesh/GFSv14/lib
 NETCDF = /opt/cray/pe/netcdf/4.4.1.1.3/INTEL/16.0
 ESMF_INC=/home/apps/NWPROD/global_shared.v14.1.3/libs/esmf/esmf-7_0_0/mod/modO/Linux.intel.64.mpich2.default
 NEMSIO_INC=/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/incmod/nemsio
@@ -9,6 +9,8 @@ EXTLIBS = /home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/
 /home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libbacio_4.a  \
 /home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libsp_d.a   \
 /home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libz.a
+
+INC = -I$(ESMF_INC) -I$(NEMSIO_INC)
 
 ESMF_LIB = -L/home/apps/NWPROD/global_shared.v14.1.3/libs/esmf/esmf-7_0_0/lib/libO/Linux.intel.64.mpich2.default  -lesmf
 LIBS = -lstdc++
@@ -21,12 +23,10 @@ CFLAGS =
 
 CPPFLAGS =  -DENABLE_SMP -DCHNK_RRTM=8 -DNEMS_GSM -DFRONT_GSM=module_GSM_CAP
 
-FFLAGS = $(OPTS) -I$(ESMF_INC) -I$(NEMSIO_INC)
+FFLAGS = $(OPTS) $(INC)
 
 LDFLAGS= $(OPTS) -L$(NETCDF)/lib -lnetcdff -lnetcdf $(EXTLIBS) $(ESMF_LIB) $(LIBS)
 
 FC = ftn 
 CC = cc
 LD = ftn
-
-#ftn -g -openmp -lpthread -convert big_endian -assume byterecl -fp-model precise -ftz -fast-transcendentals -no-prec-div -no-prec-sqrt -align array64byte -assume buffered_stdout -fpp -mkl -xCORE-AVX2 module_EARTH_INTERNAL_STATE.o module_MEDIATOR_methods.o ENS_CplComp_ESMFMod_STUB.o module_NEMS_UTILS.o nems_c_rusage.o module_NEMS_INTERNAL_STATE.o module_NEMS_GRID_COMP.o module_MEDIATOR.o module_EARTH_GRID_COMP.o module_NEMS_Rusage.o MAIN_NEMS.o module_MEDIATOR_SpaceWeather.o -o gfs.exe lib_gsm.a lib_dyn.a lib_phys.a lib_share.a lib_gsmphys.a lib_util.a lib_io.a lib_sigio.a lib_post_stub.a  -L/opt/cray/pe/netcdf/4.4.1.1.3/intel/16.0/lib -lnetcdff -lnetcdf /home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libnemsio.a /home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libw3nco_d.a /home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libw3emc_d.a /home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libbacio_4.a /home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libsp_d.a /home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/libz.a -L/home/apps/NWPROD/global_shared.v14.1.3/libs/esmf/esmf-7_0_0/lib/libO/Linux.intel.64.mpich2.default  -lesmf -lstdc++
