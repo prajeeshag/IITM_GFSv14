@@ -12,7 +12,7 @@ export ntasks=1
 export ptile=6
 export threads=6
 
-export CDATE=2021102000
+export CDATE=2018081000
 
 #############################################################
 # Specify whether the run is production or development

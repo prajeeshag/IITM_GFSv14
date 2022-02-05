@@ -311,14 +311,14 @@ export DATA=${DATA:-$(pwd)}
 #  Filenames.
 export XC=${XC}
 export CHGRESEXEC=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/exec/preprocessing/chres/sorc_global_chgres/chgres
-export OROGRAPHY=$FIXgsm/global_orography.t${JCAP}.${LONB}.${LATB}.grb
-export OROGRAPHY_UF=$FIXgsm/global_orography_uf.t${JCAP}.$LONB.$LATB.grb
+export OROGRAPHY=$FIXgsm/global_orography.t${JCAP}.${LONB}.${LATB}.nc
+export OROGRAPHY_UF=$FIXgsm/global_orography_uf.t${JCAP}.$LONB.$LATB.nc
 export SIGLEVEL=$FIXgsm/global_hyblev.l${LEVS}.txt
 if [ $LEVS = 128 ]; then
   export SIGLEVEL=${SIGLEVEL:-${FIXgsm}/global_hyblev.l${LEVS}B.txt}
 fi
 export O3CLIM=${O3CLIM:-${FIXgsm}/global_o3clim.txt}
-export SLMASK=${SLMASK:-${FIXgsm}/global_slmask.t${JCAP}.${LONB}.${LATB}.grb}
+export SLMASK=${FIXgsm}/global_slmask.t${JCAP}.${LONB}.${LATB}.nc
 export FNGLAC=${FNGLAC:-${FIXgsm}/global_glacier.2x2.grb}
 export FNMXIC=${FNMXIC:-${FIXgsm}/global_maxice.2x2.grb}
 export FNTSFC=${FNTSFC:-${FIXgsm}/cfs_oi2sst1x1monclim19822001.grb}
@@ -402,14 +402,15 @@ export PGM=$CHGRESEXEC
 export pgm=$PGM
 $LOGSCRIPT
 rm -f NULL
+cp /scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/scripts/gfs_input.nml .
 ln -sf $SIGINP        chgres.inp.sig
-ln -sf $OROGRAPHY     chgres.inp.orogb
-ln -sf $OROGRAPHY_UF  chgres.inp.orogb_uf
+ln -sf $OROGRAPHY     orography.nc
+ln -sf $OROGRAPHY_UF  orography_uf.nc
 ln -sf $SIGLEVEL      chgres.inp.siglevel
 ln -sf $O3CLIM        chgres.inp.o3clim
 ln -sf $SFCINP        chgres.inp.sfc
 ln -sf $NSTINP        chgres.inp.nst
-ln -sf $SLMASK        chgres.inp.slmgb
+ln -sf $SLMASK        slmask.nc
 ln -sf $LONSPERLAT    chgres.inp.lonsperlat
 ln -sf $LONSPERLAT    chgres.inp.lpl3
 ln -sf $SIGOUT        chgres.out.sig

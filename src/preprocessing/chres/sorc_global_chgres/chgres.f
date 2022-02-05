@@ -207,6 +207,11 @@
       USE SURFACE_CHGRES
       USE READ_WRITE_UTILS, ONLY   : INTERPRED,
      &                               UNINTERPRED
+      use mpp_mod, only: mpp_init, mpp_exit, mpp_error,
+     &   FATAL, WARNING, NOTE
+      use fms_io_mod, only: fms_io_init, fms_io_exit, read_data, 
+     &  field_size, field_exist, file_exist
+
       IMPLICIT NONE
       INTEGER:: JCAP=0,LEVS=0,NTRAC=0,LONB=0,LATB=0,LONBI=0,LATBI=0,
      &          IDVC=0,IDVM=0,IDSL=0,IGEN=0,MGG=0,MQUICK=0,IDVT=0,
@@ -301,7 +306,10 @@
 
       REAL(8) mysum
       real                      :: rlat1, rlat2
-      
+      integer :: siz(4)
+     
+      call mpp_init()
+      call fms_io_init()
 ! .....................................................................
 ! .....................................................................
       rlat1   = 90000.0
@@ -351,13 +359,13 @@
       ENDIF
 
       IF(INPTYP /= 0) THEN
-        if (grb_oro) then
-          CALL BAOPENR(NORO,'chgres.inp.orogb',IRET)
-        else
-          open(noro, file='chgres.inp.orogb', form='unformatted'
-     &,                        status='old', iostat=iret)
-        endif
-        IF(IRET /= 0) NORO = 0
+
+        if (.not.file_exist('orography.nc')) 
+     &  call mpp_error(FATAL,'orography.nc does not exist')
+        if (.not.field_exist('orography.nc','var8'))
+     &  call mpp_error(FATAL,
+     &   'Field var8 does not exist in orography.nc')
+
         OPEN(NSIL,FILE='chgres.inp.siglevel',
      &       FORM='FORMATTED',STATUS='OLD',IOSTAT=IRET)
         IF(IRET /= 0) NSIL = 0
@@ -796,34 +804,19 @@
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  GET NEW OROGRAPHY
           IF(NORO /= 0) THEN
-            if (grb_oro) then
-              JPDS    = -1
-              JPDS(5) = 8
-              ALLOCATE(BITMAP(IMO*JMO))
-              CALL GETGB(NORO,0,IMO*JMO,0,JPDS,JGDS,
-     &                   KF,K,KPDS,KGDS,BITMAP,OROGO,IOSORO)
-              DEALLOCATE(BITMAP)
-              IF(IOSORO == 0 .AND. (KGDS(1) /= IDRT .OR.
-     &        KGDS(2) /= IMO .OR. KGDS(3) /= JMO)) IOSORO = 100
-            else
-              allocate (oro4(imo,jmo))
-              read(noro) oro4
-              orogo = oro4
-              deallocate(oro4)
-              iosoro = 0
+            call field_size('orography.nc','var8',siz)
+            if (siz(1)/=imo .or. siz(2)/=jmo) then
+              call mpp_error(FATAL,'Dimension mismatch: orography.nc')
             endif
+            call read_data('orography.nc','var8',OROGO)
+            call mpp_error(NOTE,'READ NEW OROGRAPHY')
+            IOSORO = 0
           ELSE
             IOSORO = 9
           ENDIF
+
           IF(IOSORO == 0) THEN
             PRINT '("  NEW OROGRAPHY READ IN")'
-            if (grb_oro) then
-              if (kgds(4) == -90000 .and. kgds(5) == -180000) then
-                print *,' reversing the lat/lon for orography'
-                call REVERS(imo, jmo, OROGO)
-              endif
-            endif
-!           SIGHEADO%PDRYINI = 0
             PDRYINIO = 0
           ELSE
             PRINT '("  NEW OROGRAPHY TRUNCATED FROM OLD")'
@@ -1909,11 +1902,11 @@ c idea add init condition for temp tracer4-5 ( o o2)
      &    ,'IDVT        ','IDRUN       ','IDUSR       ','IXGR        '
      &    ,'NVCOORD     ','SFCPRESS_ID ','THERMODYN_ID','IVS         '/)
          GFSHEADVO%VARIVAL(1:GFSHEADO%NMETAVARI)=(/JMO,
-     &        IMO,LEVSO,GFSHEADo%ITRUN,GFSHEADo%IORDER,
-     &        GFSHEADo%IREALF,GFSHEADo%IGEN,GFSHEADO%LATF,GFSHEADO%LONF,
-     &        GFSHEADO%LATR,GFSHEADO%LONR,GFSHEADo%ICEN2,GFSHEADo%IDPP,
-     &        GFSHEADo%IDVT,GFSHEADo%IDRUN,GFSHEADo%IDUSR,GFSHEADo%IXGR,
-     &        GFSHEADo%NVCOORD,SFCPRESS_ID_O,
+     &        IMO,LEVSO,GFSHEADO%ITRUN,GFSHEADO%IORDER,
+     &        GFSHEADO%IREALF,GFSHEADo%IGEN,GFSHEADO%LATF,GFSHEADO%LONF,
+     &        GFSHEADO%LATR,GFSHEADO%LONR,GFSHEADO%ICEN2,GFSHEADO%IDPP,
+     &        GFSHEADO%IDVT,GFSHEADO%IDRUN,GFSHEADO%IDUSR,GFSHEADO%IXGR,
+     &        GFSHEADO%NVCOORD,SFCPRESS_ID_O,
      &        THERMODYN_ID_O,GFSHEADo%IVSSIG /)
 !        print *,' after GFSHEADVO%VARIVAL LEVSO=',levso
 !
@@ -1992,35 +1985,21 @@ c idea add init condition for temp tracer4-5 ( o o2)
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  GET NEW OROGRAPHY
           IF(NORO /= 0) THEN
-            if (grb_oro) then
-              JPDS    = -1
-              JPDS(5) = 8
-              ALLOCATE(BITMAP(IMO*JMO))
-              CALL GETGB(NORO,0,IMO*JMO,0,JPDS,JGDS,
-     &                   KF,K,KPDS,KGDS,BITMAP,OROGO,IOSORO)
-              DEALLOCATE(BITMAP)
-              IF(IOSORO == 0    .AND. (KGDS(1) /= IDRT .OR.
-     &           KGDS(2) /= IMO .OR.   KGDS(3) /= JMO)) IOSORO = 100
-            else
-              allocate (oro4(imo,jmo))
-              read(noro) oro4
-              orogo = oro4
-              deallocate(oro4)
-              iosoro = 0
+            call field_size('orography.nc','var8',siz)
+            if (siz(1)/=imo .or. siz(2)/=jmo) then
+              call mpp_error(FATAL,'Dimension mismatch: orography.nc')
             endif
+            call read_data('orography.nc','var8',OROGO)
+            call mpp_error(NOTE,'READ NEW OROGRAPHY')
+            IOSORO = 0
           ELSE
             IOSORO = 9
           ENDIF
           IF(IOSORO == 0) THEN
             PRINT '("  NEW OROGRAPHY READ IN")'
-            if (grb_oro) then
-              if (kgds(4) == -90000 .and. kgds(5) == -180000) then
-                print *,' reversing the lat/lon for orography'
-                call REVERS(imo, jmo, OROGO)
-              endif
-            endif
           ELSE
             PRINT '("  NEW OROGRAPHY INTERPOLATED FROM OLD")'
+            print *, 'IOSORO, NORO =', IOSORO, NORO
           ENDIF
           call instrument(3,kall,ttot,tmin,tmax)
 !         print *,'after new orography'
@@ -2704,13 +2683,6 @@ c idea add init condition for temp tracer4-5 ( o o2)
 ! ---------------------------------------------------------------------
 !  CLOSE FILES
       IF(INPTYP /= 0) THEN
-        IF(NORO > 0) then
-          if (grb_oro) then
-           CALL BACLOSE(NORO,IRET)
-          else
-            close(noro)
-          endif
-        endif
         IF(NSIL > 0)  CLOSE(NSIL)
         IF(NO3C > 0)  CLOSE(NO3C)
         IF(NO3T > 0)  CALL BACLOSE(NO3T,IRET)
@@ -2747,9 +2719,6 @@ c idea add init condition for temp tracer4-5 ( o o2)
       ENDIF
 
       IF(INPTYP /=0 ) then
-        CALL BAOPENR(NSLM,'chgres.inp.slmgb',IRET)
-        IF(IRET.NE.0) NSLM=0
-        print *,' iret=',iret,' nslm=',nslm
         OPEN(NLPL,FILE='chgres.inp.lonsperlat',
      &       FORM='FORMATTED',STATUS='OLD',IOSTAT=IRET)
         IF(IRET.NE.0) NLPL=0
@@ -2863,23 +2832,20 @@ c idea add init condition for temp tracer4-5 ( o o2)
           WHERE(NINT(SLMSKI).EQ.2) SLMSKI=0.
           ALLOCATE(SLMSKO(IMO,JMO))
           IF(NSLM > 0) THEN
-            JPDS=-1
-            JPDS(5)=81
-            ALLOCATE(BITMAP(IMO*JMO))
-            CALL GETGB(NSLM,0,IMO*JMO,0,JPDS,JGDS,
-     &                 KF,K,KPDS,KGDS,BITMAP,SLMSKO,IOSLM)
-            DEALLOCATE(BITMAP)
-            IF(IOSLM == 0 .AND. (KGDS(1) /= idrt .OR.
-     &       KGDS(2) /= IMO .OR. KGDS(3) /= JMO)) IOSLM = 100
+            if (.not.file_exist('slmask.nc'))
+     &      call mpp_error(FATAL, 'slmask.nc does not exist')
+            if (.not.field_exist('slmask.nc','slmask'))
+     &      call mpp_error(FATAL, 'field slmask not in slmask.nc')
+            call field_size('slmask.nc','slmask',siz)
+            if (siz(1)/=IMO.or.siz(2)/=JMO) then
+              call mpp_error(FATAL,'Dimension mismatch: slmask.nc')
+            endif
+            call read_data('slmask.nc','slmask',SLMSKO)
           ELSE 
             IOSLM = 100
           ENDIF
           IF(IOSLM == 0) THEN 
             PRINT '("  NEW LAND-SEA MASK READ IN")'
-            if (kgds(4) == -90000 .and. kgds(5) == -180000) then
-              print *,' reversing the lat/lon for land-sea mask'
-              call REVERS(imo, jmo, SLMSKO)
-            endif
           ELSE
             CALL GL2GL(2,1,SLMSKI,IMI,JMI,SLMSKO,IMO,JMO,4,IDRT,
      &                    rlat1,rlat2,JMO)
@@ -2928,42 +2894,9 @@ c idea add init condition for temp tracer4-5 ( o o2)
           IF(ALLOCATED(OROGO)) THEN
             SFCDATAO%OROG = OROGO
           ELSE
-            IF(NORO /= 0) THEN
-              if (grb_oro) then
-                CALL BAOPENR(NORO,'chgres.inp.orogb',IRET)
-                IF (IRET == 0) THEN  ! orog file exists.
-                  JPDS    = -1
-                  JPDS(5) = 8
-                  ALLOCATE(BITMAP(IMO*JMO))
-                  CALL GETGB(NORO,0,IMO*JMO,0,JPDS,JGDS,
-     &                       KF,K,KPDS,KGDS,BITMAP,SFCDATAO%OROG,Iret)
-                  DEALLOCATE(BITMAP)
-                  PRINT '("  READ grib OROGRAPHY ON OUTPUT GRID")'
-                endif
-                CALL BACLOSE(NORO,IRET)
-              else
-                open(noro, file='chgres.inp.orogb', form='unformatted'
-     &,                          status='old', iostat=iret)
-                if (iret == 0) then
-                  allocate (oro4(imo,jmo))
-                  read(noro) oro4
-                  SFCDATAO%orog = oro4
-                  deallocate(oro4)
-                endif
-                PRINT '("  READ binary OROGRAPHY ON OUTPUT GRID")'
-                close(noro)
-              endif
-              IF (IRET /= 0) THEN  ! bad read. abort here?
-               PRINT '("  BAD READ OF OUTPUT GRID OROGRAPHY GRID FILE")'
-               PRINT '(" INTERPOLATE OUTPUT OROGRAPHY FROM INPUT GRID")'
-               CALL GL2GL(2,1,SFCDATAI%OROG,IMI,JMI,SFCDATAO%OROG,
-     &,                      IMO,JMO,4,IDRT,rlat1,rlat2,JMO)
-              END IF
-            ELSE
              PRINT '("  INTERPOLATE OUTPUT OROGRAPHY FROM INPUT GRID")'
              CALL GL2GL(2,1,SFCDATAI%OROG,IMI,JMI,SFCDATAO%OROG,IMO,
      &                     JMO,4,IDRT,rlat1,rlat2,JMO)
-            END IF
           ENDIF
 !
 !     Open and read unfiltered orography
@@ -2971,51 +2904,29 @@ c idea add init condition for temp tracer4-5 ( o o2)
 
           if (use_ufo .and. noro_uf > 0) then
             ALLOCATE(OROGo_uf(IMO,JMO))
-            if (grb_oro) then
-              CALL BAOPENR(NORO_uf,'chgres.inp.orogb_uf',IRET)
-            else
-             open(noro_uf,file='chgres.inp.orogb_uf', form='unformatted'
-     &,                          status='old', iostat=iret)
+
+            if (.not.file_exist('orography_uf.nc'))
+     &      call mpp_error(FATAL,'orography_uf.nc does not exist')
+
+            if (.not.field_exist('orography_uf.nc','var8'))
+     &      call mpp_error
+     &          (FATAL,'field var8 not found in orography_uf.nc')
+            call field_size('orography_uf.nc','var8',siz)
+            if (siz(1)/=IMO.or.siz(2)/=JMO) then
+            call mpp_error(FATAL,'Dimension mismatch: orography_uf.nc')
             endif
-            IF (IRET /= 0) NORO_uf = 0
-!
-            if (noro_uf > 0) then
-              if (grb_oro) then
-                JPDS    = -1
-                JPDS(5) = 8
-                ALLOCATE(BITMAP(IMO*JMO))
-                CALL GETGB(NORO_uf,0,IMO*JMO,0,JPDS,JGDS,
-     &                     KF,K,KPDS,KGDS,BITMAP,OROGO_uf,IOSORO_uf)
-                DEALLOCATE(BITMAP)
-                IF(IOSORO_uf == 0 .AND. (KGDS(1) /= IDRT .OR.
-     &          KGDS(2) /= IMO .OR. KGDS(3) /= JMO)) IOSORO_uf = 100
-               if (kgds(4) == -90000 .and. kgds(5) == -180000) then
-                 print *,' reversing the lat/lon for orography'
-                 call REVERS(imo, jmo, OROGO_uf)
-                endif
-                CALL BACLOSE(NORO_uf,IRET)
-              else
-                allocate (oro4(imo,jmo))
-                read(noro_uf) oro4
-                orogo_uf = oro4
-                deallocate(oro4)
-                iosoro_uf = 0
-                close(noro_uf)
-              endif
-              IF(IOSORO_uf == 0) THEN
-                PRINT '("  NEW unfiltered OROGRAPHY READ IN")'
-              else
-                use_ufo = .false.
-              endif
-            ELSE
-              use_ufo = .false.
-            ENDIF
+            
+            call read_data('orography_uf.nc','var8',orogo_uf)
+            iosoro_uf = 0
+            call mpp_error(NOTE, 'NEW unfiltered OROGRAPHY READ IN')
           endif
+
           if (.not. use_ufo) then
             if (.not. allocated (OROGo_uf)) ALLOCATE(OROGo_uf(IMO,JMO))
             orogo_uf = 0.0
-            PRINT '("  unfiltered  OROGRAPHY set to zero")'
+            call mpp_error(WARNING,"unfiltered OROGRAPHY set to zero")
           endif
+
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  INTERPOLATE SOME SURFACE FIELDS THE OLD WAY.  THESE ARE FIELDS
 !  THAT ARE EITHER DIAGNOSTIC OR DO NOT REQUIRE SPECIAL HANDLING
@@ -3367,7 +3278,6 @@ c idea add init condition for temp tracer4-5 ( o o2)
               CALL SFCIO_SWDBTA(NSFCO,SFCHEADO,SFCDATAO,IRET)
 !             CALL SFCIO_AXDBTA(SFCDATAO,IRET)
               CALL SFCIO_SCLOSE(NSFCI,IRET)
-              IF(NSLM.GT.0) CALL BACLOSE(NSLM,IRET)
               IF(NLPL.GT.0) CLOSE(NLPL)
               CALL SFCIO_SCLOSE(NSFCO,IRET)
             ENDIF
@@ -3685,23 +3595,20 @@ C  OPEN NSST FILES
         WHERE(NINT(SLMSKI).EQ.2) SLMSKI=0.
         ALLOCATE(SLMSKO(IMO,JMO))
         IF(NSLM.GT.0) THEN
-          JPDS=-1
-          JPDS(5)=81
-          ALLOCATE(BITMAP(IMO*JMO))
-          CALL GETGB(NSLM,0,IMO*JMO,0,JPDS,JGDS,
-     &               KF,K,KPDS,KGDS,BITMAP,SLMSKO,IOSLM)
-          IF(IOSLM .EQ. 0 .AND. (KGDS(1) .NE. idrt .OR.
-     &       KGDS(2) .NE. IMO .OR. KGDS(3) .NE. JMO)) IOSLM = 100
-          DEALLOCATE(BITMAP)
+          if (.not.file_exist('slmask.nc'))
+     &    call mpp_error(FATAL, 'slmask.nc does not exist')
+          if (.not.field_exist('slmask.nc','slmask'))
+     &    call mpp_error(FATAL, 'field slmask not in slmask.nc')
+          call field_size('slmask.nc','slmask',siz)
+          if (siz(1)/=IMO.or.siz(2)/=JMO) then
+           call mpp_error(FATAL,'Dimension mismatch: slmask.nc')
+          endif
+          call read_data('slmask.nc','slmask',SLMSKO)
         ELSE
           IOSLM=100
         ENDIF
         IF(IOSLM.EQ.0) THEN
           PRINT '("  NEW LAND-SEA MASK READ IN")'
-          if (kgds(4) == -90000 .and. kgds(5) == -180000) then
-            print *,' reversing the lat/lon for land-sea mask'
-            call REVERS(imo, jmo, SLMSKO)
-          endif
         ELSE
           CALL GL2GL(2,1,SLMSKI,IMI,JMI,SLMSKO,IMO,JMO,4,IDRT,
      &                  rlat1,rlat2,JMO)
@@ -3747,95 +3654,39 @@ C  OPEN NSST FILES
             CALL ERREXIT(10)
           END IF
         ENDIF
+
         IF(ALLOCATED(OROGO)) THEN
           GFSDATAO%OROG = OROGO
         ELSE
-          if (grb_oro) then
-            CALL BAOPENR(NORO,'chgres.inp.orogb',IRET)
-            if (iret == 0) then
-              JPDS    = -1
-              JPDS(5) = 8
-              ALLOCATE(BITMAP(IMO*JMO))
-              CALL GETGB(NORO,0,IMO*JMO,0,JPDS,JGDS,
-     &                   KF,K,KPDS,KGDS,BITMAP,GFSDATAO%OROG,Iret)
-              DEALLOCATE(BITMAP)
-              IF (IRET == 0) THEN  ! orog file exists.
-                PRINT '("  READ grib OROGRAPHY ON OUTPUT GRID")'
-              endif
-              CALL BACLOSE(NORO,IRET)
-            else
-              open(noro, file='chgres.inp.orogb', form='unformatted'
-     &,                        status='old', iostat=iret)
-              allocate (oro4(imo,jmo))
-              read(noro) oro4
-              GFSDATAO%orog = oro4
-              deallocate(oro4)
-              iret = 0
-              PRINT '("  READ binary OROGRAPHY ON OUTPUT GRID")'
-              CLOSE(NORO)
-            endif
-          endif
-          IF (IRET /= 0) THEN  ! bad read. abort here?
-            PRINT '("  BAD READ OF OUTPUT GRID OROGRAPHY GRID FILE")'
-            PRINT '("  INTERPOLATE OUTPUT OROGRAPHY FROM INPUT GRID")'
+        call mpp_error(WARNING, 
+     & "GFSDATAO: INTERPOLATE OUTPUT OROGRAPHY FROM INPUT GRID")
             CALL GL2GL(2,1,GFSDATAI%OROG,IMI,JMI,
      &                 GFSDATAO%OROG,IMO,JMO,4,IDRT,rlat1,rlat2,JMO)
-          ELSE
-            PRINT '("  INTERPOLATE OUTPUT OROGRAPHY FROM INPUT GRID")'
-            CALL GL2GL(2,1,GFSDATAI%OROG,IMI,JMI,
-     &                 GFSDATAO%OROG,IMO,JMO,4,IDRT,rlat1,rlat2,JMO)
-          END IF
         ENDIF
-!
-!     Open and read unfiltered orography
-!
 
         if (use_ufo .and. noro_uf > 0) then
-         if (.not. allocated (OROGo_uf)) ALLOCATE(OROGo_uf(IMO,JMO))
-          if (grb_oro) then
-            CALL BAOPENR(NORO_uf,'chgres.inp.orogb_uf',IRET)
-          else
-           open(noro_uf,file='chgres.inp.orogb_uf', form='unformatted'
-     &,                        status='old', iostat=iret)
+          ALLOCATE(OROGo_uf(IMO,JMO))
+
+          if (.not.file_exist('orography_uf.nc'))
+     &    call mpp_error(FATAL,'orography_uf.nc does not exist')
+
+          if (.not.field_exist('orography_uf.nc','var8'))
+     &    call mpp_error
+     &        (FATAL,'field var8 not found in orography_uf.nc')
+          call field_size('orography_uf.nc','var8',siz)
+          if (siz(1)/=IMO.or.siz(2)/=JMO) then
+          call mpp_error(FATAL,'Dimension mismatch: orography_uf.nc')
           endif
-          IF (IRET /= 0) NORO_uf = 0
-!
-          if (noro_uf > 0) then
-            if (grb_oro) then
-              JPDS    = -1
-              JPDS(5) = 8
-              ALLOCATE(BITMAP(IMO*JMO))
-              CALL GETGB(NORO_uf,0,IMO*JMO,0,JPDS,JGDS,
-     &                   KF,K,KPDS,KGDS,BITMAP,OROGO_uf,IOSORO_uf)
-              DEALLOCATE(BITMAP)
-              IF(IOSORO_uf == 0 .AND. (KGDS(1) /= IDRT .OR.
-     &            KGDS(2) /= IMO .OR. KGDS(3) /= JMO)) IOSORO_uf = 100
-              if (kgds(4) == -90000 .and. kgds(5) == -180000) then
-                 print *,' reversing the lat/lon for orography'
-                 call REVERS(imo, jmo, OROGO_uf)
-              endif
-              CALL BACLOSE(NORO_uf,IRET)
-            else
-              allocate (oro4(imo,jmo))
-              read(noro_uf) oro4
-              orogo_uf = oro4
-              deallocate(oro4)
-              iosoro_uf = 0
-              close(noro_uf)
-            endif
-            IF(IOSORO_uf == 0) THEN
-              PRINT '("  NEW unfiltered OROGRAPHY READ IN")'
-            else
-              use_ufo = .false.
-            endif
-          ELSE
-            use_ufo = .false.
-          ENDIF
+          
+          call read_data('orography_uf.nc','var8',orogo_uf)
+          iosoro_uf = 0
+          call mpp_error(NOTE, 'NEW unfiltered OROGRAPHY READ IN')
         endif
+
         if (.not. use_ufo) then
           if (.not. allocated (OROGo_uf)) ALLOCATE(OROGo_uf(IMO,JMO))
           orogo_uf = 0.0
-          PRINT '("  unfiltered  OROGRAPHY set to zero")'
+          call mpp_error(WARNING,"unfiltered OROGRAPHY set to zero")
         endif
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  INTERPOLATE SOME SURFACE FIELDS THE OLD WAY.  THESE ARE FIELDS
@@ -3978,6 +3829,7 @@ C  OPEN NSST FILES
         KMSK = 0
         CALL INTERPRED(1,KMSK,GFSDATAO%OROG,SFCOUTPUT%OROG,
      &                 IMO,JMO,IJMO,GFSHEADVO%LPL)
+        print *, 'praj:', shape(OROGO_uf), shape(OROGO_uf2)
         CALL INTERPRED(1,KMSK,OROGO_uf,OROGO_uf2,
      &                 IMO,JMO,IJMO,GFSHEADVO%LPL)
 
@@ -4232,7 +4084,6 @@ C  OPEN NSST FILES
 !
             CALL SFCIO_SWHEAD(NSFCO,SFCHEADO,IRET)
             CALL SFCIO_SWDBTA(NSFCO,SFCHEADO,SFCDATAO,IRET)
-            IF(NSLM > 0) CALL BACLOSE(NSLM,IRET)
             IF(NLPL > 0) CLOSE(NLPL)
             CALL SFCIO_SCLOSE(NSFCO,IRET)
           ENDIF
