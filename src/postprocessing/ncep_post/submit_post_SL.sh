@@ -88,8 +88,8 @@ export DELTIM=450
 export DTPHYS=225
 
  # Estimate the number of Hours the post to be done
-  hourmax=32 
-  nlist="00"
+  hourmax=240
+  nlist=""
   hours=0
   while (( hours < hourmax ))
    do
@@ -100,8 +100,8 @@ export DTPHYS=225
       nlist="$nlist $hours"
    done
    echo nlist=$nlist 
-#export post_times="$nlist"
- export post_times="06"
+ export post_times="$nlist"
+# export post_times="06"
 
 
 #############################################################

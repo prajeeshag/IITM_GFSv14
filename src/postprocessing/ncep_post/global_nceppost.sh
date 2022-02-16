@@ -398,7 +398,7 @@ ulimit -v unlimited
 #${APRUN:-mpirun.lsf} $POSTGPEXEC < itag > outpost_gfs_${VDATE}_${CTL}
 #${APRUN:-mpirun.lsf} /home/apps/NWPROD/new_ver/global_shared.v14.1.4.a/sorc/ncep_post.fd/ncep_post < itag > outpost_gfs_${VDATE}_${CTL}
 #aprun -j 1 -n 24 -N 12 -d 1 -cc depth /home/apps/NWPROD/new_ver/global_shared.v14.1.4.a/sorc/ncep_post.fd/ncep_post < itag > outpost_gfs_${VDATE}_${CTL}
-aprun -j 1 -n 24 -N 1 -d 1 -cc depth /scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/src/postprocessing/ncep_post/src/ncep_post < itag > outpost_gfs_${VDATE}_${CTL} 2> std.err_${VDATE}_${CTL}
+aprun -j 1 -n 24 -N 1 -d 1 -cc depth /scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/exec/postprocessing/ncep_post/src/ncep_post < itag > outpost_gfs_${VDATE}_${CTL} 2> std.err_${VDATE}_${CTL}
 
 export ERR=$?
 export err=$ERR

@@ -322,6 +322,7 @@ do
     $POSTGPSH
 
     mv outpost_gfs_${VDATE}_${CTL} outpost_gfs_${VDATE}_master
+    mv std.err_${VDATE}_${CTL} std.err_${VDATE}_master
 
     if test $GRIBVERSION = 'grib2'
     then
@@ -476,7 +477,7 @@ EOF
 
     if [ $NET = gfs ]; then    
     echo "running post at line 478 exgfs_nceppost.sh.ecf"
-      $POSTGPSH
+     # $POSTGPSH
     fi
 
     if [ $GRIBVERSION = 'grib1' ]; then
@@ -536,7 +537,7 @@ EOF
 	  export IGEN=$IGEN_GFS
     
     echo "running post at line 538 exgfs_nceppost.sh.ecf"
-	  $POSTGPSH
+	 # $POSTGPSH
 
 	  SPECIALFL=gfs.${cycle}.gtg.grb2
 	  SPECIALFLIDX=gfs.${cycle}.gtg.grb2i
@@ -558,7 +559,7 @@ EOF
 ###########################  GTG  end ###########################
 
 
-#    rm flxfile flxifile gtgfile gtgifile
+    rm -f flxfile flxifile gtgfile gtgifile
 # end of gtg turbulence processing
 
 done

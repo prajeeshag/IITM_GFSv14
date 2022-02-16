@@ -49,15 +49,6 @@ WRF_LIB    = $(WRFPATH)/main/libwrflib.a  \
              $(WRFPATH)/external/RSL_LITE/librsl_lite.a
 
 
-#WRFPATH    =  /scratch/appuser/user_issues/phani/wrf_shared.v1.1.0
-#WRF_INC    = -I$(WRFPATH)/frame -I$(WRFPATH)/external/io_quilt
-#WRF_LIB    = $(WRFPATH)/frame/pack_utils.o  \
-             $(WRFPATH)/frame/module_internal_header_util.o \
-             $(WRFPATH)/external/io_grib1/libio_grib1.a \
-             $(WRFPATH)/external/io_grib_share/libio_grib_share.a \
-             $(WRFPATH)/external/io_int/libwrfio_int.a \
-             $(WRFPATH)/external/io_netcdf/libwrfio_nf.a
-
 NETCDF =  /opt/cray/pe/netcdf/4.4.1.1.3/INTEL/16.0
 NETCDF_INC = -I$(NETCDF)/include
 NETCDF_LDFLAGS = -L$(NETCDF)/lib -lnetcdf

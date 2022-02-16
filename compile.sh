@@ -54,6 +54,8 @@ SRCDIR="$rootdir/src"
 MKMF="$rootdir/bin/mkmf"
 MKMFTEMPLATE="$rootdir/bin/mkmf.template.$MACH$debug"
 MKMFTEMPLATE_chres="$rootdir/bin/mkmf.template_chres.$MACH$debug"
+MKMFTEMPLATE_post="$rootdir/bin/mkmf.template_nceppost.$MACH$debug"
+
 
 INCLUDES="$SRCDIR/gfs/includes/"
 incs=" "
@@ -264,5 +266,19 @@ cd $builddir
 cppDef=" -Duse_libMPI"
 echo "...............Compiling $exename....................."
 $MKMF -c "$cppDef" -f -p $exename -t $MKMFTEMPLATE_chres -o "$incs" -l "$libs" $paths $INCLUDES
+make -j $npes 
+echo "...............Done Compiling $exename....................."
+
+
+exename='ncep_post'
+libsrc="postprocessing/ncep_post/src"
+builddir=$EXECDIR/$libsrc
+paths=$SRCDIR/$libsrc
+lib=$builddir/$libname
+mkdir -p $builddir
+cd $builddir
+cppDef=""
+echo "...............Compiling $exename....................."
+$MKMF -c "$cppDef" -f -p $exename -t $MKMFTEMPLATE_post $paths 
 make -j $npes 
 echo "...............Done Compiling $exename....................."

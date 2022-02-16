@@ -1,0 +1,1467 @@
+core file size          (blocks, -c) unlimited
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 246878
+max locked memory       (kbytes, -l) unlimited
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 16384
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) unlimited
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 246878
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+nlist= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+Sat Feb  5 21:30:30 IST 2022
+------------------------------------------------
+setup.sh - Utility to set PDY variables
+           This utility will output a file PDY in
+           the current working directory which can be
+           sourced in the parent script to set
+           PDY PDYm1-9
+------------------------------------------------
+History: Jul 27, 1998 - Implement new script.
+------------------------------------------------
+pdate=P20180810
+DATElne_minus=20180809 20180808 20180807 20180806 20180805 20180804 20180803 20180802 20180801 20180731
+DATElne_plus=20180811 20180812 20180813 20180814 20180815 20180816 20180817 20180818 20180819 20180820
+_=*20179*/usr/bin/env
+ALLINEA_QUEUE_DLL=/opt/cray/pe/mpt/7.6.3/gni/mpich-intel/16.0/lib/libtvmpich.so.3.0.1
+APP2_STATE=6.5.2
+APRUN=aprun -j 1 -n 24 -N 1 -d 1 -cc depth
+ATP_HOME=/opt/cray/pe/atp/2.1.1
+ATP_IGNORE_SIGTERM=1
+ATP_MRNET_COMM_PATH=/opt/cray/pe/atp/2.1.1/libexec/atp_mrnet_commnode_wrapper
+ATP_POST_LINK_OPTS=-Wl,-L/opt/cray/pe/atp/2.1.1/libApp/ 
+BASH_ENV=/etc/bash.bashrc.local
+BASH_FUNC_module%%=() {  eval `/opt/cray/pe/modules/3.2.10.6/bin/modulecmd ksh $*`
+}
+CDATE=2018081000
+CDIR=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N/
+CHGRESEXEC=/scratch/cccr/prajeesh/gfs.v14.1.1/exec/global_chgres
+CHGRESSH=/scratch/cccr/prajeesh/gfs.v14.1.1/ush/global_chgres.sh
+CHGRESTHREAD=32
+CHPL_CG_CPP_LINES=1
+CLASSPATH=/opt/intel/compilers_and_libraries_2017.5.239/linux/mpi/intel64/lib/mpi.jar:/opt/intel/compilers_and_libraries_2017.5.239/linux/daal/lib/daal.jar
+COLORTERM=1
+COMIN=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N//OUTPUT
+COMOUT=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N//OUTPUT/gfs/para/gfs.20180810
+COMROOT=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N//OUTPUT
+COM_IN=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N//OUTPUT
+COM_OUT=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N//OUTPUT/gfs/para
+CONDA_DEFAULT_ENV=base
+CONDA_EXE=/home/cccr/prajeesh/miniconda3/bin/conda
+CONDA_PREFIX=/home/cccr/prajeesh/miniconda3
+CONDA_PROMPT_MODIFIER=(base) 
+CONDA_PYTHON_EXE=/home/cccr/prajeesh/miniconda3/bin/python
+CONDA_SHLVL=1
+CPATH=/opt/intel/compilers_and_libraries_2017.5.239/linux/ipp/include:/opt/intel/compilers_and_libraries_2017.5.239/linux/mkl/include:/opt/intel/compilers_and_libraries_2017.5.239/linux/tbb/include:/opt/intel/compilers_and_libraries_2017.5.239/linux/daal/include
+CPU=x86_64
+CRAYPAT_ALPS_COMPONENT=/opt/cray/pe/perftools/6.5.2/sbin/pat_alps
+CRAYPAT_LD_LIBRARY_PATH=/opt/cray/pe/gcc-libs:/opt/cray/gcc-libs:/opt/cray/pe/perftools/6.5.2/lib64
+CRAYPAT_OPTS_EXECUTABLE=sbin/pat-opts
+CRAYPAT_ROOT=/opt/cray/pe/perftools/6.5.2
+CRAYPE_DIR=/opt/cray/pe/craype/2.5.13
+CRAYPE_NETWORK_TARGET=aries
+CRAYPE_VERSION=2.5.13
+CRAY_ALPS_INCLUDE_OPTS=-I/opt/cray/alps/6.4.3-6.0.4.1_2.1__g92a2fc0.ari/include
+CRAY_ALPS_POST_LINK_OPTS=-L/opt/cray/alps/6.4.3-6.0.4.1_2.1__g92a2fc0.ari/lib64
+CRAY_CPU_TARGET=broadwell
+CRAY_LD_LIBRARY_PATH=/opt/cray/pe/netcdf/4.4.1.1.3/INTEL/16.0/lib:/opt/cray/pe/fftw/2.1.5.9/lib:/opt/cray/pe/perftools/6.5.2/lib64:/opt/cray/rca/2.2.11-6.0.4.0_13.2__g84de67a.ari/lib64:/opt/cray/pe/pmi/5.0.12/lib64:/opt/cray/pe/mpt/7.6.3/gni/mpich-intel/16.0/lib:/opt/cray/llm/21.3.446-6.0.4.0_20.1__gbe30105.ari/lib64:/opt/cray/alps/6.4.3-6.0.4.1_2.1__g92a2fc0.ari/lib64
+CRAY_MPICH2_DIR=/opt/cray/pe/mpt/7.6.3/gni/mpich-intel/16.0
+CRAY_MPICH2_VER=7.6.3
+CRAY_MPICH_BASEDIR=/opt/cray/pe/mpt/7.6.3/gni
+CRAY_MPICH_DIR=/opt/cray/pe/mpt/7.6.3/gni/mpich-intel/16.0
+CRAY_MPICH_ROOTDIR=/opt/cray/pe/mpt/7.6.3
+CRAY_NETCDF_VERSION=4.4.1.1.3
+CRAY_PE_MODULES=cray-netcdf
+CRAY_PMI_INCLUDE_OPTS=-I/opt/cray/pe/pmi/5.0.12/include
+CRAY_PMI_POST_LINK_OPTS=-L/opt/cray/pe/pmi/5.0.12/lib64
+CRAY_PRE_COMPILE_OPTS=-hnetwork=aries
+CRAY_PRGENVINTEL=loaded
+CRAY_RCA_INCLUDE_OPTS=-I/opt/cray/rca/2.2.11-6.0.4.0_13.2__g84de67a.ari/include -I/opt/cray/krca/2.2.2-6.0.4.1_18.26__g4614cf3.ari/include -I/opt/cray-hss-devel/8.0.0/include 
+CRAY_RCA_POST_LINK_OPTS=-L/opt/cray/rca/2.2.11-6.0.4.0_13.2__g84de67a.ari/lib64 -lrca 
+CRAY_SITE_LIST_DIR=/etc/opt/cray/pe/modules
+CSHEDIT=emacs
+CVS_RSH=ssh
+DAALROOT=/opt/intel/compilers_and_libraries_2017.5.239/linux/daal
+DATA=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N//ptmp/gfs_forecast_high_00.20020
+DATAROOT=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N//ptmp
+DELTIM=450
+DMAPP_ABORT_ON_ERROR=1
+DTPHYS=225
+EDITOR=vim
+ENVIRONMENT=BATCH
+ERRSCRIPT=err_chk
+EXECUTIL=/exec
+EXECgfs=/scratch/cccr/prajeesh/gfs.v14.1.1/exec
+EXECglobal=/scratch/cccr/prajeesh/global_shared.v14.1.3/exec
+FFTW_DIR=/opt/cray/pe/fftw/2.1.5.9/lib
+FFTW_INC=/opt/cray/pe/fftw/2.1.5.9/include
+FFTW_INCLUDE_OPTS=-I/opt/cray/pe/fftw/2.1.5.9/include
+FFTW_POST_LINK_OPTS=-L/opt/cray/pe/fftw/2.1.5.9/lib
+FIXCRTM=/hwrf.v9.0.20/fix/hwrf-crtm-2.0.6
+FIXUTIL=/fix
+FIXgfs=/scratch/cccr/prajeesh/gfs.v14.1.1/fix
+FIXglobal=/scratch/cccr/prajeesh/global_shared.v14.1.3/fix
+FPATH=:/opt/cray/pe/modules/3.2.11.2/init/sh_funcs/no_redirect:/opt/cray/pe/modules/3.2.10.6/init/sh_funcs/no_redirect
+FROM_HEADER=
+GDBSERVER_MIC=/opt/intel/debugger_2017/gdb/targets/mic/bin/gdbserver
+GDB_CROSS=/opt/intel/debugger_2017/gdb/intel64_mic/bin/gdb-mic
+GPG_TTY=not a tty
+GRIBVERSION=grib2
+G_BROKEN_FILENAMES=1
+HISTCONTROL=ignoreboth
+HISTFILESIZE=32768
+HISTSIZE=32768
+HOME=/home/cccr/prajeesh
+HOMECRTM=/scratch/cccr/prajeesh/lib/crtm/v2.0.6
+HOMEgfs=/scratch/cccr/prajeesh/gfs.v14.1.1
+HOMEglobal=/scratch/cccr/prajeesh/global_shared.v14.1.3
+HOST=mom7
+HOSTNAME=mom7
+HOSTTYPE=x86_64
+HUGETLB_DEFAULT_PAGE_SIZE=256M
+HUGETLB_ELFMAP=W
+HUGETLB_FORCE_ELFMAP=yes+
+HUGETLB_MORECORE=yes
+HUGETLB_MORECORE_HEAPBASE=10000000000
+IGEN_ANL=anal_gfs
+IGEN_FCST=gfs_avn
+IGEN_GFS=gfs_avn
+INFOPATH=/opt/cray/pe/fftw/2.1.5.9/info:/opt/intel/documentation_2017/en/debugger//gdb-ia/info/:/opt/intel/documentation_2017/en/debugger//gdb-mic/info/:/opt/intel/documentation_2017/en/debugger//gdb-igfx/info/
+INPUTRC=/etc/inputrc
+INTEL_LICENSE_FILE=/opt/intel/compilers_and_libraries_2017.5.239/linux/licenses:/opt/intel/licenses:/intel/licenses
+INTEL_MAJOR_VERSION=17.0
+INTEL_MINOR_VERSION=5.239
+INTEL_PATH=/opt/intel/compilers_and_libraries_2017.5.239
+INTEL_PYTHONHOME=/opt/intel/debugger_2017/python/intel64/
+INTEL_VERSION=17.0.5.239
+IPPROOT=/opt/intel/compilers_and_libraries_2017.5.239/linux/ipp
+I_MPI_ROOT=/opt/intel/compilers_and_libraries_2017.5.239/linux/mpi
+JAVA_BINDIR=/usr/lib64/jvm/java/bin
+JAVA_HOME=/usr/lib64/jvm/java
+JAVA_ROOT=/usr/lib64/jvm/java
+JCAP=1534
+JDK_HOME=/usr/lib64/jvm/java
+JOBGLOBAL=/scratch/cccr/prajeesh/gfs.v14.1.1/jobs
+JRE_HOME=/usr/lib64/jvm/java/jre
+KEEPDATA=NO
+KMP_AFFINITY=disabled
+KSH_AUTOLOAD=1
+LANG=en_US.UTF-8
+LATB=3070
+LATCH=8
+LC_ALL=en_US.UTF-8
+LD_LIBRARY_PATH=/opt/intel/compilers_and_libraries_2017.5.239/linux/compiler/lib/intel64:/opt/intel/compilers_and_libraries_2017.5.239/linux/compiler/lib/intel64_lin:/opt/intel/compilers_and_libraries_2017.5.239/linux/mpi/intel64/lib:/opt/intel/compilers_and_libraries_2017.5.239/linux/mpi/mic/lib:/opt/intel/compilers_and_libraries_2017.5.239/linux/ipp/lib/intel64:/opt/intel/compilers_and_libraries_2017.5.239/linux/compiler/lib/intel64_lin:/opt/intel/compilers_and_libraries_2017.5.239/linux/mkl/lib/intel64_lin:/opt/intel/compilers_and_libraries_2017.5.239/linux/tbb/lib/intel64/gcc4.7:/opt/intel/debugger_2017/iga/lib:/opt/intel/debugger_2017/libipt/intel64/lib:/opt/intel/compilers_and_libraries_2017.5.239/linux/daal/lib/intel64_lin:/home/cccr/prajeesh/.local/lib:/opt/cray/nodehealth/5.4.0-6.0.4.0_12.4__g3427370.ari/lib64
+LESS=-M -I -R
+LESSCLOSE=lessclose.sh %s %s
+LESSKEY=/etc/lesskey.bin
+LESSOPEN=lessopen.sh %s
+LESS_ADVANCED_PREPROCESSOR=no
+LESS_TERMCAP_md=
+LEVS=64
+LIBRARYMODULES=acml:alps:cray-dwarf:cray-fftw:cray-ga:cray-hdf5:cray-hdf5-parallel:cray-libsci:cray-libsci_acc:cray-mpich:cray-mpich2:cray-mpich-abi:cray-netcdf:cray-netcdf-hdf5parallel:cray-parallel-netcdf:cray-petsc:cray-petsc-complex:cray-shmem:cray-tpsl:cray-trilinos:cudatoolkit:fftw:ga:hdf5:hdf5-parallel:iobuf:libfast:netcdf:netcdf-hdf5parallel:ntk:onesided:papi:petsc:petsc-complex:pmi:tpsl:trilinos:xt-libsci:xt-mpich2:xt-mpt:xt-papi
+LIBRARY_PATH=/opt/intel/compilers_and_libraries_2017.5.239/linux/ipp/lib/intel64:/opt/intel/compilers_and_libraries_2017.5.239/linux/compiler/lib/intel64_lin:/opt/intel/compilers_and_libraries_2017.5.239/linux/mkl/lib/intel64_lin:/opt/intel/compilers_and_libraries_2017.5.239/linux/tbb/lib/intel64/gcc4.7:/opt/intel/compilers_and_libraries_2017.5.239/linux/daal/lib/intel64_lin
+LOADEDMODULES=modules/3.2.11.2:alps/6.4.3-6.0.4.1_2.1__g92a2fc0.ari:sysadm/2.4.119-6.0.4.0_14.2__gcab7125.ari:nodehealth/5.4.0-6.0.4.0_12.4__g3427370.ari:nodestat/2.3.78-6.0.4.0_7.2__gbe57af8.ari:sdb/3.3.729-6.0.4.0_16.2__gb405b22.ari:llm/21.3.446-6.0.4.0_20.1__gbe30105.ari:system-config/3.4.2456-6.0.4.1_13.1__g56652eb.ari:Base-opts/2.4.123-6.0.4.0_10.1__g6460790.ari:intel/17.0.5.239:craype-network-aries:craype/2.5.13:cray-mpich/7.6.3:pmi/5.0.12:atp/2.1.1:rca/2.2.11-6.0.4.0_13.2__g84de67a.ari:perftools-base/6.5.2:PrgEnv-intel/6.0.4:fftw/2.1.5.9:cray-netcdf/4.4.1.1.3:craype-broadwell:craype-hugepages256M
+LOGNAME=prajeesh
+LOGSCRIPT=startmsg
+LONB=6156
+LSOIL=4
+LS_COLORS=no=00:fi=00:di=01;31:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:
+MACHTYPE=x86_64-suse-linux
+MAIL=/var/spool/mail/prajeesh
+MANPAGER=less -X
+MANPATH=/opt/cray/pe/netcdf/4.4.1.1.3/share/man:/opt/cray/pe/perftools/6.5.2/man:/opt/cray/pe/papi/5.5.1.3/share/pdoc/man:/opt/cray/pe/atp/2.1.1/man:/opt/cray/pe/pmi/5.0.12/man:/opt/cray/pe/mpt/7.6.3/gni/man/mpich:/opt/cray/pe/craype/2.5.13/man:/opt/intel/man/common:/opt/intel/compilers_and_libraries_2017.5.239/linux/mpi/man:/opt/intel/documentation_2017/en/debugger//gdb-ia/man/:/opt/intel/documentation_2017/en/debugger//gdb-mic/man/:/opt/intel/documentation_2017/en/debugger//gdb-igfx/man/:/opt/cray/cfgutils/man:/opt/cray/llm/21.3.446-6.0.4.0_20.1__gbe30105.ari/man:/opt/cray/alps/6.4.3-6.0.4.1_2.1__g92a2fc0.ari/man:/opt/cray/pe/modules/3.2.11.2/share/man:/usr/local/man:/usr/share/man:/opt/cray/share/man:/opt/pbs/share/man:/opt/cray/pe/man
+MIC_LD_LIBRARY_PATH=/opt/intel/compilers_and_libraries_2017.5.239/linux/mpi/mic/lib:/opt/intel/compilers_and_libraries_2017.5.239/linux/compiler/lib/mic:/opt/intel/compilers_and_libraries_2017.5.239/linux/ipp/lib/mic:/opt/intel/compilers_and_libraries_2017.5.239/linux/compiler/lib/intel64_lin_mic:/opt/intel/compilers_and_libraries_2017.5.239/linux/mkl/lib/intel64_lin_mic:/opt/intel/compilers_and_libraries_2017.5.239/linux/tbb/lib/mic
+MIC_LIBRARY_PATH=/opt/intel/compilers_and_libraries_2017.5.239/linux/mpi/mic/lib:/opt/intel/compilers_and_libraries_2017.5.239/linux/compiler/lib/mic:/opt/intel/compilers_and_libraries_2017.5.239/linux/compiler/lib/intel64_lin_mic:/opt/intel/compilers_and_libraries_2017.5.239/linux/mkl/lib/intel64_lin_mic:/opt/intel/compilers_and_libraries_2017.5.239/linux/tbb/lib/mic
+MINICOM=-c on
+MKLROOT=/opt/intel/compilers_and_libraries_2017.5.239/linux/mkl
+MODULEPATH=/opt/cray/pe/perftools/6.5.2/modulefiles:/opt/cray/pe/craype/2.5.13/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/opt/cray/craype/default/modulefiles:/opt/cray/ari/modulefiles
+MODULESHOME=/opt/cray/pe/modules/3.2.10.6
+MODULE_VERSION=3.2.10.6
+MODULE_VERSION_STACK=3.2.10.6
+MORE=-sl
+MPICH_ABORT_ON_ERROR=1
+MPICH_DIR=/opt/cray/pe/mpt/7.6.3/gni/mpich-intel/16.0
+MPM_LAUNCHER=/opt/intel/debugger_2017/mpm/mic/bin/start_mpm.sh
+MTNRSL=1534.6156.3070
+NCPUS=36
+NDATE=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/src/postprocessing/ncep_post/ndate
+NET=gfs
+NETCDF_DIR=/opt/cray/pe/netcdf/4.4.1.1.3/INTEL/16.0
+NLSPATH=/opt/intel/compilers_and_libraries_2017.5.239/linux/compiler/lib/intel64/locale/%l_%t/%N:/opt/intel/compilers_and_libraries_2017.5.239/linux/mkl/lib/intel64_lin/locale/%l_%t/%N:/opt/intel/debugger_2017/gdb/intel64_mic/share/locale/%l_%t/%N:/opt/intel/debugger_2017/gdb/intel64/share/locale/%l_%t/%N
+NNTPSERVER=news
+NTHREADS=6
+NTRAC=3
+NWPROD=/scratch/cccr/prajeesh
+NWROOT=/scratch/cccr/prajeesh
+ODBCSYSINI=/etc/opt/cray/sysadm
+OFFLOAD_INIT=on_start
+OMP_NUM_THREADS=6
+OMP_STACKSIZE=1024m
+OSH=/home/cccr/prajeesh/.oh-my-bash
+OSTYPE=linux
+OVERPARMEXEC=/scratch/cccr/prajeesh/global_shared.v14.1.3/exec/overparm_grib
+PAGER=less
+PARA_CONFIG=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N//para_config
+PARMgfs=/scratch/cccr/prajeesh/gfs.v14.1.1/parm
+PARMglobal=/scratch/cccr/prajeesh/global_shared.v14.1.3/parm
+PATH=/opt/cray/pe/netcdf/4.4.1.1.3/bin:/opt/cray/pe/perftools/6.5.2/bin:/opt/cray/pe/papi/5.5.1.3/bin:/opt/cray/rca/2.2.11-6.0.4.0_13.2__g84de67a.ari/bin:/home/cccr/prajeesh/.poetry/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/miniconda3/bin:/home/cccr/prajeesh/miniconda3/condabin:/opt/cray/pe/mpt/7.6.3/gni/bin:/opt/cray/pe/craype/2.5.13/bin:/opt/intel/compilers_and_libraries_2017.5.239/linux/bin/intel64:/opt/intel/compilers_and_libraries_2017.5.239/linux/mpi/intel64/bin:/opt/intel/debugger_2017/gdb/intel64_mic/bin:/opt/cray/pe/cce/8.6.3/binutils/cross/x86_64-aarch64/bin:/opt/cray/cfgutils/bin:/opt/cray/llm/21.3.446-6.0.4.0_20.1__gbe30105.ari/bin:/opt/cray/sdb/3.3.729-6.0.4.0_16.2__gb405b22.ari/bin:/opt/cray/nodestat/2.3.78-6.0.4.0_7.2__gbe57af8.ari/bin:/opt/cray/nodehealth/5.4.0-6.0.4.0_12.4__g3427370.ari/bin:/opt/cray/sysadm/2.4.119-6.0.4.0_14.2__gcab7125.ari/bin:/opt/cray/alps/6.4.3-6.0.4.1_2.1__g92a2fc0.ari/sbin:/opt/cray/alps/6.4.3-6.0.4.1_2.1__g92a2fc0.ari/bin:/opt/cray/pe/modules/3.2.11.2/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/games:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/pbs/bin:/opt/cray/pe/bin:/home/cccr/prajeesh/.fzf/bin
+PAT_BUILD_PAPI_BASEDIR=/opt/cray/pe/papi/5.5.1.3
+PAT_REPORT_PRUNE_NAME=_cray$mt_start_,__cray_hwpc_,f_cray_hwpc_,cstart,__pat_,pat_region_,PAT_,OMP.slave_loop,slave_entry,_new_slave_entry,THREAD_POOL_join,__libc_start_main,_start,__start,start_thread,__wrap_,UPC_ADIO_,_upc_,upc_,__caf_,__pgas_,syscall,__device_stub
+PBS_ENVIRONMENT=PBS_BATCH
+PBS_JOBCOOKIE=2FD54C8A68C7540C597E120C7F6D3278
+PBS_JOBDIR=/home/cccr/prajeesh
+PBS_JOBID=1359545.sdb
+PBS_JOBNAME=GFS-TCO1534_post
+PBS_MOMPORT=15003
+PBS_NODEFILE=/var/spool/PBS/aux/1359545.sdb
+PBS_NODENUM=0
+PBS_O_HOME=/home/cccr/prajeesh
+PBS_O_HOST=172.30.55.140
+PBS_O_LANG=en_US.UTF-8
+PBS_O_LOGNAME=prajeesh
+PBS_O_MAIL=/var/mail/prajeesh
+PBS_O_PATH=/home/cccr/prajeesh/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/.vscode-server/bin/5554b12acf27056905806867f251c859323ff7e9/bin/remote-cli:/home/cccr/prajeesh/.poetry/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/.vscode-server/bin/5554b12acf27056905806867f251c859323ff7e9/bin:/home/cccr/prajeesh/.poetry/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/bin:/home/cccr/prajeesh/.local/bin:/home/cccr/prajeesh/miniconda3/bin:/home/cccr/prajeesh/miniconda3/condabin:/opt/cray/pe/mpt/7.6.3/gni/bin:/opt/cray/pe/perftools/6.5.2/bin:/opt/cray/pe/papi/5.5.1.3/bin:/opt/cray/rca/2.2.11-6.0.4.0_13.2__g84de67a.ari/bin:/opt/cray/alps/6.4.3-6.0.4.1_2.1__g92a2fc0.ari/sbin:/opt/cray/job/2.2.2-6.0.4.0_8.2__g3c644b5.ari/bin:/opt/cray/pe/craype/2.5.13/bin:/opt/cray/pe/cce/8.6.3/binutils/x86_64/x86_64-pc-linux-gnu/bin:/opt/cray/pe/cce/8.6.3/binutils/cross/x86_64-aarch64/bin:/opt/cray/pe/cce/8.6.3/utils/x86_64/bin:/opt/cray/elogin/eproxy/2.0.16-6.0.4.1_3.1__g001b199.ari/bin:/opt/cray/pe/modules/3.2.11.2/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/games:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/pbs/bin:/opt/cray/pe/bin:/home/cccr/prajeesh/.fzf/bin
+PBS_O_QUEUE=cccr
+PBS_O_SHELL=/bin/bash
+PBS_O_SYSTEM=Linux
+PBS_O_TZ=Asia/Kolkata
+PBS_O_WORKDIR=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/src/postprocessing/ncep_post
+PBS_QUEUE=cccr
+PBS_TASKNUM=1
+PDY=20180810
+PDYm1=20180809
+PDYm2=20180808
+PDYm3=20180807
+PDYm4=20180806
+PDYm5=20180805
+PDYm6=20180804
+PDYm7=20180803
+PDYp1=20180811
+PDYp2=20180812
+PDYp3=20180813
+PDYp4=20180814
+PDYp5=20180815
+PDYp6=20180816
+PDYp7=20180817
+PELOCAL_PRGENV=true
+PERFTOOLS_VERSION=6.5.2
+PE_CRAY_DEFAULT_FIXED_PKGCONFIG_PATH=/opt/cray/pe/parallel-netcdf/1.8.1.3/CRAY/8.6/lib/pkgconfig:/opt/cray/pe/netcdf-hdf5parallel/4.4.1.1.3/CRAY/8.6/lib/pkgconfig:/opt/cray/pe/netcdf/4.4.1.1.3/CRAY/8.6/lib/pkgconfig:/opt/cray/pe/hdf5-parallel/1.10.0.3/CRAY/8.6/lib/pkgconfig:/opt/cray/pe/hdf5/1.10.0.3/CRAY/8.6/lib/pkgconfig:/opt/cray/pe/ga/5.3.0.7/CRAY/8.4/lib/pkgconfig
+PE_CRAY_FIXED_PKGCONFIG_PATH=/opt/cray/pe/netcdf/4.4.1.1.3/CRAY/8.6/lib/pkgconfig
+PE_CXX_PKGCONFIG_LIBS=netcdf_c++4:mpichcxx
+PE_ENV=INTEL
+PE_FFTW2_DEFAULT_REQUIRED_PRODUCTS=PE_MPICH
+PE_FFTW2_REQUIRED_PRODUCTS=PE_MPICH
+PE_FFTW_DEFAULT_REQUIRED_PRODUCTS=PE_MPICH
+PE_FFTW_DEFAULT_TARGET_broadwell=broadwell
+PE_FFTW_DEFAULT_TARGET_haswell=haswell
+PE_FFTW_DEFAULT_TARGET_ivybridge=ivybridge
+PE_FFTW_DEFAULT_TARGET_mic_knl=mic_knl
+PE_FFTW_DEFAULT_TARGET_sandybridge=sandybridge
+PE_FFTW_DEFAULT_TARGET_share=share
+PE_FFTW_DEFAULT_TARGET_x86_64=x86_64
+PE_FFTW_DEFAULT_TARGET_x86_skylake=x86_skylake
+PE_FFTW_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/fftw/3.3.6.2/@PE_FFTW_DEFAULT_TARGET@/lib/pkgconfig
+PE_FORTRAN_PKGCONFIG_LIBS=netcdff:mpichf90
+PE_GA_DEFAULT_FIXED_PRGENV=CRAY PGI INTEL
+PE_GA_DEFAULT_GENCOMPILERS_GNU=5.1 4.9
+PE_GA_DEFAULT_GENCOMPS_GNU=51 49
+PE_GA_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/ga/5.3.0.7/@PRGENV@/@PE_GA_DEFAULT_GENCOMPS@/lib/pkgconfig
+PE_GA_DEFAULT_VOLATILE_PRGENV=GNU
+PE_HDF5_DEFAULT_FIXED_PRGENV=CRAY PGI INTEL
+PE_HDF5_DEFAULT_GENCOMPILERS_GNU=5.1 4.9
+PE_HDF5_DEFAULT_GENCOMPS_GNU=51 49
+PE_HDF5_DEFAULT_REQUIRED_PRODUCTS=PE_MPICH
+PE_HDF5_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/hdf5/1.10.0.3/@PRGENV@/@PE_HDF5_DEFAULT_GENCOMPS@/lib/pkgconfig
+PE_HDF5_DEFAULT_VOLATILE_PRGENV=GNU
+PE_HDF5_PARALLEL_DEFAULT_FIXED_PRGENV=CRAY PGI INTEL
+PE_HDF5_PARALLEL_DEFAULT_GENCOMPILERS_GNU=5.1 4.9
+PE_HDF5_PARALLEL_DEFAULT_GENCOMPS_GNU=51 49
+PE_HDF5_PARALLEL_DEFAULT_REQUIRED_PRODUCTS=PE_MPICH
+PE_HDF5_PARALLEL_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/hdf5-parallel/1.10.0.3/@PRGENV@/@PE_HDF5_PARALLEL_DEFAULT_GENCOMPS@/lib/pkgconfig
+PE_HDF5_PARALLEL_DEFAULT_VOLATILE_PRGENV=GNU
+PE_HUGEPAGES_PAGE_SIZE=0x20000000
+PE_HUGEPAGES_PKGCONFIG_VARIABLES=PE_HUGEPAGES_TEXT_SEGMENT:PE_HUGEPAGES_PAGE_SIZE
+PE_HUGEPAGES_TEXT_SEGMENT=0x20000000
+PE_INTEL_DEFAULT_FIXED_PKGCONFIG_PATH=/opt/cray/pe/parallel-netcdf/1.8.1.3/INTEL/16.0/lib/pkgconfig:/opt/cray/pe/netcdf-hdf5parallel/4.4.1.1.3/INTEL/16.0/lib/pkgconfig:/opt/cray/pe/netcdf/4.4.1.1.3/INTEL/16.0/lib/pkgconfig:/opt/cray/pe/mpt/7.6.3/gni/mpich-intel/16.0/lib/pkgconfig:/opt/cray/pe/hdf5-parallel/1.10.0.3/INTEL/16.0/lib/pkgconfig:/opt/cray/pe/hdf5/1.10.0.3/INTEL/16.0/lib/pkgconfig:/opt/cray/pe/ga/5.3.0.7/INTEL/15.0/lib/pkgconfig
+PE_INTEL_FIXED_PKGCONFIG_PATH=/opt/cray/pe/netcdf/4.4.1.1.3/INTEL/16.0/lib/pkgconfig:/opt/cray/pe/mpt/7.6.3/gni/mpich-intel/16.0/lib/pkgconfig
+PE_LIBSCI_DEFAULT_GENCOMPILERS_CRAY_x86_64=8.6
+PE_LIBSCI_DEFAULT_GENCOMPILERS_GNU_x86_64=6.1 5.1 4.9
+PE_LIBSCI_DEFAULT_GENCOMPILERS_INTEL_x86_64=16.0
+PE_LIBSCI_DEFAULT_GENCOMPS_CRAY_x86_64=86
+PE_LIBSCI_DEFAULT_GENCOMPS_GNU_x86_64=61 51 49
+PE_LIBSCI_DEFAULT_GENCOMPS_INTEL_x86_64=160
+PE_LIBSCI_DEFAULT_OMP_REQUIRES=
+PE_LIBSCI_DEFAULT_OMP_REQUIRES_openmp=_mp
+PE_LIBSCI_DEFAULT_PKGCONFIG_VARIABLES=PE_LIBSCI_DEFAULT_OMP_REQUIRES_@openmp@
+PE_LIBSCI_DEFAULT_REQUIRED_PRODUCTS=PE_MPICH
+PE_LIBSCI_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/libsci/17.09.1/@PRGENV@/@PE_LIBSCI_DEFAULT_GENCOMPS@/@PE_LIBSCI_DEFAULT_TARGET@/lib/pkgconfig
+PE_LIBSCI_DEFAULT_VOLATILE_PRGENV=CRAY GNU INTEL
+PE_MPICH_ALTERNATE_LIBS_dpm=_dpm
+PE_MPICH_ALTERNATE_LIBS_multithreaded=_mt
+PE_MPICH_CXX_PKGCONFIG_LIBS=mpichcxx
+PE_MPICH_DEFAULT_DIR_CRAY_DEFAULT64=64
+PE_MPICH_DEFAULT_DIR_PGI_DEFAULT64=64
+PE_MPICH_DEFAULT_FIXED_PRGENV=INTEL
+PE_MPICH_DEFAULT_GENCOMPILERS_CRAY=8.6
+PE_MPICH_DEFAULT_GENCOMPILERS_GNU=5.1 4.9
+PE_MPICH_DEFAULT_GENCOMPILERS_PGI=15.3
+PE_MPICH_DEFAULT_GENCOMPS_CRAY=86
+PE_MPICH_DEFAULT_GENCOMPS_GNU=51 49
+PE_MPICH_DEFAULT_GENCOMPS_PGI=153
+PE_MPICH_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/mpt/7.6.3/gni/mpich-@PRGENV@@PE_MPICH_DEFAULT_DIR_DEFAULT64@/@PE_MPICH_DEFAULT_GENCOMPS@/lib/pkgconfig
+PE_MPICH_DEFAULT_VOLATILE_PRGENV=CRAY GNU PGI
+PE_MPICH_DIR_CRAY_DEFAULT64=64
+PE_MPICH_DIR_PGI_DEFAULT64=64
+PE_MPICH_FIXED_PRGENV=INTEL
+PE_MPICH_FORTRAN_PKGCONFIG_LIBS=mpichf90
+PE_MPICH_GENCOMPILERS_CRAY=8.6
+PE_MPICH_GENCOMPILERS_GNU=5.1 4.9
+PE_MPICH_GENCOMPILERS_PGI=15.3
+PE_MPICH_GENCOMPS_CRAY=86
+PE_MPICH_GENCOMPS_GNU=51 49
+PE_MPICH_GENCOMPS_PGI=153
+PE_MPICH_MODULE_NAME=cray-mpich
+PE_MPICH_NV_LIBS=
+PE_MPICH_NV_LIBS_nvidia20=-lcudart
+PE_MPICH_NV_LIBS_nvidia35=-lcudart
+PE_MPICH_NV_LIBS_nvidia60=-lcudart
+PE_MPICH_PKGCONFIG_LIBS=mpich
+PE_MPICH_PKGCONFIG_VARIABLES=PE_MPICH_NV_LIBS_@accelerator@:PE_MPICH_ALTERNATE_LIBS_@multithreaded@:PE_MPICH_ALTERNATE_LIBS_@dpm@
+PE_MPICH_TARGET_VAR_nvidia20=-lcudart
+PE_MPICH_TARGET_VAR_nvidia35=-lcudart
+PE_MPICH_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/mpt/7.6.3/gni/mpich-@PRGENV@@PE_MPICH_DIR_DEFAULT64@/@PE_MPICH_GENCOMPS@/lib/pkgconfig
+PE_MPICH_VOLATILE_PRGENV=CRAY GNU PGI
+PE_NETCDF_BASEDIR=/opt/cray/pe/netcdf/4.4.1.1.3
+PE_NETCDF_CXX_PKGCONFIG_LIBS=netcdf_c++4
+PE_NETCDF_DEFAULT_FIXED_PRGENV=CRAY PGI INTEL
+PE_NETCDF_DEFAULT_GENCOMPILERS_GNU=5.1 4.9
+PE_NETCDF_DEFAULT_GENCOMPS_GNU=51 49
+PE_NETCDF_DEFAULT_REQUIRED_PRODUCTS=PE_HDF5
+PE_NETCDF_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/netcdf/4.4.1.1.3/@PRGENV@/@PE_NETCDF_DEFAULT_GENCOMPS@/lib/pkgconfig
+PE_NETCDF_DEFAULT_VOLATILE_PRGENV=GNU
+PE_NETCDF_FIXED_PRGENV=CRAY PGI INTEL
+PE_NETCDF_FORTRAN_PKGCONFIG_LIBS=netcdff
+PE_NETCDF_GENCOMPILERS_GNU=5.1 4.9
+PE_NETCDF_GENCOMPS_GNU=51 49
+PE_NETCDF_HDF5PARALLEL_DEFAULT_FIXED_PRGENV=CRAY PGI INTEL
+PE_NETCDF_HDF5PARALLEL_DEFAULT_GENCOMPILERS_GNU=5.1 4.9
+PE_NETCDF_HDF5PARALLEL_DEFAULT_GENCOMPS_GNU=51 49
+PE_NETCDF_HDF5PARALLEL_DEFAULT_REQUIRED_PRODUCTS=PE_HDF5_PARALLEL:PE_MPICH
+PE_NETCDF_HDF5PARALLEL_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/netcdf-hdf5parallel/4.4.1.1.3/@PRGENV@/@PE_NETCDF_HDF5PARALLEL_DEFAULT_GENCOMPS@/lib/pkgconfig
+PE_NETCDF_HDF5PARALLEL_DEFAULT_VOLATILE_PRGENV=GNU
+PE_NETCDF_MODULE_NAME=cray-netcdf
+PE_NETCDF_PKGCONFIG_LIBS=netcdf
+PE_NETCDF_REQUIRED_PRODUCTS=PE_HDF5
+PE_NETCDF_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/netcdf/4.4.1.1.3/@PRGENV@/@PE_NETCDF_GENCOMPS@/lib/pkgconfig
+PE_NETCDF_VOLATILE_PRGENV=GNU
+PE_PAPI_DEFAULT_ACCELL_FAMILY_LIBS=
+PE_PAPI_DEFAULT_ACCEL_FAMILY_LIBS_nvidia=,-lcupti,-lcudart,-lcuda
+PE_PAPI_DEFAULT_ACCEL_LIBS=
+PE_PAPI_DEFAULT_ACCEL_LIBS_nvidia35=,-lcupti,-lcudart,-lcuda
+PE_PAPI_DEFAULT_PKGCONFIG_VARIABLES=PE_PAPI_ACCEL_LIBS_@accelerator@
+PE_PARALLEL_NETCDF_DEFAULT_FIXED_PRGENV=CRAY PGI INTEL
+PE_PARALLEL_NETCDF_DEFAULT_GENCOMPILERS_GNU=5.1 4.9
+PE_PARALLEL_NETCDF_DEFAULT_GENCOMPS_GNU=51 49
+PE_PARALLEL_NETCDF_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/parallel-netcdf/1.8.1.3/@PRGENV@/@PE_PARALLEL_NETCDF_DEFAULT_GENCOMPS@/lib/pkgconfig
+PE_PARALLEL_NETCDF_DEFAULT_VOLATILE_PRGENV=GNU
+PE_PETSC_DEFAULT_GENCOMPILERS_CRAY_haswell=8.6
+PE_PETSC_DEFAULT_GENCOMPILERS_CRAY_mic_knl=8.6
+PE_PETSC_DEFAULT_GENCOMPILERS_CRAY_sandybridge=8.6
+PE_PETSC_DEFAULT_GENCOMPILERS_CRAY_skylake=8.6
+PE_PETSC_DEFAULT_GENCOMPILERS_CRAY_x86_64=8.6
+PE_PETSC_DEFAULT_GENCOMPILERS_GNU_haswell=5.3 4.9
+PE_PETSC_DEFAULT_GENCOMPILERS_GNU_mic_knl=5.3
+PE_PETSC_DEFAULT_GENCOMPILERS_GNU_sandybridge=5.3 4.9
+PE_PETSC_DEFAULT_GENCOMPILERS_GNU_skylake=6.1
+PE_PETSC_DEFAULT_GENCOMPILERS_GNU_x86_64=5.3 4.9
+PE_PETSC_DEFAULT_GENCOMPILERS_INTEL_haswell=16.0
+PE_PETSC_DEFAULT_GENCOMPILERS_INTEL_mic_knl=16.0
+PE_PETSC_DEFAULT_GENCOMPILERS_INTEL_sandybridge=16.0
+PE_PETSC_DEFAULT_GENCOMPILERS_INTEL_skylake=16.0
+PE_PETSC_DEFAULT_GENCOMPILERS_INTEL_x86_64=16.0
+PE_PETSC_DEFAULT_GENCOMPS_CRAY_haswell=86
+PE_PETSC_DEFAULT_GENCOMPS_CRAY_mic_knl=86
+PE_PETSC_DEFAULT_GENCOMPS_CRAY_sandybridge=86
+PE_PETSC_DEFAULT_GENCOMPS_CRAY_skylake=86
+PE_PETSC_DEFAULT_GENCOMPS_CRAY_x86_64=86
+PE_PETSC_DEFAULT_GENCOMPS_GNU_haswell=53 49
+PE_PETSC_DEFAULT_GENCOMPS_GNU_mic_knl=53
+PE_PETSC_DEFAULT_GENCOMPS_GNU_sandybridge=53 49
+PE_PETSC_DEFAULT_GENCOMPS_GNU_skylake=61
+PE_PETSC_DEFAULT_GENCOMPS_GNU_x86_64=53 49
+PE_PETSC_DEFAULT_GENCOMPS_INTEL_haswell=160
+PE_PETSC_DEFAULT_GENCOMPS_INTEL_mic_knl=160
+PE_PETSC_DEFAULT_GENCOMPS_INTEL_sandybridge=160
+PE_PETSC_DEFAULT_GENCOMPS_INTEL_skylake=160
+PE_PETSC_DEFAULT_GENCOMPS_INTEL_x86_64=160
+PE_PETSC_DEFAULT_REQUIRED_PRODUCTS=PE_MPICH:PE_LIBSCI:PE_HDF5_PARALLEL:PE_TPSL
+PE_PETSC_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/petsc/3.7.6.0/complex/@PRGENV@/@PE_PETSC_DEFAULT_GENCOMPS@/@PE_PETSC_DEFAULT_TARGET@/lib/pkgconfig
+PE_PETSC_DEFAULT_VOLATILE_PRGENV=CRAY CRAY64 GNU GNU64 INTEL INTEL64
+PE_PGI_DEFAULT_FIXED_PKGCONFIG_PATH=/opt/cray/pe/parallel-netcdf/1.8.1.3/PGI/15.3/lib/pkgconfig:/opt/cray/pe/netcdf-hdf5parallel/4.4.1.1.3/PGI/15.3/lib/pkgconfig:/opt/cray/pe/netcdf/4.4.1.1.3/PGI/15.3/lib/pkgconfig:/opt/cray/pe/hdf5-parallel/1.10.0.3/PGI/15.3/lib/pkgconfig:/opt/cray/pe/hdf5/1.10.0.3/PGI/15.3/lib/pkgconfig:/opt/cray/pe/ga/5.3.0.7/PGI/15.3/lib/pkgconfig
+PE_PGI_FIXED_PKGCONFIG_PATH=/opt/cray/pe/netcdf/4.4.1.1.3/PGI/15.3/lib/pkgconfig
+PE_PKGCONFIG_DEFAULT_PRODUCTS=PE_TRILINOS:PE_TPSL_64:PE_TPSL:PE_PETSC:PE_PARALLEL_NETCDF:PE_NETCDF_HDF5PARALLEL:PE_NETCDF:PE_MPICH:PE_LIBSCI:PE_HDF5_PARALLEL:PE_HDF5:PE_GA:PE_FFTW2:PE_FFTW
+PE_PKGCONFIG_LIBS=craype-hugepages:netcdf:dfftw_mpi:dfftw:drfftw_mpi:drfftw:sfftw_mpi:sfftw:srfftw_mpi:srfftw:cray-rca:AtpSigHandler:mpich
+PE_PKGCONFIG_PRODUCTS=PE_HUGEPAGES:PE_NETCDF:PE_FFTW2:PE_MPICH
+PE_PKGCONFIG_PRODUCTS_DEFAULT=PE_PAPI
+PE_PKG_CONFIG_PATH=/opt/cray/pe/cti/1.0.6/lib/pkgconfig
+PE_PRODUCT_LIST=CRAYPE_BROADWELL:CRAY_RCA:CRAY_PMI:CRAYPE:INTEL:CRAY_ALPS:PERFTOOLS:CRAYPAT:HUGETLB256M
+PE_SMA_DEFAULT_COMPFLAG=
+PE_SMA_DEFAULT_COMPFLAG_GNU=-fcray-pointer
+PE_SMA_DEFAULT_DIR_CRAY_DEFAULT64=64
+PE_SMA_DEFAULT_DIR_PGI_DEFAULT64=64
+PE_SMA_DEFAULT_PKGCONFIG_VARIABLES=PE_SMA_COMPFLAG_@prgenv@
+PE_SMA_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/mpt/7.6.3/gni/sma@PE_SMA_DEFAULT_DIR_DEFAULT64@/lib64/pkgconfig
+PE_TPSL_64_DEFAULT_GENCOMPILERS_CRAY_haswell=8.6
+PE_TPSL_64_DEFAULT_GENCOMPILERS_CRAY_mic_knl=8.6
+PE_TPSL_64_DEFAULT_GENCOMPILERS_CRAY_sandybridge=8.6
+PE_TPSL_64_DEFAULT_GENCOMPILERS_CRAY_x86_64=8.6
+PE_TPSL_64_DEFAULT_GENCOMPILERS_CRAY_x86_skylake=8.6
+PE_TPSL_64_DEFAULT_GENCOMPILERS_GNU_haswell=5.1 4.9
+PE_TPSL_64_DEFAULT_GENCOMPILERS_GNU_mic_knl=5.1
+PE_TPSL_64_DEFAULT_GENCOMPILERS_GNU_sandybridge=5.1 4.9
+PE_TPSL_64_DEFAULT_GENCOMPILERS_GNU_x86_64=5.1 4.9
+PE_TPSL_64_DEFAULT_GENCOMPILERS_GNU_x86_skylake=6.1
+PE_TPSL_64_DEFAULT_GENCOMPILERS_INTEL_haswell=16.0
+PE_TPSL_64_DEFAULT_GENCOMPILERS_INTEL_mic_knl=16.0
+PE_TPSL_64_DEFAULT_GENCOMPILERS_INTEL_sandybridge=16.0
+PE_TPSL_64_DEFAULT_GENCOMPILERS_INTEL_x86_64=16.0
+PE_TPSL_64_DEFAULT_GENCOMPILERS_INTEL_x86_skylake=16.0
+PE_TPSL_64_DEFAULT_GENCOMPS_CRAY_haswell=86
+PE_TPSL_64_DEFAULT_GENCOMPS_CRAY_mic_knl=86
+PE_TPSL_64_DEFAULT_GENCOMPS_CRAY_sandybridge=86
+PE_TPSL_64_DEFAULT_GENCOMPS_CRAY_x86_64=86
+PE_TPSL_64_DEFAULT_GENCOMPS_CRAY_x86_skylake=86
+PE_TPSL_64_DEFAULT_GENCOMPS_GNU_haswell=51 49
+PE_TPSL_64_DEFAULT_GENCOMPS_GNU_mic_knl=51
+PE_TPSL_64_DEFAULT_GENCOMPS_GNU_sandybridge=51 49
+PE_TPSL_64_DEFAULT_GENCOMPS_GNU_x86_64=51 49
+PE_TPSL_64_DEFAULT_GENCOMPS_GNU_x86_skylake=61
+PE_TPSL_64_DEFAULT_GENCOMPS_INTEL_haswell=160
+PE_TPSL_64_DEFAULT_GENCOMPS_INTEL_mic_knl=160
+PE_TPSL_64_DEFAULT_GENCOMPS_INTEL_sandybridge=160
+PE_TPSL_64_DEFAULT_GENCOMPS_INTEL_x86_64=160
+PE_TPSL_64_DEFAULT_GENCOMPS_INTEL_x86_skylake=160
+PE_TPSL_64_DEFAULT_REQUIRED_PRODUCTS=PE_MPICH:PE_LIBSCI
+PE_TPSL_64_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/tpsl/17.06.1/@PRGENV@64/@PE_TPSL_64_DEFAULT_GENCOMPS@/@PE_TPSL_64_DEFAULT_TARGET@/lib/pkgconfig
+PE_TPSL_64_DEFAULT_VOLATILE_PRGENV=CRAY CRAY64 GNU GNU64 INTEL INTEL64
+PE_TPSL_DEFAULT_GENCOMPILERS_CRAY_haswell=8.6
+PE_TPSL_DEFAULT_GENCOMPILERS_CRAY_mic_knl=8.6
+PE_TPSL_DEFAULT_GENCOMPILERS_CRAY_sandybridge=8.6
+PE_TPSL_DEFAULT_GENCOMPILERS_CRAY_x86_64=8.6
+PE_TPSL_DEFAULT_GENCOMPILERS_CRAY_x86_skylake=8.6
+PE_TPSL_DEFAULT_GENCOMPILERS_GNU_haswell=5.1 4.9
+PE_TPSL_DEFAULT_GENCOMPILERS_GNU_mic_knl=5.1
+PE_TPSL_DEFAULT_GENCOMPILERS_GNU_sandybridge=5.1 4.9
+PE_TPSL_DEFAULT_GENCOMPILERS_GNU_x86_64=5.1 4.9
+PE_TPSL_DEFAULT_GENCOMPILERS_GNU_x86_skylake=6.1
+PE_TPSL_DEFAULT_GENCOMPILERS_INTEL_haswell=16.0
+PE_TPSL_DEFAULT_GENCOMPILERS_INTEL_mic_knl=16.0
+PE_TPSL_DEFAULT_GENCOMPILERS_INTEL_sandybridge=16.0
+PE_TPSL_DEFAULT_GENCOMPILERS_INTEL_x86_64=16.0
+PE_TPSL_DEFAULT_GENCOMPILERS_INTEL_x86_skylake=16.0
+PE_TPSL_DEFAULT_GENCOMPS_CRAY_haswell=86
+PE_TPSL_DEFAULT_GENCOMPS_CRAY_mic_knl=86
+PE_TPSL_DEFAULT_GENCOMPS_CRAY_sandybridge=86
+PE_TPSL_DEFAULT_GENCOMPS_CRAY_x86_64=86
+PE_TPSL_DEFAULT_GENCOMPS_CRAY_x86_skylake=86
+PE_TPSL_DEFAULT_GENCOMPS_GNU_haswell=51 49
+PE_TPSL_DEFAULT_GENCOMPS_GNU_mic_knl=51
+PE_TPSL_DEFAULT_GENCOMPS_GNU_sandybridge=51 49
+PE_TPSL_DEFAULT_GENCOMPS_GNU_x86_64=51 49
+PE_TPSL_DEFAULT_GENCOMPS_GNU_x86_skylake=61
+PE_TPSL_DEFAULT_GENCOMPS_INTEL_haswell=160
+PE_TPSL_DEFAULT_GENCOMPS_INTEL_mic_knl=160
+PE_TPSL_DEFAULT_GENCOMPS_INTEL_sandybridge=160
+PE_TPSL_DEFAULT_GENCOMPS_INTEL_x86_64=160
+PE_TPSL_DEFAULT_GENCOMPS_INTEL_x86_skylake=160
+PE_TPSL_DEFAULT_REQUIRED_PRODUCTS=PE_MPICH:PE_LIBSCI
+PE_TPSL_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/tpsl/17.06.1/@PRGENV@/@PE_TPSL_DEFAULT_GENCOMPS@/@PE_TPSL_DEFAULT_TARGET@/lib/pkgconfig
+PE_TPSL_DEFAULT_VOLATILE_PRGENV=CRAY CRAY64 GNU GNU64 INTEL INTEL64
+PE_TRILINOS_DEFAULT_GENCOMPILERS_CRAY_x86_64=8.6
+PE_TRILINOS_DEFAULT_GENCOMPILERS_GNU_x86_64=5.1 4.9
+PE_TRILINOS_DEFAULT_GENCOMPILERS_INTEL_x86_64=16.0
+PE_TRILINOS_DEFAULT_GENCOMPS_CRAY_x86_64=86
+PE_TRILINOS_DEFAULT_GENCOMPS_GNU_x86_64=51 49
+PE_TRILINOS_DEFAULT_GENCOMPS_INTEL_x86_64=160
+PE_TRILINOS_DEFAULT_REQUIRED_PRODUCTS=PE_MPICH:PE_HDF5_PARALLEL:PE_NETCDF_HDF5PARALLEL:PE_LIBSCI:PE_TPSL
+PE_TRILINOS_DEFAULT_VOLATILE_PKGCONFIG_PATH=/opt/cray/pe/trilinos/12.10.1.1/@PRGENV@/@PE_TRILINOS_DEFAULT_GENCOMPS@/@PE_TRILINOS_DEFAULT_TARGET@/lib/pkgconfig
+PE_TRILINOS_DEFAULT_VOLATILE_PRGENV=CRAY GNU INTEL
+PIPENV_VENV_IN_PROJECT=1
+PKGCONFIG_ENABLED=1
+PKG_CONFIG_PATH=/opt/cray/rca/2.2.11-6.0.4.0_13.2__g84de67a.ari/lib64/pkgconfig:/opt/cray/pe/pmi/5.0.12/lib64/pkgconfig:/opt/cray/pe/craype/2.5.13/pkg-config:/opt/cray/pe/iobuf/2.0.8/lib/pkgconfig:/opt/cray/pe/fftw/2.1.5.9/lib/pkgconfig:/opt/cray/llm/21.3.446-6.0.4.0_20.1__gbe30105.ari/lib64/pkgconfig:/opt/cray/alps/6.4.3-6.0.4.1_2.1__g92a2fc0.ari/lib64/pkgconfig:/opt/cray/pe/atp/2.1.1/lib/pkgconfig
+PKG_CONFIG_PATH_DEFAULT=/opt/cray/pe/papi/5.5.1.3/lib64/pkgconfig
+POSTGPEXEC=/scratch/cccr/prajeesh/global_shared.v14.1.3/exec/ncep_post
+POSTGPVARS=KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+PRGENVMODULES=PrgEnv-cray:PrgEnv-gnu:PrgEnv-intel:PrgEnv-pathscale:PrgEnv-pgi
+PROFILEREAD=true
+PS4=$SECONDS + 
+PWD=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N/ptmp/gfs_forecast_high_00.20020
+PYTHONIOENCODING=UTF-8
+PYTHONPATH=/opt/cray/llm/21.3.446-6.0.4.0_20.1__gbe30105.ari/lib64/python
+PYTHONSTARTUP=/etc/pythonstart
+QT_SYSTEM_DIR=/usr/share/desktop-data
+RCLOCAL_BASEOPTS=true
+RCLOCAL_PRGENV=true
+REDERR=2>
+REDOUT=1>>
+RERUN=NO
+RUN=gfs
+RUN_ENVIR=para
+SAVEGES=YES
+SCRgfs=/scratch/cccr/prajeesh/gfs.v14.1.1/scripts
+SCRglobal=/scratch/cccr/prajeesh/global_shared.v14.1.3/scripts
+SDK_HOME=/usr/lib64/jvm/java
+SENDCOM=YES
+SENDDBN=YES
+SENDDBN_GB2=YES
+SENDECF=YES
+SHELL=/bin/bash
+SHLVL=3
+SHMEM_ABORT_ON_ERROR=1
+SIGHDR=/scratch/cccr/prajeesh/global_shared.v14.1.3/exec/global_sighdr
+SLEEP_INT=5
+SLEEP_TIME=5
+SLG=.true.
+TARGETMODULES=craype-abudhabi:craype-abudhabi-cu:craype-accel-host:craype-accel-nvidia20:craype-accel-nvidia30:craype-accel-nvidia35:craype-barcelona:craype-broadwell:craype-haswell:craype-hugepages128K:craype-hugepages128M:craype-hugepages16M:craype-hugepages256M:craype-hugepages2M:craype-hugepages32M:craype-hugepages4M:craype-hugepages512K:craype-hugepages512M:craype-hugepages64M:craype-hugepages8M:craype-intel-knc:craype-interlagos:craype-interlagos-cu:craype-istanbul:craype-ivybridge:craype-mc12:craype-mc8:craype-mic-knl:craype-network-aries:craype-network-gemini:craype-network-infiniband:craype-network-none:craype-network-seastar:craype-sandybridge:craype-shanghai:craype-target-compute_node:craype-target-local_host:craype-target-native:craype-xeon:xtpe-barcelona:xtpe-interlagos:xtpe-interlagos-cu:xtpe-istanbul:xtpe-mc12:xtpe-mc8:xtpe-network-gemini:xtpe-network-seastar:xtpe-shanghai:xtpe-target-native:xtpe-xeon
+TBBROOT=/opt/intel/compilers_and_libraries_2017.5.239/linux/tbb
+TMPDIR=/var/tmp/pbs.1359545.sdb
+TOOLMODULES=apprentice:apprentice2:atp:chapel:cray-lgdb:craypat:craypkg-gen:cray-snplauncher:ddt:gdb:iobuf:papi:perftools:perftools-lite:stat:totalview:xt-craypat:xt-lgdb:xt-papi:xt-totalview
+TZ=Asia/Kolkata
+USER=prajeesh
+USERMODULES=acml:alps:apprentice:apprentice2:atp:blcr:cce:chapel:cray-ccdb:cray-fftw:cray-ga:cray-hdf5:cray-hdf5-parallel:cray-lgdb:cray-libsci:cray-libsci_acc:cray-mpich:cray-mpich2:cray-mpich-compat:cray-netcdf:cray-netcdf-hdf5parallel:cray-parallel-netcdf:craypat:craype:cray-petsc:cray-petsc-complex:craypkg-gen:cray-shmem:cray-snplauncher:cray-tpsl:cray-trilinos:cudatoolkit:ddt:fftw:ga:gcc:hdf5:hdf5-parallel:intel:iobuf:java:lgdb:libfast:libsci_acc:mpich1:netcdf:netcdf-hdf5parallel:netcdf-nofsync:netcdf-nofsync-hdf5parallel:ntk:onesided:papi:parallel-netcdf:pathscale:perftools:perftools-lite:petsc:petsc-complex:pgi:pmi:PrgEnv-cray:PrgEnv-gnu:PrgEnv-intel:PrgEnv-pathscale:PrgEnv-pgi:stat:totalview:tpsl:trilinos:xt-asyncpe:xt-craypat:xt-lgdb:xt-libsci:xt-mpich2:xt-mpt:xt-papi:xt-shmem:xt-totalview
+USHgfs=/scratch/cccr/prajeesh/gfs.v14.1.1/ush
+USHglobal=/scratch/cccr/prajeesh/global_shared.v14.1.3/ush
+UTILglobal=/scratch/cccr/prajeesh/global_shared.v14.1.3/util
+VERBOSE=YES
+WINDOWMANAGER=
+XCURSOR_THEME=DMZ
+XDG_CONFIG_DIRS=/etc/xdg
+XDG_DATA_DIRS=/usr/share
+XKEYSYMDB=/usr/X11R6/lib/X11/XKeysymDB
+XNLSPATH=/usr/share/X11/nls
+XTPE_NETWORK_TARGET=aries
+_CE_CONDA=
+_CE_M=
+_LMFILES_=/opt/cray/pe/modulefiles/modules/3.2.11.2:/opt/cray/ari/modulefiles/alps/6.4.3-6.0.4.1_2.1__g92a2fc0.ari:/opt/cray/ari/modulefiles/sysadm/2.4.119-6.0.4.0_14.2__gcab7125.ari:/opt/cray/ari/modulefiles/nodehealth/5.4.0-6.0.4.0_12.4__g3427370.ari:/opt/cray/ari/modulefiles/nodestat/2.3.78-6.0.4.0_7.2__gbe57af8.ari:/opt/cray/ari/modulefiles/sdb/3.3.729-6.0.4.0_16.2__gb405b22.ari:/opt/cray/ari/modulefiles/llm/21.3.446-6.0.4.0_20.1__gbe30105.ari:/opt/cray/ari/modulefiles/system-config/3.4.2456-6.0.4.1_13.1__g56652eb.ari:/opt/modulefiles/Base-opts/2.4.123-6.0.4.0_10.1__g6460790.ari:/opt/modulefiles/intel/17.0.5.239:/opt/cray/pe/craype/2.5.13/modulefiles/craype-network-aries:/opt/cray/pe/modulefiles/craype/2.5.13:/opt/cray/pe/modulefiles/cray-mpich/7.6.3:/opt/cray/pe/modulefiles/pmi/5.0.12:/opt/cray/pe/modulefiles/atp/2.1.1:/opt/cray/ari/modulefiles/rca/2.2.11-6.0.4.0_13.2__g84de67a.ari:/opt/cray/pe/modulefiles/perftools-base/6.5.2:/opt/cray/pe/modulefiles/PrgEnv-intel/6.0.4:/opt/cray/pe/modulefiles/fftw/2.1.5.9:/opt/cray/pe/modulefiles/cray-netcdf/4.4.1.1.3:/opt/cray/pe/craype/2.5.13/modulefiles/craype-broadwell:/opt/cray/pe/craype/2.5.13/modulefiles/craype-hugepages256M
+craype_already_loaded=0
+crtm_ver=v2.0.6
+cyc=00
+cycle=t00z
+envir=para
+g2tmpl_ver=v1.3.0
+gfs_ver=v14.1.1
+global_shared_ver=v14.1.3
+grib_util_ver=1.0.3
+hwrf_ver=v9.0.20
+intel_already_loaded=0
+jlogfile=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N//OUTPUT/logs/jlogfiles/jlogfile.gfs_forecast_high_00.20179
+job=gfs_forecast_high_00
+jobid=LLgfs_forecast_high_00.o20179
+outid=LLgfs_forecast_high_00
+pgmerr=errfile
+pgmout=OUTPUT.20179
+pid=20179
+post_times= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+prod_util_ver=1.0.5
+restart_file=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N//OUTPUT/gfs.t00z.logf
+semilag=.true.
+threads=6
+wave=1534
+A__z="*SHLVL
+-----------------------------------------------------
+ exgfs_nceppost.sh.ecf
+ Apr 99 - Michaud - Generated to post global forecast
+ Mar 03 - Zhu - Add post for 0.5x0.5 degree
+ Nov 03 - Gilbert - Modified from exglobal_post.sh.sms
+                    to run only one master post job.
+ Jan 07 - Cooke - Add DBNet Alert for Master files
+ May 07 - Chuang - Modified scripts to run unified post
+ Feb 10 - Carlis - Add 12-hr accum precip bucket at f192
+ Jun 12 - Wang   - Add option for grb2
+ Jul 14 - Carlis - Add 0.25 deg master 
+-----------------------------------------------------
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+running post at line 538 exgfs_nceppost.sh.ecf
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+running post at line 538 exgfs_nceppost.sh.ecf
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+running post at line 538 exgfs_nceppost.sh.ecf
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+running post at line 538 exgfs_nceppost.sh.ecf
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+running post at line 538 exgfs_nceppost.sh.ecf
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+running post at line 538 exgfs_nceppost.sh.ecf
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+Warning!!!! GTG is NOT generated!!! Currently GTG forecast hour is every 3 hour between [3, 36].
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+Warning!!!! GTG is NOT generated!!! Currently GTG forecast hour is every 3 hour between [3, 36].
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+Warning!!!! GTG is NOT generated!!! Currently GTG forecast hour is every 3 hour between [3, 36].
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+Warning!!!! GTG is NOT generated!!! Currently GTG forecast hour is every 3 hour between [3, 36].
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+Warning!!!! GTG is NOT generated!!! Currently GTG forecast hour is every 3 hour between [3, 36].
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+Warning!!!! GTG is NOT generated!!! Currently GTG forecast hour is every 3 hour between [3, 36].
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+Warning!!!! GTG is NOT generated!!! Currently GTG forecast hour is every 3 hour between [3, 36].
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+-----------------------------------------------------
+ Script: gfs_transfer.sh
+ 
+ Purpose - Copy GFS Posts to /nwges and /com
+           Alert posted files to DBNet
+ 
+ History - 
+    Cooke   - 04/21/05 - Inital version, based off of
+                         global_transfer.sh
+-----------------------------------------------------
+running post at line 428 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
+running post at line 478 exgfs_nceppost.sh.ecf
+Warning!!!! GTG is NOT generated!!! Currently GTG forecast hour is every 3 hour between [3, 36].
+Start processing fhr= 06 12 18 24 30 36 42 48 54 60 66 72 78 84 90 96 102 108 114 120 126 132 138 144 150 156 162 168 174 180 186 192 198 204 210 216 222 228 234 240
+running post at line 321 exgfs_nceppost.sh.ecf
+ &NAMPGB
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+address space limit (Kibytes)  (-M)  unlimited
+core file size (blocks)        (-c)  unlimited
+cpu time (seconds)             (-t)  unlimited
+data size (Kibytes)            (-d)  unlimited
+file size (blocks)             (-f)  unlimited
+locks                          (-x)  unlimited
+locked address space (Kibytes) (-l)  unlimited
+message queue size (Kibytes)   (-q)  800
+nice                           (-e)  0
+nofile                         (-n)  16384
+nproc                          (-u)  246878
+pipe buffer size (bytes)       (-p)  4096
+max memory size (Kibytes)      (-m)  unlimited
+rtprio                         (-r)  0
+socket buffer size (bytes)     (-b)  4096
+sigpend                        (-i)  246878
+stack size (Kibytes)           (-s)  unlimited
+swap size (Kibytes)            (-w)  not supported
+threads                        (-T)  not supported
+process size (Kibytes)         (-v)  unlimited
