@@ -2,8 +2,7 @@
 module hs_forcing_mod
 
 use mpp_mod, only: mpp_error, NOTE, FATAL, WARNING
-use diag_register_gsmphys_mod, only: id_ta, id_ua, id_va, id_ps
-use gfs_diag_manager_mod, only: update_opdata
+use gfs_diag_manager_mod, only: update_opdata, id_ta, id_ua, id_va, id_ps
 
 implicit none
 private

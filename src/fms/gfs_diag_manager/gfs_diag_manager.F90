@@ -17,7 +17,7 @@ module gfs_diag_manager_mod
    implicit none
    private
 
-   integer, public :: id_tas=0, id_ta=0, id_pr=0, id_prc=0
+   integer, public :: id_tas=0, id_ta=0, id_pr=0, id_prc=0, id_ua=0, id_va=0, id_ps=0
 
    integer :: lon_id, lat_id, lev_id
    integer :: lonr, latr, lats_node_r
