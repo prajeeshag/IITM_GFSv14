@@ -9,6 +9,5 @@
 
 
 gfs, ta, ta, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
-gfs, ua, ua, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
-gfs, va, va, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
-gfs, ps, ps, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+gfs, pr, pr, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+gfs, prc, prc, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2

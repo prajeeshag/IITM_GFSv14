@@ -17,21 +17,25 @@
      &                                   ls_dim,ls_max_node,me
       use gfs_dyn_coordinate_def, only : bk5,ck5,thref
       use deldifs_def           , only : bkly,ckly,dne,dno,rthk,rtrd,sf,
-     &                                   rtnp,jdel,dneh,dnoh,cthk
+     &                                   rtnp,jdel,dneh,dnoh,cthk,
+     &                                   rfacto, rfacte, facte, facto
       use gfs_dyn_physcons      , only : rerth => con_rerth,
      &                                   rd => con_rd,
      &                                   cp => con_cp
+      use omp_lib
 !
       implicit none
 !
       logical hybrid, gen_coord_hybrid
-      real(kind=kind_evod), dimension(len_trie_ls,2,levs,ntrac) :: rte
-      real(kind=kind_evod), dimension(len_trie_ls,2) :: we, qme, xe
+      real(kind=kind_evod), dimension(len_trie_ls,2,ntrac) :: rte
+      real(kind=kind_evod), dimension(len_trie_ls,2) :: we, xe
      &,                                                 ye, teme
+      real(kind=kind_evod), dimension(len_trie_ls,2) :: qme
 !
-      real(kind=kind_evod), dimension(len_trio_ls,2,levs,ntrac) :: rto
-      real(kind=kind_evod), dimension(len_trio_ls,2) :: wo, qmo, xo
+      real(kind=kind_evod), dimension(len_trio_ls,2,ntrac) :: rto
+      real(kind=kind_evod), dimension(len_trio_ls,2) :: wo, xo
      &,                                                 yo, temo
+      real(kind=kind_evod), dimension(len_trio_ls,2) :: qmo
       real(kind=kind_evod) :: pe1, pe2, po1, po2, deltim, sl(levs)
 !
       integer              ls_node(ls_dim,3)
@@ -53,182 +57,99 @@
       real(kind=kind_evod), parameter :: cons0=0.0, cons1=1.0, cons2=2.0
 !
       integer              indlsev,jbasev,indlsod,jbasod
+      integer           :: N_cutoff
+      real(kind=kind_evod) :: realval1
+      real(kind=kind_evod) :: rfact1, rfact2
 !
       include 'function_indlsev'
       include 'function_indlsod'
 !
 !......................................................................
+      N_cutoff = 0
+      realval1 = jcap*(jcap+1)
+
 !
       if (k_level == 0) then
-!!
-        allocate(rtrd(levs),rthk(levs),sf(levs),cthk(levs))
-        allocate ( dne(len_trie_ls) )
-        allocate ( dno(len_trio_ls) )
-        allocate ( dneh(len_trie_ls) )
-        allocate ( dnoh(len_trio_ls) )
         allocate ( bkly(levs) )        					! hmhj
         allocate ( ckly(levs) )        					! hmhj
         do k=1,levs
           bkly(k) = 1.0
           ckly(k) = 0.0
         enddo
-        if (gen_coord_hybrid) then					! hmhj
-          do  k=1,levs							! hmhj
-! hmhj ak5, bk5, ck5 in gen_coord_hybrid is the same order as model index
-            bkly(k) = 0.5*(bk5(k)+bk5(k+1))				! hmhj
-            ckly(k) = 0.5*(ck5(k)+ck5(k+1))*rkappa/thref(k)	        ! hmhj
-!           if( me == 0 )						! hmhj
-!    &         print*,'sl bkly ckly  in deldif=',k,sl(k),bkly(k),ckly(k)! hmhj
-          enddo								! hmhj
-        else if (hybrid) then						! hmhj
-          do  k=1,levs
-! hmhj   sl(k) go bottom to top but bk(k) go top to bottom
-            bkly(k) = 0.5*(bk5(levs-k+1)+bk5(levs-k+2))/sl(k)
-!           if( me == 0 ) print*,'sl bkly in deldif=',k,sl(k),bkly(k)
-          enddo
-        endif
-!
-        n0   = 0            ! maximum wavenumber for zero diffusion
-        jdel = 8            ! order of diffusion (even power to raise del)
-        np   = jcap
-        fshk = 1.0*hdif_fac ! extra height-dependent diffusion factor per scale height
-        if(jcap > 170) then
-!         reciprocal of time scale of diffusion at reference wavenumber np
-          rtnp = hdif_fac2*(jcap/170.)**4*1.1/3600
-!         rtnp = (jcap/170.)**4*1.1/3600
-          fshk = 2.2*hdif_fac         ! extra height-dependent diffusion factor per scale height
-        elseif(jcap == 170) then
-!         reciprocal of time scale of diffusion at reference wavenumber np
-          rtnp = hdif_fac2*4*3.e15/(rerth**4)*float(80*81)**2
-!         rtnp = 4*3.e15/(rerth**4)*float(80*81)**2
-        elseif(jcap == 126) then					! hmhj
-!         below has been tested in sigma-theta for 2 year cfs run	! hmhj
-          rtnp = hdif_fac2*4*3.e15/(rerth**4)*float(80*81)**2		! hmhj
-!         rtnp = 4*3.e15/(rerth**4)*float(80*81)**2		        ! hmhj
-          fshk = 1.5*hdif_fac         ! extra height-dependent diffusion factor per scale height
-        else
-!         reciprocal of time scale of diffusion at reference wavenumber np
-          rtnp = hdif_fac2*1*3.e15/(rerth**4)*float(80*81)**2
-!         rtnp = 3.e15/(rerth**4)*float(80*81)**2
-        endif
-!
-        if (me == 0) then
-          write(0,6) rtnp,np,n0,jdel
-    6     format(' horizontal diffusion parameters'/
-     &  '   effective ',f15.6,' microhertz at wavenumber ',i4/
-!    &  '   effective ',6pf10.3,' microhertz at wavenumber ',i4/
-     &  '   maximum wavenumber for zero diffusion ',i4/
-     &  '   order of diffusion ',i2)
-        endif
-!
-!       slrd0=0.002        ! sigma level at which to begin rayleigh damping
-!       slrd0=0.0005       ! sigma level at which to begin rayleigh damping
-
-        rtrd1 = 0.0        !rayleigh friction is now done in gbphys
-                           !on the grid using rayleigh_damp.f when adiabatic=.false.
-        if(adiabatic) rtrd1 = 1./(5*86400) ! reciprocal of time scale per scale height
-                                           ! above beginning sigma level for rayleigh damping
-!
-        wrk2 = log(1/fshk)
-        wrk3 = log(1/cdamp(2))
-
-        do k=1,levs
-          rtrd(k) = 0.0
-          rthk(k) = (sl(k))**wrk2
-          cthk(k) = (sl(k))**wrk3
+        do  k=1,levs
+          bkly(k) = 0.5*(bk5(levs-k+1)+bk5(levs-k+2))/sl(k)
         enddo
+        allocate(rfacte(len_trie_ls,levs))
+        allocate(rfacto(len_trio_ls,levs))
+        allocate(facte(len_trie_ls,levs))
+        allocate(facto(len_trio_ls,levs))
+        rfacte(:,:) = 0.98
+        rfacto(:,:) = 0.98
+        facte(:,:) = -1. + 1./0.98
+        facto(:,:) = -1. + 1./0.98
 
-        if (rtrd1 > 0.0) then
-          do k=1,levs
-            if(sl(k) < slrd0) then
-              wrk1 = log(slrd0/sl(k))
-              if (k > levr) then
-                rtrd(k) = rtrd1 * wrk1 * wrk1
-              else
-                rtrd(k) = rtrd1 * wrk1
-              endif
-            endif
-          enddo
-        endif
-!
-        jdelh   = jdel/2
-        npd     = max(np-n0,0)
-        realval = npd*(npd+1)
-        dn1     = cons2*rtnp/realval**jdelh
-!       dneh = 0.0
-!       dnoh = 0.0
-        wrk1 = cdamp(1) / (rerth*rerth)
-!
-!......................................................................
-!
-        do locl=1,ls_max_node
-               l = ls_node(locl,1)
+        do  k=1,levs
+         do locl=1,ls_max_node
+          l = ls_node(locl,1)
           jbasev = ls_node(locl,2)
           indev  = indlsev(l,l)
           do n=l,jcap,2
-            nd          = max(n-n0,0)
-            realval     = nd*(nd+1)
-            dne(indev)  = dn1*realval**jdelh
-            dneh(indev) =  wrk1 * realval
-            indev       = indev + 1
+            if (n>N_cutoff) then
+              realval     = n*(n+1)
+              rfact1  = (1./(2.*jcap))*(realval/realval1)**2.
+              rfact2 = exp( -0.5*( (n-jcap)/(n-N_cutoff))**2.)
+              facte(indev,k) = rfact1*rfact2
+              rfacte(indev,k)  = 1./(1.+rfact1*rfact2)
+              indev       = indev + 1
+             endif
+           enddo
           enddo
-        enddo
-!
-!......................................................................
-!
-        do locl=1,ls_max_node
-               l = ls_node(locl,1)
-          jbasev = ls_node(locl,2)
-          if (mod(l,2) == mod(jcap+1,2)) then
-            dne(indlsev(jcap+1,l))  = cons0 ! set the even (n-l) terms of the top row to zero
-            dneh(indlsev(jcap+1,l)) = cons0 ! set the even (n-l) terms of the top row to zero
-          endif
-        enddo
-!
-!......................................................................
-!
-        do locl=1,ls_max_node
-               l = ls_node(locl,1)
-          jbasod = ls_node(locl,3)
-          indod  = indlsod(l+1,l)
-          do n=l+1,jcap,2
-            nd          = max(n-n0,0)
-            realval     = nd*(nd+1)
-            dno(indod)  = dn1*realval**jdelh
-            dnoh(indod) =  wrk1 * realval
-            indod       = indod + 1
-          enddo
-        enddo
-!
-!......................................................................
-!
-        do locl=1,ls_max_node
-               l = ls_node(locl,1)
-          jbasod = ls_node(locl,3)
-          if (mod(l,2) /= mod(jcap+1,2)) then
-            dno(indlsod(jcap+1,l))  = cons0 ! set the odd (n-l) terms of the top row to zero
-            dnoh(indlsod(jcap+1,l)) = cons0 ! set the odd (n-l) terms of the top row to zero
-          endif
-        enddo
-!
-!......................................................................
-!
-        do k=1,levs
-          kd    = max(k-1,1)
-          ku    = min(k+1,levs)
-          sf(k) = sl(k)/(sl(ku)-sl(kd))/sqrt(cons2)     !constant
-        enddo
-!
-        return
 
-      endif
+         do locl=1,ls_max_node
+           l = ls_node(locl,1)
+           jbasev = ls_node(locl,2)
+           if (mod(l,2) == mod(jcap+1,2)) then
+             rfacte(indlsev(jcap+1,l),k)  = 1. ! set the even (n-l) terms of the top row to zero
+             facte(indlsev(jcap+1,l),k)  = 0. ! set the even (n-l) terms of the top row to zero
+           endif
+          enddo
+
+         do locl=1,ls_max_node
+            l = ls_node(locl,1)
+            jbasod = ls_node(locl,3)
+            indod  = indlsod(l+1,l)
+            do n=l+1,jcap,2
+              if (n>N_cutoff) then
+                realval     = n*(n+1)
+                rfact1  = (1./(2.*jcap))*(realval/realval1)**2.
+                rfact2 = exp( -0.5*( (n-jcap)/(n-N_cutoff))**2.)
+                facto(indod,k)  = rfact1*rfact2
+                rfacto(indod,k)  = 1./(1.+rfact1*rfact2)
+                indod       = indod + 1
+               endif
+             enddo
+          enddo
 !
+          do locl=1,ls_max_node
+             l = ls_node(locl,1)
+             jbasod = ls_node(locl,3)
+             if (mod(l,2) /= mod(jcap+1,2)) then
+                rfacto(indlsod(jcap+1,l),k)  = 1. ! set the odd (n-l) terms of the top row to zero
+                facto(indlsod(jcap+1,l),k)  = 0.
+             endif
+          enddo
+
+        enddo   ! k loop ends
+
+
+      endif 
+
+        n0   = 0            ! maximum wavenumber for zero diffusion
 !......................................................................
 !
       k = k_level
 !!
 !
-!     tem = coef00(k,1) * bkly(k)
 !
       do locl=1,ls_max_node
               l = ls_node(locl,1)
@@ -247,34 +168,23 @@
 !!       do n = n0, jcap+1, 2
          do indev = indev1 , indev2
  
-           fact             = deltim*dne(indev)*rthk(k)
-           rfact            = cons1/(cons1+fact)
-           rfactrd          = cons1/(cons1+fact+deltim*rtrd(k))
+           we(indev,1)      = we(indev,1)*rfacte(indev,k)
+           we(indev,2)      = we(indev,2)*rfacte(indev,k)
  
-           we(indev,1)      = we(indev,1)*rfactrd
-           we(indev,2)      = we(indev,2)*rfactrd
+           xe(indev,1)      = xe(indev,1)*rfacte(indev,k)
+           xe(indev,2)      = xe(indev,2)*rfacte(indev,k)
  
-           if (k > k2o) then
-             fact           = deltim*dneh(indev)*cthk(k)
-     &                      + fact
-           endif
-           wrk1             = cons1/(cons1+fact+deltim*rtrd(k))
-           xe(indev,1)      = xe(indev,1)*wrk1
-           xe(indev,2)      = xe(indev,2)*wrk1
-!          xe(indev,1)      = xe(indev,1)*rfactrd
-!          xe(indev,2)      = xe(indev,2)*rfactrd
- 
-           rte(indev,1,1,1) = rte(indev,1,1,1)*rfact
-           rte(indev,2,1,1) = rte(indev,2,1,1)*rfact
+           rte(indev,1,1) = rte(indev,1,1)*rfacte(indev,k)
+           rte(indev,2,1) = rte(indev,2,1)*rfacte(indev,k)
 
            pe1 = bkly(k)*qme(indev,1) + ckly(k)*teme(indev,1)        	! hmhj
            pe2 = bkly(k)*qme(indev,2) + ckly(k)*teme(indev,2)        	! hmhj
  
            ye(indev,1)      = ( ye(indev,1)
-     &                      +   fact*coef00(k,1)* pe1 )*rfact   	! hmhj
+     &         +   facte(indev,k)*coef00(k,1)* pe1 )*rfacte(indev,k)   	! hmhj
  
            ye(indev,2)      = ( ye(indev,2)
-     &                      +   fact*coef00(k,1)* pe2 )*rfact    	! hmhj
+     &         +   facte(indev,k)*coef00(k,1)* pe2 )*rfacte(indev,k)    	! hmhj
  
          enddo
        enddo
@@ -291,37 +201,25 @@
          else
            indod2 = indlsod(jcap+1,l)
          endif
-!        do n = l+1, jcap+1, 2
          do indod = indod1 , indod2
  
-           fact             = deltim*dno(indod)*rthk(k)
-           rfact            = cons1/(cons1+fact)
-           rfactrd          = cons1/(cons1+fact+deltim*rtrd(k))
+           wo(indod,1)      = wo(indod,1)*rfacto(indod,k)
+           wo(indod,2)      = wo(indod,2)*rfacto(indod,k)
  
-           wo(indod,1)      = wo(indod,1)*rfactrd
-           wo(indod,2)      = wo(indod,2)*rfactrd
- 
-           if (k > k2o) then
-             fact           = deltim*dnoh(indod)*cthk(k)
-     &                      + fact
-           endif
-           wrk1             = cons1/(cons1+fact+deltim*rtrd(k))
-           xo(indod,1)      = xo(indod,1)*wrk1
-           xo(indod,2)      = xo(indod,2)*wrk1
-!          xo(indod,1)      = xo(indod,1)*rfactrd
-!          xo(indod,2)      = xo(indod,2)*rfactrd
+           xo(indod,1)      = xo(indod,1)*rfacto(indod,k)
+           xo(indod,2)      = xo(indod,2)*rfacto(indod,k)
 
-           rto(indod,1,1,1) = rto(indod,1,1,1)*rfact
-           rto(indod,2,1,1) = rto(indod,2,1,1)*rfact
+           rto(indod,1,1) = rto(indod,1,1)*rfacto(indod,k)
+           rto(indod,2,1) = rto(indod,2,1)*rfacto(indod,k)
 
            po1 = bkly(k)*qmo(indod,1) + ckly(k)*temo(indod,1)       	! hmhj
            po2 = bkly(k)*qmo(indod,2) + ckly(k)*temo(indod,2)       	! hmhj
  
            yo(indod,1)      = ( yo(indod,1)
-     &                      +   fact*coef00(k,1)* po1)*rfact   		! hmhj
+     &        +   facto(indod,k)*coef00(k,1)* po1)*rfacto(indod,k)   		! hmhj
  
            yo(indod,2)      = ( yo(indod,2)
-     &                      +   fact*coef00(k,1)* po2 )*rfact        	! hmhj
+     &        +   facto(indod,k)*coef00(k,1)* po2 )*rfacto(indod,k)        	! hmhj
  
          enddo
        enddo
@@ -331,7 +229,6 @@
       if (ntrac  >  1) then
         do it=2,ntrac
 !
-!          do l = 0, jcap
            do locl=1,ls_max_node
                   l = ls_node(locl,1)
              jbasev = ls_node(locl,2)
@@ -346,23 +243,16 @@
              else
                indev2 = indlsev(jcap  ,l)
              endif
-!            do n = n0, jcap+1, 2
              do indev = indev1 , indev2
  
-               fact              = deltim*dne(indev)*rthk(k)
-               rfact             = cons1/(cons1+fact)
- 
-!              rte(indev,1,1,it) =   rte(indev,1,1,it) * rfact
-!              rte(indev,2,1,it) =   rte(indev,2,1,it) * rfact
-
                pe1 = bkly(k)*qme(indev,1) + ckly(k)*teme(indev,1)    	! hmhj
                pe2 = bkly(k)*qme(indev,2) + ckly(k)*teme(indev,2)     	! hmhj
 
-               rte(indev,1,1,it) = ( rte(indev,1,1,it)
-     &                           +   fact*coef00(k,it)* pe1 )*rfact 	! hmhj
+               rte(indev,1,it) = ( rte(indev,1,it)
+     &              + facte(indev,k)*coef00(k,it)* pe1 )*rfacte(indev,k) 	! hmhj
  
-               rte(indev,2,1,it) = ( rte(indev,2,1,it)
-     &                           +   fact*coef00(k,it)* pe2 )*rfact 	! hmhj
+               rte(indev,2,it) = ( rte(indev,2,it)
+     &              + facte(indev,k)*coef00(k,it)* pe2 )*rfacte(indev,k) 	! hmhj
  
              enddo
            enddo
@@ -382,20 +272,14 @@
 !            do n = l+1, jcap+1, 2
              do indod = indod1 , indod2
  
-               fact              = deltim*dno(indod)*rthk(k)
-               rfact             = cons1/(cons1+fact)
- 
-!              rto(indod,1,1,it) =   rto(indod,1,1,it) * rfact
-!              rto(indod,2,1,it) =   rto(indod,2,1,it) * rfact
-!
-               po1 = bkly(k)*qmo(indod,1) + ckly(k)*temo(indod,1   )	! hmhj
+               po1 = bkly(k)*qmo(indod,1) + ckly(k)*temo(indod,1)	! hmhj
                po2 = bkly(k)*qmo(indod,2) + ckly(k)*temo(indod,2)   	! hmhj
 
-               rto(indod,1,1,it) = ( rto(indod,1,1,it)
-     &                           +   fact*coef00(k,it)* po1 )*rfact  	! hmhj
+               rto(indod,1,it) = ( rto(indod,1,it)
+     &          +   facto(indod,k)*coef00(k,it)* po1 )*rfacto(indod,k)  	! hmhj
  
-               rto(indod,2,1,it) = ( rto(indod,2,1,it)
-     &                           +   fact*coef00(k,it)* po2 )*rfact   	! hmhj
+               rto(indod,2,it) = ( rto(indod,2,it)
+     &          +   facto(indod,k)*coef00(k,it)* po2 )*rfacto(indod,k)   	! hmhj
  
              enddo
            enddo
@@ -403,7 +287,6 @@
       endif
 !
 
-!     print *,' leave deldifs_fd ' 					! hmhj
 !!
       return
       end
