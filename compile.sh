@@ -93,7 +93,7 @@ lib=$builddir/$libname
 mkdir -p $builddir
 cd $builddir
 echo "...............Compiling $libname.........................."
-$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8 -check all" $paths
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8 " $paths
 gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
