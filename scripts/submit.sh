@@ -3,7 +3,7 @@
 #PBS -N _EXPNAME_
 #PBS -j oe
 #PBS -l walltime=19:00:00
-#PBS -l nodes=16:ppn=36 
+#PBS -l select=251:ncpus=36:vntype=cray_compute -l place=scatter
 #PBS -q cccr
 #PBS -V
 

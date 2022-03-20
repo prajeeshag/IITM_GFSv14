@@ -1,7 +1,6 @@
 #!/bin/sh --login
 
 #PBS -N GFS-chgres
-###PBS -l select=1:ncpus=16:mem=250GB
 #PBS -l select=1:ncpus=16
 #PBS -q cccr
 #PBS -l walltime=1:00:00 
@@ -24,6 +23,8 @@ export ntasks=1
 export ptile=6
 export threads=6
 ROOTDIR=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14
+
+. $ROOTDIR/.env
 
 export FIXgsm=$FIXDIR  # path to fix files
 export RUN_ENVIR=para

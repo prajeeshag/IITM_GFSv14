@@ -2235,7 +2235,7 @@
 
  iret=0
  print*,"- READ CONFIGURATION NAMELIST."
- open(81, iostat=istat, err=900)
+ open(81, file='chgres.nml', iostat=istat, err=900)
  read(81, nml=soil_parameters, iostat=istat, err=910)
  read(81, nml=veg_parameters, iostat=istat, err=910)
  read(81, nml=options, iostat=istat, err=910)
@@ -2663,7 +2663,7 @@
 
  print*,"- READ CONFIGURATION NAMELIST."
 
- open(81, iostat=istat, err=900)
+ open(81, file='chgres.nml', err=900)
  read(81, nml=optional_output_fields, iostat=istat, err=910)
  close(81)
 

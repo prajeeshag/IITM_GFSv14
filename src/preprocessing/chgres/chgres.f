@@ -326,8 +326,9 @@
       call instrument(30,kall,ttot,tmin,tmax)
       CALL W3TAGB('GLOBAL_CHGRES',1999,0253,0056,'NP23')
       CALL GFUNCPHYS
-      READ(*,NAMCHG)
-
+      OPEN(10, FILE='chgres.nml', status='old')
+      READ(10,NAMCHG)
+      CLOSE(10)
       write(6,namchg)
 !
       latch2 = latch + latch

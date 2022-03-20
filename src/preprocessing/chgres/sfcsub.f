@@ -780,8 +780,10 @@
           fstcs(k) = 0.
         enddo
 !     print *,' in sfcsub nlunit=',nlunit,' me=',me,' ialb=',ialb
+        open(nlunit, file='chgres.nml', status='old')
         rewind(nlunit)
         read (nlunit,namsfc)
+        close(nlunit)
 !       write(6,namsfc)
 !
         if (me .eq. 0) then
