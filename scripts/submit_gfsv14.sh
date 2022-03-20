@@ -25,7 +25,6 @@ NSTINP=$ICdir/gfs.t${cyc}z.nstanl.nemsio  # IC nst file
 
 
 
-
 ROOTDIR=_ROOTDIR_
 . $ROOTDIR/.env
 
@@ -95,7 +94,7 @@ EOFF
 
 if [ "$CHGRES" = true ] ; then
 
-ln -sf /scratch/cccr/prajeesh/GFSv14_aux/fix/fix_am/global_slmask.t1534.6156.3070.nc slmask.nc
+ln -sf $FIXDIR/global_slmask.t1534.6156.3070.nc slmask.nc
 ln -sf $FIXDIR/global_hyblev.l64.txt chgres.inp.siglevel
 ln -sf $FIXDIR/global_lonsperlat.t$JCAP.$NLON.$NLAT.txt chgres.inp.lonsperlat
 ln -sf $FIXDIR/global_lonsperlat.t$JCAP.$NLON.$NLAT.txt chgres.inp.lpl3
@@ -202,7 +201,7 @@ cat <<EOFCHA > _submit_chres.sh
 
 #PBS -N _EXPNAME_-chgres
 #PBS -l select=1:ncpus=16
-#PBS -q cccr
+#PBS -q $QUEUE
 #PBS -l walltime=1:00:00 
 
 . $ROOTDIR/bin/env._MACH_
@@ -853,7 +852,7 @@ cat <<EOFG > _submit.sh
 #PBS -j oe
 #PBS -l walltime=19:00:00
 #PBS -l select=251:ncpus=36:vntype=cray_compute -l place=scatter
-#PBS -q cccr
+#PBS -q $QUEUE
 #PBS -V
 #$COND
 
