@@ -858,7 +858,7 @@ cat <<EOFG > _submit.sh
 
 set -e
 
-export threads=6
+threads=6
 
 . $ROOTDIR/bin/env._MACH_
 
@@ -869,8 +869,8 @@ module load craype-hugepages16M
 
 export KMP_AFFINITY=disabled
 export OMP_STACKSIZE=1024m
-export OMP_NUM_THREADS=$threads
-export NTHREADS=$threads
+export OMP_NUM_THREADS=\$threads
+export NTHREADS=\$threads
 
 cd \$PBS_O_WORKDIR
 
