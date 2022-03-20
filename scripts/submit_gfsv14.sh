@@ -1,19 +1,29 @@
 #!/bin/bash
 
-START_YEAR=2018
-START_MONTH=8
-START_DAY=10
+START_YEAR=2018 #model start year
+START_MONTH=8   #model start month
+START_DAY=10    #model start day
 FHMAX=240 # Model run hours
 NLON=_NLON_
 NLAT=_NLAT_
 JCAP=_JCAP_
 CHGRES=true # whether to run change resolution for IC's
+ICdir=/scratch/cccr/prajeesh/GFS_IC_SL/nemsio_20180810 # path to IC files
 
-ICdir=/scratch/cccr/prajeesh/GFS_IC_SL/nemsio_20180810 # path to IC files to be regridded
+
 cyc=00
-SIGINP=$ICdir/gfs.t${cyc}z.atmanl.nemsio  # input sig file
-SFCINP=$ICdir/gfs.t${cyc}z.sfcanl.nemsio  # input sfc file
-NSTINP=$ICdir/gfs.t${cyc}z.nstanl.nemsio  # input nst file
+SIGINP=$ICdir/gfs.t${cyc}z.atmanl.nemsio  # IC sig file
+SFCINP=$ICdir/gfs.t${cyc}z.sfcanl.nemsio  # IC sfc file
+NSTINP=$ICdir/gfs.t${cyc}z.nstanl.nemsio  # IC nst file
+
+
+
+
+
+
+
+
+
 
 
 ROOTDIR=_ROOTDIR_
@@ -190,7 +200,7 @@ EOFCH
 cat <<EOFCHA > _submit_chres.sh
 #!/bin/sh --login
 
-#PBS -N GFS-chgres
+#PBS -N _EXPNAME_-chgres
 #PBS -l select=1:ncpus=16
 #PBS -q cccr
 #PBS -l walltime=1:00:00 
@@ -212,18 +222,28 @@ cd \$PBS_O_WORKDIR
 aprun -n 1 -N 1 -j 1 -d 24 -cc depth _CHGRESEXE_ 1>OUTPUT.chgres 2>ERROR.chgres
 
 EOFCHA
+echo "Submitting chgres..."
+output=$(qsub < _submit_chres.sh)
+echo $output
+jobid=$(echo $output | awk -F "." '{print $1}')
+if [ "$jobid" -eq "$jobid" ] 2>/dev/null; then
+    echo "Job submitted" 
+else
+  echo $jobid
+    echo "Job not submitted" 
+    exit 1
+fi
 
-qsub _submit_chres.sh
+COND="PBS -W depend=afterok:$jobid"
 
 else
 
 ln -sf $SIGINP sig_ini
 ln -sf $SFCINP sfc_ini
 ln -sf $NSTINP nst_ini
+COND=""
 
 fi
-
-exit 
 
 cat <<EOF > atm_namelist
  &nam_dyn
@@ -835,6 +855,7 @@ cat <<EOFG > _submit.sh
 #PBS -l select=251:ncpus=36:vntype=cray_compute -l place=scatter
 #PBS -q cccr
 #PBS -V
+#$COND
 
 set -e
 
@@ -856,8 +877,9 @@ cd \$PBS_O_WORKDIR
 
 EXE=_EXE_
 
-aprun -j1 -n 1001 -N 4 -cc depth $EXE 1> OUTPUT.NEMS 2> ERROR.NEMS
+aprun -j1 -n 1001 -N 4 -cc depth \$EXE 1> OUTPUT.NEMS 2> ERROR.NEMS
 EOFG
 
+echo "Submiting model run..."
 qsub _submit.sh
 
