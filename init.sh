@@ -40,4 +40,5 @@ fi
 	
 echo "export rootdir=$rootdir" >> .env
 
+echo "export FIXDIR=   # path to fix directory" >> .env
 

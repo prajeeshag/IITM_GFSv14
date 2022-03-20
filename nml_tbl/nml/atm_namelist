@@ -1,5 +1,5 @@
  &nam_dyn
-  FHOUT=6, FHMAX=24, IGEN=81, DELTIM=450,
+  FHOUT=6, FHMAX=120, IGEN=81, DELTIM=450,
   FHRES=264, FHROT=0, FHDFI=3, nsout=0,
   nxpt=1, nypt=2, jintmx=2, lonf=_NLON_, latg=_NLAT_,
   jcap=_JCAP_, levs=64,  levr=64,
@@ -21,7 +21,7 @@
   VC=0.0,VC_TAU=4.32E4, 1.728E5, 2.592E6, 7.776E6, 3.1536E7,VC_LSCALE=1000.E3, 1000.E3, 2000.E3, 2000.E3, 2000.E3,VCAMP=0.0, -999., -999., -999, -999,ISEED_VC=0,
   nemsio_in=.true.,nemsio_out=.true.,sigio_out=.false.,shuff_lats_a=.false.,hdif_fac=1.0,hdif_fac2=1.0,settls_dep3ds=.true.,settls_dep3dg=.true.,redgg_a=.true.,gg_tracers=.false.,sl_epsln=0.02,ref_temp=350.0,yhalo=10,phigs_d=60.0,ldfi_spect=.true.,cdamp=50000,2.0,k2o=32,ref_pres=100.0 /
  &nam_phy
-  FHOUT=6, FHMAX=24, IGEN=81, DELTIM=450,
+  FHOUT=6, FHMAX=120, IGEN=81, DELTIM=450,
   DTPHYS=225,
   FHRES=264, FHROT=0, FHCYC=24, FHDFI=3,
   FHZER=6, FHLWR=3600, FHSWR=3600,nsout=0,

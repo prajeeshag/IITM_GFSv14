@@ -8,8 +8,9 @@
 #PBS -V
 
 set -xe
+
 rootdir=_ROOTDIR_
-export threads=1
+export threads=6
 
 . $rootdir/bin/env._MACH_
 
@@ -18,10 +19,6 @@ ulimit -s unlimited
 ulimit -a
 module load craype-hugepages16M
 
-
-#############################################################
-# WCOSS_C environment settings
-#############################################################
 export KMP_AFFINITY=disabled
 export OMP_STACKSIZE=1024m
 export OMP_NUM_THREADS=$threads

@@ -257,7 +257,7 @@ echo "...............Done Compiling $exename....................."
 
 
 exename='chgres'
-libsrc="preprocessing/chres/sorc_global_chgres"
+libsrc="preprocessing/chgres/"
 builddir=$EXECDIR/$libsrc
 paths=$SRCDIR/$libsrc
 lib=$builddir/$libname

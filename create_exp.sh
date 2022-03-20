@@ -1,21 +1,20 @@
 #!/bin/bash
 set -e
 
-FIXDIR="/scratch/cccr/prajeesh/GFSv14_fix/fix_am"
-
 usage (){
 	echo
 	echo $0 -r model_resolution -e exec_type -o experiment_directory_name 
 	echo
 	echo "options:"
-	echo "-r model_resolution : available resolutions are T254 TCO765 TCO1534"
+	echo "-r model_resolution : available resolutions are T254 TCO765 TCO1534 [default: TCO1534]"
     echo "-e exec_type: real or hs_forcing [default: real]"
 	echo "-o experiment_directory_name"
 	exit 1;
 }
 
+. .env
 
-res=""
+res="TCO1534"
 expname=""
 EXETYPE="real"
 
@@ -96,19 +95,19 @@ ln -sf $FIXDIR/ak_bk_64l.nc $EXPDIR/INPUT/ak_bk.nc
 ln -sf $FIXDIR/global_lonsperlat.t$JCAP.$NLON.$NLAT.txt $EXPDIR/lonsperlat.dat
 
 if [[ "$EXETYPE" == "real" ]]; then
-    ln -sf $FIXDIR/global_mtnvar.t$JCAP.$NLON.$NLAT.f77 $EXPDIR/global_mtnvar.f77
-    ln -sf $FIXDIR/global_vegtype.igbp.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/INPUT/global_vegtype.igbp.rg.grb
-    ln -sf $FIXDIR/global_soiltype.statsgo.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/INPUT/global_soiltype.statsgo.rg.grb
-    ln -sf $FIXDIR/global_mxsnoalb.uariz.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/INPUT/global_mxsnoalb.uariz.rg.grb
-    ln -sf $FIXDIR/global_snowfree_albedo.bosu.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/INPUT/global_snowfree_albedo.bosu.rg.grb
-    ln -sf $FIXDIR/global_soilmgldas.t$JCAP.$NLON.$NLAT.grb $EXPDIR/INPUT/global_soilmgldas.grb
-    ln -sf $FIXDIR/global_orography.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/orography
-    ln -sf $FIXDIR/global_orography_uf.t$JCAP.$NLON.$NLAT.rg.grb $EXPDIR/orography_uf
-
+    ln -sf $FIXDIR/global_mtnvar.t$JCAP.$NLON.$NLAT.nc $EXPDIR/global_mtnvar.nc
+    ln -sf $FIXDIR/global_orography.t$JCAP.$NLON.$NLAT.nc $EXPDIR/orography.nc
+    ln -sf $FIXDIR/global_orography_uf.t$JCAP.$NLON.$NLAT.nc $EXPDIR/orography_uf.nc
     ln -sf $FIXDIR/global_o3prdlos.f77 $EXPDIR/global_o3prdlos.f77
     ln -sf $FIXDIR/global_climaeropac_global.txt $EXPDIR/aerosol.dat
     ln -sf $FIXDIR/global_solarconstant_noaa_an.txt $EXPDIR/solarconstant_noaa_an.txt
     ln -sf $FIXDIR/fix_co2_proj/global_co2historicaldata_2018.txt $EXPDIR/co2historicaldata_2018.txt
+
+    ln -sf $FIXDIR/global_vegtype.igbp.t1534.3072.1536.rg.grb $EXPDIR/INPUT/global_vegtype.igbp.rg.grb
+    ln -sf $FIXDIR/global_soiltype.statsgo.t1534.3072.1536.rg.grb $EXPDIR/INPUT/global_soiltype.statsgo.rg.grb
+    ln -sf $FIXDIR/global_mxsnoalb.uariz.t1534.3072.1536.rg.grb $EXPDIR/INPUT/global_mxsnoalb.uariz.rg.grb
+    ln -sf $FIXDIR/global_snowfree_albedo.bosu.t1534.3072.1536.rg.grb $EXPDIR/INPUT/global_snowfree_albedo.bosu.rg.grb
+    ln -sf $FIXDIR/global_soilmgldas.t1534.3072.1536.grb $EXPDIR/INPUT/global_soilmgldas.grb
     ln -sf $FIXDIR/global_albedo4.1x1.grb $EXPDIR/INPUT/global_albedo4.1x1.grb
     ln -sf $FIXDIR/global_tg3clim.2.6x1.5.grb $EXPDIR/INPUT/global_tg3clim.2.6x1.5.grb
     ln -sf $FIXDIR/global_vegfrac.0.144.decpercent.grb $EXPDIR/INPUT/global_vegfrac.0.144.decpercent.grb

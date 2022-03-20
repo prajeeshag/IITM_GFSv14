@@ -305,8 +305,8 @@ elif [ ${OUTTYP} -eq 4 ] ; then
  export LEVS=`aprun -n 1 $nemsioget $NEMSINP levs |grep -i "levs" |awk -F"= " '{print $2}' |awk -F" " '{print $1}'`
  export MODEL_OUT_FORM=binarynemsiompiio
  export GFSOUT=${NEMSINP}
- ln -sf /scratch/cccr/prajeesh/GFSv14_fix/fix_am/global_lonsperlat.t${JCAP}.${LONB}.${LATB}.txt  ./lonsperlat.dat 
- ln -sf /scratch/cccr/prajeesh/GFSv14_fix/fix_am/global_hyblev.l${LEVS}.txt                      ./global_hyblev.txt
+ ln -sf /scratch/cccr/prajeesh/GFSv14_aux/fix/fix_am/global_lonsperlat.t${JCAP}.${LONB}.${LATB}.txt  ./lonsperlat.dat 
+ ln -sf /scratch/cccr/prajeesh/GFSv14_aux/fix/fix_am/global_hyblev.l${LEVS}.txt                      ./global_hyblev.txt
 fi
 
 # allow threads to use threading in Jim's sp lib

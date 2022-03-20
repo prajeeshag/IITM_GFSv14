@@ -22,13 +22,7 @@ date
 # obtain unique process id (pid) and make temp directory
 ####################################
 export pid=${pid:-$$}
-export DATAROOT=${DATAROOT:-/tmpnwprd1}
-export DATA=${DATA:-$DATAROOT/${job}.${pid}}
-mkdir -p $DATA
-cd $DATA
 
-export cyc=${cyc:-00}
-export cycle=t${cyc}z
 
 ####################################
 # Specify NET and RUN Name and model
@@ -61,30 +55,19 @@ export VERBOSE=${VERBOSE:-YES}
 # Specify Execution Areas
 ####################################
 export HOMEgfs=${HOMEgfs:-$NWROOT/gfs.${gfs_ver}}
-export PARMgfs=${PARMgfs:-$HOMEgfs/parm}
 export HOMEglobal=${HOMEglobal:-$NWROOT/global_shared.${global_shared_ver}}
 export EXECgsm=${EXECgsm:-$HOMEglobal/exec}
 export SCRgsm=${SCRgsm:-$HOMEglobal/scripts}
-#export FIXgsm=${FIXgsm:-$HOMEglobal/fix/fix_am}
-export FIXgsm=/scratch/cccr/prajeesh/GFSv14_fix/fix_am
 export USHgsm=${USHgsm:-$HOMEglobal/ush}
 export PARMgsm=${PARMgsm:-$HOMEglobal/parm}
 
 export ERRSCRIPT=err_chk
 export LOGSCRIPT=startmsg
 
-##############################
-# Run setpdy and initialize PDY variables
-##############################
-#setpdy.sh
-#. PDY
-
 ##############################################
 # Define GES directories
 ##############################################
 gespath=${gespath:-$GESROOT/${envir}}
-export GESdir=/scratch/cccr/prajeesh/GFS_IC_SL/nemsio_$PDY
-mkdir -m 775 -p $GESdir
 
 ##############################################
 # WCOSS_C environment settings
@@ -103,28 +86,16 @@ export APRUNC=${APRUNC:-"aprun -n 1 -N 1 -j 1 -d 24 -cc depth"}
 ####################################
 # Specify Special Fcst Vars
 ####################################
-. /scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/src/preprocessing/chres/gfs_forecast_low.parm
- 
+. $GFS_PARM 
 #
 msg="HAS BEGUN on `hostname`"
 
 #
 #
-   export FHINI=anl
-  export SIGINP=$GESdir/$RUN.$cycle.atm$FHINI.nemsio
-  export SFCINP=$GESdir/$RUN.$cycle.sfc$FHINI.nemsio
-  export NSTINP=$GESdir/$RUN.$cycle.nst$FHINI.nemsio
   export GFSOUT=$DATA/$RUN.$cycle.grdr.chgres
   export SFNOUT=$DATA/$RUN.$cycle.sfcr.chgres
   export NSNOUT=$DATA/$RUN.$cycle.nstr.chgres
 
-# Set SIGLEVEL according to vertical coordinate type in $SIGINP
-  if [ $NEMSIO_IN = .true. ]; then
-     export IDVC=${IDVC:-$($nemsioget ${SIGINP} IDVC |grep -i "IDVC" |awk -F"= " '{print $2}' |awk -F" " '{print $1}')}
-  else
-     export SIGHDR=$EXECgsm/global_sighdr
-     export IDVC=$(echo idvc|$SIGHDR ${SIGINP})
-  fi
   if [ $IDVC = 1 ] ; then
      export SIGLEVEL=$FIXgsm/global_siglevel.l$LEVS.txt
   elif [ $IDVC = 2 ] ; then
@@ -134,7 +105,7 @@ msg="HAS BEGUN on `hostname`"
 # Run global_chgres
   export CHGRESVARS="use_ufo=$use_ufo,nst_anl=$NST_ANL,rdgrid=$rdgrid,idvc=$IDVC,idvt=$idvt,idsl=$IDSL,IDVM=$idvm,OUTTYP=$OUTTYP_CH,nopdpvv=$nopdpvv"
   export OMP_NUM_THREADS_CH=${OMP_NUM_THREADS_CH:-24}
-  /scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/src/preprocessing/chres/global_chgres.sh
+  $GLOBAL_CHGRES
   rc=$?
   if [[ $rc -ne 0 ]];then $PERR;exit 1;fi
   cat $pgmout

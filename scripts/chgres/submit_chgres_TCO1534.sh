@@ -7,24 +7,31 @@
 #PBS -l walltime=1:00:00 
 
 set -x
+export cyc=00
+export ICdir=/scratch/cccr/prajeesh/GFS_IC_SL/nemsio_20180810 # path to IC files to be regridded
+
+export cycle=t${cyc}z
+export SIGINP=$ICdir/gfs.$cycle.atmanl.nemsio  # input sig file
+export SFCINP=$ICdir/gfs.$cycle.sfcanl.nemsio  # input sfc file
+export NSTINP=$ICdir/gfs.$cycle.nstanl.nemsio  # input nst file
+
+
+
+#############################################################
+cd $PBS_O_WORKDIR
 export NODES=1
 export ntasks=1
 export ptile=6
 export threads=6
+ROOTDIR=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14
 
-export CDATE=2018081000
-
-#############################################################
-# Specify whether the run is production or development
-#############################################################
+export FIXgsm=$FIXDIR  # path to fix files
 export RUN_ENVIR=para
-export PDY=`echo $CDATE | cut -c1-8`
-export cyc=`echo $CDATE | cut -c9-10`
 export job=gfs_forecast_high_${cyc}
 export pid=${pid:-$$}
 export jobid=${job}.${pid}
 export envir=para
-export DATAROOT=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/ptmp
+export DATA=./
 
 
 #############################################################
@@ -40,7 +47,6 @@ export prod_util_ver=1.0.5
 # Load modules
 ###  Phani#############
 #############################################################
-. /opt/cray/pe/modules/3.2.10.6/init/ksh
 module load pbs
 module switch PrgEnv-cray/6.0.4 PrgEnv-intel
 module load fftw
@@ -51,7 +57,6 @@ ulimit -c unlimited
 ulimit -s unlimited
 ulimit -a
 module load craype-hugepages16M
-module list
 
 
 #############################################################
@@ -66,12 +71,14 @@ export NTHREADS=$threads
 #############################################################
 # Set user specific variables
 #############################################################
+export PARA_CONFIG=$ROOTDIR/scripts/chgres/para_config
+export GFS_PARM=$ROOTDIR/scripts/chgres/gfs_forecast_low.parm
+export GLOBAL_CHGRES=$ROOTDIR/scripts/chgres/global_chgres.sh
+export CHGRESEXEC=$ROOTDIR/exec/preprocessing/chgres/chgres
+export GFS_INPUT_NML=$ROOTDIR/nml_tbl/gfs_input.nml
+
 export NWROOT=/home/SSPMRES/rphani/models/GSMv14
 export NWPROD=$NWROOT
-export PARA_CONFIG=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/src/preprocessing/chres/para_config
-export PARMgfs=/home/SSPMRES/rphani/test/create_tco_IC
-export JOBGLOBAL=$NWROOT/gfs.${gfs_ver}/jobs
-
 #############################################################
 # Set user specific variables
 #############################################################
@@ -92,13 +99,10 @@ export LATR=$LATB             # Number of Physics Latitudes
 export LONF=$LONB
 export LATG=$LATB
 
-export CHGRESEXEC=/home/SSPMRES/rphani/models/GSMv14/global_chgres.v14.1.1/sorc/global_chgres
-
 #############################################################
 # Execute job
 #############################################################
-#$JOBGLOBAL/JGFS_FORECAST_HIGH
-. /scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/src/preprocessing/chres/change_resol
+. $ROOTDIR/scripts/chgres/change_resol
 
 exit
 

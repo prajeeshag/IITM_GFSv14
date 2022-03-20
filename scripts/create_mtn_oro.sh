@@ -18,7 +18,7 @@ NR=0
 efac=0
 blat=0
 
-datadir=/scratch/cccr/prajeesh/GFSv14_fix/fix_am/
+datadir=/scratch/cccr/prajeesh/GFSv14_aux/fix/fix_am/
 
 . ../../.env 
 . $rootdir/bin/env.${MACH}

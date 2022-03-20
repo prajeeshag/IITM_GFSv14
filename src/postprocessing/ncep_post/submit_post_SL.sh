@@ -22,7 +22,7 @@ export job=gfs_forecast_high_${cyc}
 export pid=${pid:-$$}
 export jobid=${job}.${pid}
 export envir=para
-export CDIR=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N/
+export CDIR=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N/OUTPUT
 export DATAROOT=${CDIR}/ptmp
 
 

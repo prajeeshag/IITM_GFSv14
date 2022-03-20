@@ -310,7 +310,6 @@ export EXECgsm=${EXECgsm:-$HOMEglobal/exec}
 export DATA=${DATA:-$(pwd)}
 #  Filenames.
 export XC=${XC}
-export CHGRESEXEC=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/exec/preprocessing/chres/sorc_global_chgres/chgres
 export OROGRAPHY=$FIXgsm/global_orography.t${JCAP}.${LONB}.${LATB}.nc
 export OROGRAPHY_UF=$FIXgsm/global_orography_uf.t${JCAP}.$LONB.$LATB.nc
 export SIGLEVEL=$FIXgsm/global_hyblev.l${LEVS}.txt
@@ -387,14 +386,6 @@ export CHGRESVARS=${CHGRESVARS}
 #  Preprocessing
 $INISCRIPT
 pwd=$(pwd)
-if [[ -d $DATA ]]
-then
-   mkdata=NO
-else
-   mkdir -p $DATA
-   mkdata=YES
-fi
-cd $DATA||exit 99
 ################################################################################
 #  Change resolution
 #export XLSMPOPTS="parthds=$NTHREADS:stack=$NTHSTACK"
@@ -402,7 +393,7 @@ export PGM=$CHGRESEXEC
 export pgm=$PGM
 $LOGSCRIPT
 rm -f NULL
-cp /scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/scripts/gfs_input.nml .
+cp $GFS_INPUT_NML . 
 ln -sf $SIGINP        chgres.inp.sig
 ln -sf $OROGRAPHY     orography.nc
 ln -sf $OROGRAPHY_UF  orography_uf.nc
@@ -595,7 +586,6 @@ export err=$ERR
 ################################################################################
 #  Postprocessing
 cd $pwd
-[[ $mkdata = YES ]]&&rmdir $DATA
 $ENDSCRIPT
 set +x
 if [[ "$VERBOSE" = "YES" ]]
