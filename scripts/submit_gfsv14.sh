@@ -2,9 +2,7 @@
 
 
 START_DATE=20180810  # YYYYMMDD
-
-
-
+cyc=00
 FHMAX=240 # Model run hours
 NLON=_NLON_
 NLAT=_NLAT_
@@ -13,7 +11,7 @@ DO_CHGRES=true # whether to run change resolution for IC's
 DO_MODEL=true # whether to run the model
 DO_POST=true # whether to run the postprocessing 
 
-cyc=00
+ICdir=/scratch/cccr/prajeesh/GFS_IC_SL/nemsio_$START_DATE
 
 
 
@@ -29,7 +27,7 @@ ROOTDIR=_ROOTDIR_
 START_YEAR=`echo $START_DATE | cut -c1-4`
 START_MONTH=`echo $START_DATE | cut -c5-6`
 START_DAY=`echo $START_DATE | cut -c7-8`
-ICdir=$ICDIR/nemsio_$START_DATE 
+
 SIGINP=$ICdir/gfs.t${cyc}z.atmanl.nemsio  # IC sig file
 SFCINP=$ICdir/gfs.t${cyc}z.sfcanl.nemsio  # IC sfc file
 NSTINP=$ICdir/gfs.t${cyc}z.nstanl.nemsio  # IC nst file
