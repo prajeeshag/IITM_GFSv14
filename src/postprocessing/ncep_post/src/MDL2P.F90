@@ -78,6 +78,7 @@
                             JEND_2U, LSM, d3d_on, gocart_on, ioform
       use rqstfld_mod, only: IGET, LVLS, ID, IAVBLFLD, LVLSXML
       use gridspec_mod, only: GRIDTYPE, MAPTYPE, DXVAL
+      use CALVOR_MOD, only: CALVOR
 !- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 !
       implicit none

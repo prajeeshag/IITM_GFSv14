@@ -1,3 +1,6 @@
+MODULE CALVOR_MOD
+
+contains
       SUBROUTINE CALVOR(UWND,VWND,ABSV)
 !$$$  SUBPROGRAM DOCUMENTATION BLOCK
 !                .      .    .     
@@ -584,6 +587,7 @@
                 DO I=1,IM
                   ip1 = ie(i)
                   im1 = iw(i)
+                  print *, 'ii, i, imb2 =', ii, i, imb2
                   ii = i + imb2
                   if (ii > im) ii = ii - im
                   DIV(I,J,l) = ((UWND(ip1,J,l)-UWND(im1,J,l))*wrk2(i,j)          &
@@ -908,3 +912,4 @@
 !     END IF 
 
       END SUBROUTINE CALGRADPS
+END MODULE CALVOR_MOD

@@ -22,7 +22,7 @@ export job=gfs_forecast_high_${cyc}
 export pid=${pid:-$$}
 export jobid=${job}.${pid}
 export envir=para
-export CDIR=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/realTCO1534_N/OUTPUT
+export CDIR=/scratch/cccr/prajeesh/ShortRange/GFSv14_HS/IITM_GFSv14/work/new3
 export DATAROOT=${CDIR}/ptmp
 
 
@@ -101,7 +101,7 @@ export DTPHYS=225
    done
    echo nlist=$nlist 
  export post_times="$nlist"
-#  export post_times="06"
+export post_times="06"
 
 
 #############################################################

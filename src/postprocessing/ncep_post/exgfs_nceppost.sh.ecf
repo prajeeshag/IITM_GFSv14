@@ -143,7 +143,6 @@ then
    fi
    rm pgbfile pgifile pgbfile.grib2 tfile prmsl h5wav
    ecflow_client --event release_pgrb2_anl
-   exit
 fi
 
 SLEEP_LOOP_MAX=`expr $SLEEP_TIME / $SLEEP_INT`
@@ -321,8 +320,11 @@ do
     echo "running post at line 321 exgfs_nceppost.sh.ecf"
     $POSTGPSH
 
+    exit
+
     mv outpost_gfs_${VDATE}_${CTL} outpost_gfs_${VDATE}_master
     mv std.err_${VDATE}_${CTL} std.err_${VDATE}_master
+
 
     if test $GRIBVERSION = 'grib2'
     then
@@ -392,7 +394,7 @@ EOF
         cp pgifile $COMOUT/${MASTERFLIDX}f$fhr
       elif [ $GRIBVERSION = 'grib2' ] ; then
         cp $PGBOUT2 $COMOUT/${MASTERFL}
-	$GRB2INDEX $PGBOUT2 $COMOUT/${MASTERFLIDX}
+	    $GRB2INDEX $COMOUT/${MASTERFL} $COMOUT/${MASTERFLIDX}
       fi
  
       if test "$SENDDBN" = 'YES'
@@ -428,7 +430,7 @@ EOF
       export FILTER=0
     echo "running post at line 428 exgfs_nceppost.sh.ecf"
       $POSTGPSH
-      mv flxfile $COMOUT/${RUN}.t${cyc}z.sfluxgrbf${fhr}.grib2
+      mv flxfile $COMOUT/${RUN}.t${cyc}z.sfluxgrbf${fhr}.grib2 || echo "could not mv flxfile" && exit 1
       $WGRIB2 -s $COMOUT/${RUN}.t${cyc}z.sfluxgrbf${fhr}.grib2 > $COMOUT/${RUN}.t${cyc}z.sfluxgrbf${fhr}.grib2.idx
       if test "$SENDDBN" = 'YES'
       then

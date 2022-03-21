@@ -1,22 +1,19 @@
 #!/bin/bash
 
-START_YEAR=2018 #model start year
-START_MONTH=8   #model start month
-START_DAY=10    #model start day
+
+START_DATE=20180810  # YYYYMMDD
+
+
+
 FHMAX=240 # Model run hours
 NLON=_NLON_
 NLAT=_NLAT_
 JCAP=_JCAP_
-CHGRES=true # whether to run change resolution for IC's
-ICdir=/scratch/cccr/prajeesh/GFS_IC_SL/nemsio_20180810 # path to IC files
-
+DO_CHGRES=true # whether to run change resolution for IC's
+DO_MODEL=true # whether to run the model
+DO_POST=true # whether to run the postprocessing 
 
 cyc=00
-SIGINP=$ICdir/gfs.t${cyc}z.atmanl.nemsio  # IC sig file
-SFCINP=$ICdir/gfs.t${cyc}z.sfcanl.nemsio  # IC sfc file
-NSTINP=$ICdir/gfs.t${cyc}z.nstanl.nemsio  # IC nst file
-
-
 
 
 
@@ -27,6 +24,17 @@ NSTINP=$ICdir/gfs.t${cyc}z.nstanl.nemsio  # IC nst file
 
 ROOTDIR=_ROOTDIR_
 . $ROOTDIR/.env
+
+
+START_YEAR=`echo $START_DATE | cut -c1-4`
+START_MONTH=`echo $START_DATE | cut -c5-6`
+START_DAY=`echo $START_DATE | cut -c7-8`
+ICdir=$ICDIR/nemsio_$START_DATE 
+SIGINP=$ICdir/gfs.t${cyc}z.atmanl.nemsio  # IC sig file
+SFCINP=$ICdir/gfs.t${cyc}z.sfcanl.nemsio  # IC sfc file
+NSTINP=$ICdir/gfs.t${cyc}z.nstanl.nemsio  # IC nst file
+
+
 
 FNGLAC=$FIXDIR/global_glacier.2x2.grb
 FNMXIC=$FIXDIR/global_maxice.2x2.grb
@@ -91,8 +99,9 @@ cat <<EOFF > gfs_input.nml
 /
 EOFF
 
+# CHRES ------------------
 
-if [ "$CHGRES" = true ] ; then
+if [ "$DO_CHGRES" = true ] ; then
 
 ln -sf $FIXDIR/global_slmask.t1534.6156.3070.nc slmask.nc
 ln -sf $FIXDIR/global_hyblev.l64.txt chgres.inp.siglevel
@@ -226,7 +235,7 @@ output=$(qsub < _submit_chres.sh)
 echo $output
 jobid=$(echo $output | awk -F "." '{print $1}')
 if [ "$jobid" -eq "$jobid" ] 2>/dev/null; then
-    echo "Job submitted" 
+    echo "" 
 else
   echo $jobid
     echo "Job not submitted" 
@@ -244,6 +253,12 @@ COND=""
 
 fi
 
+
+
+
+#MODEL RUN -------------
+
+if [ "$DO_MODEL" = true ] ; then
 cat <<EOF > atm_namelist
  &nam_dyn
   FHOUT=6, FHMAX=$FHMAX, IGEN=81, DELTIM=450,
@@ -880,5 +895,108 @@ aprun -j1 -n 1001 -N 4 -cc depth \$EXE 1> OUTPUT.NEMS 2> ERROR.NEMS
 EOFG
 
 echo "Submiting model run..."
-qsub _submit.sh
+output=$(qsub < _submit.sh)
+echo $output
+jobid=$(echo $output | awk -F "." '{print $1}')
+if [ "$jobid" -eq "$jobid" ] 2>/dev/null; then
+    echo "" 
+else
+  echo $jobid
+    echo "Job not submitted" 
+    exit 1
+fi
+COND="PBS -W depend=afterok:$jobid"
 
+else
+
+COND=""
+
+fi
+
+
+#POST-PROCESSING -------------
+
+if [ "$DO_POST" = true ] ; then
+
+NDATE=$ROOTDIR/src/postprocessing/ncep_post/ndate
+RUNDIR=$(pwd)
+mkdir -p POST
+
+fhr=0
+while (( fhr < FHMAX ))
+do
+    (( fhr = fhr + 6 ))
+    if (( fhr < 10 )); then
+       fhr=0$fhr
+    fi
+    VDATE=`$NDATE +${fhr} ${START_DATE}${cyc}`
+    YY=`echo $VDATE | cut -c1-4`
+    MM=`echo $VDATE | cut -c5-6`
+    DD=`echo $VDATE | cut -c7-8`
+    HH=`echo $VDATE | cut -c9-10`
+
+    ofiles="pgbf flxf"
+    for ofile in $ofiles; do
+        OUTFILE=${ofile}_${VDATE}
+        PTMP=POST/ptmp/$VDATE/$ofile
+        mkdir -p $PTMP
+        cd $PTMP
+        ln -sf $FIXDIR/global_hyblev.l64.txt global_hyblev.txt
+        ln -sf $FIXDIR/global_lonsperlat.t$JCAP.$NLON.$NLAT.txt lonsperlat.dat
+        ln -sf $ROOTDIR/nml_tbl/nam_micro_lookup.dat eta_micro_lookup.dat
+        ln -sf $ROOTDIR/nml_tbl/params_grib2_tbl_new .
+        ln -sf $ROOTDIR/nml_tbl/postxconfig-NT-$ofile.txt postxconfig-NT.txt
+        ln -sf $RUNDIR/SFC.F$fhr sfcfile 
+        ln -sf $RUNDIR/SIG.F$fhr sigfile
+        ln -sf $RUNDIR/FLX.F$fhr flxfile
+
+cat <<EOF > itag
+sigfile
+binarynemsiompiio
+grib2
+$YY-$MM-$DD_$HH:00:00
+GFS
+flxfile
+
+&NAMPGB
+    KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
+ /
+EOF
+
+
+cat <<EOF > _submit_post.sh
+#!/bin/sh --login
+#PBS -N ${OUTFILE}-_EXPNAME_
+#PBS -l select=24:ncpus=36:vntype=cray_compute -l place=scatter
+#PBS -q $QUEUE
+#PBS -l walltime=2:00:00
+#$COND 
+
+cd \$PBS_O_WORKDIR
+
+export threads=6
+export KMP_AFFINITY=disabled
+export OMP_STACKSIZE=1024m
+export OMP_NUM_THREADS=\$threads
+export NTHREADS=\$threads
+
+export PGBOUT=$OUTFILE
+export SFCINPUT=sfcfile
+export IDRT=0
+export LATB=$NLAT
+export LONB=$NLON
+
+aprun -j 1 -n 24 -N 1 -d 1 -cc depth $ROOTDIR/exec/postprocessing/ncep_post/src/ncep_post > OUTPUT.POST 2> ERROR.POST 
+
+mv $OUTFILE $RUNDIR/POST/
+EOF
+
+        qsub _submit_post.sh
+
+        cd $RUNDIR
+
+    done
+
+done
+
+fi

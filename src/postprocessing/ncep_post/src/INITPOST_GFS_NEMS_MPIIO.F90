@@ -89,6 +89,7 @@
               dxval, dyval, truelat2, truelat1, psmapf, cenlat
       use rqstfld_mod,  only: igds, avbl, iq, is
       use nemsio_module_mpi
+      use CALVOR_MOD, only: CALGRADPS, CALDIV
 !- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
       implicit none
 !
