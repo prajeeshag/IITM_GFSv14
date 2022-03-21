@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-START_DATE=20180810  # YYYYMMDD
+START_DATE=_STARTDATE_  # START DATE in YYYYMMDD FORMAT
 cyc=00
 FHMAX=240 # Model run hours
 NLON=_NLON_
@@ -11,7 +11,7 @@ DO_CHGRES=true # whether to run change resolution for IC's
 DO_MODEL=true # whether to run the model
 DO_POST=true # whether to run the postprocessing 
 
-ICdir=/scratch/cccr/prajeesh/GFS_IC_SL/nemsio_$START_DATE
+ICdir=_ICDIR_ # Path to the Initial condition files
 
 
 
