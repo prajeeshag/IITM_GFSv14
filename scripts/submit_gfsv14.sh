@@ -3,7 +3,7 @@
 
 START_DATE=_STARTDATE_  # START DATE in YYYYMMDD FORMAT
 cyc=00
-FHMAX=240 # Model run hours
+FHMAX=_FHMAX_ # Model run hours
 NLON=_NLON_
 NLAT=_NLAT_
 JCAP=_JCAP_
