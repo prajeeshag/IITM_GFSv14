@@ -19,7 +19,6 @@ DO_CHGRES=false # whether to run change resolution for IC's
 DO_MODEL=false # whether to run the model
 DO_POST=false # whether to run the postprocessing 
 
-if [[ "$1" == "chgres" ]] then
 case $1 in
 
   chgres)
