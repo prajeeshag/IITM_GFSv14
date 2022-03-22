@@ -3,11 +3,11 @@
 
 # --> output files
 
-"OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc", 1, "days", 1, "days", "time", 1, "days",
+#"OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc", 1, "days", 1, "days", "time", 1, "days",
 
 # <-- output files
 
 
-gfs, ta, ta, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
-gfs, pr, pr, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
-gfs, prc, prc, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+#gfs, ta, ta, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+#gfs, pr, pr, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
+#gfs, prc, prc, 'OUTPUT/gfs_out%4yr%2mo%2dy%2hr%2mi%2sc', 'all', .true., 'none', 2
