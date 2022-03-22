@@ -7,14 +7,56 @@ FHMAX=_FHMAX_ # Model run hours
 NLON=_NLON_
 NLAT=_NLAT_
 JCAP=_JCAP_
-DO_CHGRES=true # whether to run change resolution for IC's
-DO_MODEL=true # whether to run the model
-DO_POST=true # whether to run the postprocessing 
 
 ICdir=_ICDIR_ # Path to the Initial condition files
 
 
 
+
+
+
+DO_CHGRES=false # whether to run change resolution for IC's
+DO_MODEL=false # whether to run the model
+DO_POST=false # whether to run the postprocessing 
+
+if [[ "$1" == "chgres" ]] then
+case $1 in
+
+  chgres)
+    DO_CHGRES=true
+    ;;
+
+  model)
+    DO_MODEL=true
+    ;;
+
+  post)
+    DO_POST=true
+    ;;
+
+  chgres_model)
+    DO_CHGRES=true
+    DO_MODEL=true
+    ;;
+
+  chgres_model_post)
+    DO_CHGRES=true
+    DO_MODEL=true
+    DO_POST=true
+    ;;
+
+  *)
+    echo -n "unknown option provide"
+    echo "$0 <option>"
+    echo options: 
+    echo    chgres
+    echo    model
+    echo    post
+    echo    chgres_model
+    echo    chgres_model_post
+    exit 1
+    ;;
+esac
 
 
 
