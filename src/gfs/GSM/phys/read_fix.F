@@ -9,8 +9,8 @@
       USE machine,   ONLY: kind_io8, kind_io4
       use namelist_physics_def, only: use_ufo, griboro
 
-      use mpp_mod, only: mpp_error, FATAL
-      use fms_io_mod, only: field_size, read_data, file_exist, 
+      use fms, only: mpp_error, FATAL
+      use fms, only: field_size, read_data, file_exist, 
      &      field_exist
 
       implicit none

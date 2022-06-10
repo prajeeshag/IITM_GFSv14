@@ -1,7 +1,7 @@
 
 module hs_forcing_mod
 
-use mpp_mod, only: mpp_error, NOTE, FATAL, WARNING
+use fms, only: mpp_error, NOTE, FATAL, WARNING
 use gfs_diag_manager_mod, only: update_opdata, id_ta, id_ua, id_va, id_ps
 
 implicit none

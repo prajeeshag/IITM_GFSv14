@@ -78,26 +78,33 @@ incs=$incs"-I$builddir "
 libs="${builddir}/$libname "$libs
 
 
-libname='lib_fms.a'
-libsrc="fms/"
-builddir=$EXECDIR/$libsrc
-fmsroot=$SRCDIR/$libsrc
-paths="$fmsroot/mpp $fmsroot/include \ 
-		$fmsroot/mpp/include \
-		$fmsroot/fms $fmsroot/platform \
-		$fmsroot/memutils $fmsroot/constants \
-		$fmsroot/horiz_interp $fmsroot/mosaic \
-		$fmsroot/diag_manager $fmsroot/time_manager \
-		$fmsroot/gfs_diag_manager"
-lib=$builddir/$libname
-mkdir -p $builddir
-cd $builddir
-echo "...............Compiling $libname.........................."
-$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8 " $paths
-gmake -j $npes
-echo "...............Done compiling $libname....................."
-incs=$incs"-I$builddir "
-libs="${builddir}/$libname "$libs
+# libname='lib_fms.a'
+# libsrc="fms/"
+# builddir=$EXECDIR/$libsrc
+# fmsroot=$SRCDIR/$libsrc
+# paths="$fmsroot/mpp $fmsroot/include \ 
+# 		$fmsroot/mpp/include \
+# 		$fmsroot/fms $fmsroot/platform \
+# 		$fmsroot/memutils $fmsroot/constants \
+# 		$fmsroot/horiz_interp $fmsroot/mosaic \
+# 		$fmsroot/diag_manager $fmsroot/time_manager \
+# 		$fmsroot/gfs_diag_manager"
+# lib=$builddir/$libname
+# mkdir -p $builddir
+# cd $builddir
+# echo "...............Compiling $libname.........................."
+# $MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8 " $paths
+# gmake -j $npes
+# echo "...............Done compiling $libname....................."
+# incs=$incs"-I$builddir "
+# libs="${builddir}/$libname "$libs
+
+if [ -z "$FMS_DIR" ]; then
+    echo "error: FMS_DIR not set!!!"
+    exit 1
+fi
+incs=$incs"-I${FMS_DIR} "
+libs="${FMS_DIR}/libFMS.a "$libs
 
 
 libname='lib_gsmphys.a'

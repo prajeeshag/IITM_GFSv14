@@ -78,6 +78,8 @@
 
       use gfs_diag_manager_mod, only : init_gfs_diag_manager, set_current_time, &
                                        end_gfs_diag_manager, gfs_diag_send_complete
+
+      use gfs_nc_io_mod, only: gfs_nc_io_init, 
 !
       implicit none
 
@@ -435,26 +437,6 @@
                          calendar    = calendar_esmf,                   &
                          rc          = rc1)
 
-      if (calendar_esmf == ESMF_CALKIND_GREGORIAN) then
-            call mpp_error(NOTE, 'setting FMS time manager calendar type to GREGORIAN')
-            call set_calendar_type(GREGORIAN)
-            calendar_type = GREGORIAN
-      else if (calendar_esmf == ESMF_CALKIND_360DAY ) then
-            call mpp_error(NOTE, 'setting FMS time manager calendar type to THIRTY_DAY_MONTHS')
-            call set_calendar_type(THIRTY_DAY_MONTHS)
-            calendar_type = THIRTY_DAY_MONTHS
-      else if (calendar_esmf == ESMF_CALKIND_JULIAN) then
-            call mpp_error(NOTE, 'setting FMS time manager calendar type to JULIAN')
-            call set_calendar_type(JULIAN)
-            calendar_type = JULIAN
-      else if (calendar_esmf == ESMF_CALKIND_NOLEAP) then
-            call mpp_error(NOTE, 'setting FMS time manager calendar type to NOLEAP')
-            call set_calendar_type(NOLEAP)
-            calendar_type = NOLEAP
-      else 
-            call mpp_error(FATAL, 'Unsupported Calendar type by FMS')
-      endif 
-
       call esmf_timeget(currtime, &
             yy=current_itime(1), &
             mm=current_itime(2), &
@@ -473,9 +455,6 @@
 
       call esmf_timeintervalget(timestep, s=dt_sec)
 
-      call init_gfs_diag_manager(ipt_lats_node_r, int_state%xlat(1,:), int_state%xlon, &
-                                 ak5, bk5, int_state%global_lats_r, int_state%lonsperlar, &
-                                 dt_sec, current_itime, stop_itime, calendar_type)
 
       call esmf_timeintervalget(runduration,                            &
                                 h = runduration_hour, rc = rc1)
@@ -498,6 +477,8 @@
       stoptime = currtime  + runduration
                            
       call esmf_clockset(clock, stoptime = stoptime, rc = rc1)
+
+      call gfs_nc_io_init(int_state%xlat, int_state%xlon, int_state%global_lats_r, int_state%lonsperlar, clock, dt_sec)
 !
       call esmf_timeintervalget(timestep, s = timestep_sec, rc = rc1)
 !!
@@ -709,20 +690,6 @@
                          stoptime    = stoptime,                        &
                          rc          = rc1)
 
-      call esmf_timeget(currtime, &
-            yy=current_itime(1), &
-            mm=current_itime(2), &
-            dd=current_itime(3), &
-            h=current_itime(4),  &
-            m=current_itime(5),  &
-            s=current_itime(6))
-
-      call set_current_time( current_itime(1), &
-                             current_itime(2), &
-                             current_itime(3), &
-                             current_itime(4), &
-                             current_itime(5), &
-                             current_itime(6) )
 
       call gfs_physics_err_msg(rc1,'esmf clockget',rc)
 

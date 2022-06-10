@@ -17,9 +17,7 @@
       USE module_DM_PARALLEL_GFS  ,only: SETUP_SERVERS_GFS
       USE module_INCLUDE
 
-      use mpp_mod, only: mpp_init
-      use fms_mod, only: fms_init
-      use fms_io_mod, only: fms_io_init
+      use fms, only: fms_init
 !
 !-----------------------------------------------------------------------
 !
@@ -219,6 +217,8 @@
         mpi_comm_comp = mc_comp
       endif
       wrt_mpi_comm_comp = mpi_comm_comp
+
+      call fms_init(localcomm=mpi_comm_comp, 'gfs_input.nml')
 !***
 !***  NOTE: At this point, NUM_PES is the number of Forecast tasks only.
 !***
