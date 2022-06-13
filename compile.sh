@@ -8,7 +8,7 @@ usage (){
 	echo
 	echo options:
 	echo -j npes : parallel gmake with npes	
-	echo -e exec_type : Executable type [real or hs_forcing] \(default real\)
+	echo -o exec_type : Executable type [real or hs_forcing] \(default real\)
 	exit 1;
 }
 

@@ -1,4 +1,4 @@
-GFS_LIB=/scratch/cccr/prajeesh/GFSv14_aux/lib
+GFS_LIB=/home/PANL/gefsopera/GFSv14_aux/lib
 
 INCS=\
 -I/home/apps/NWPROD/test/global_shared.v14.1.3/sorc/ncep_post.fd/nwprod/lib/incmod/sigio_4 \

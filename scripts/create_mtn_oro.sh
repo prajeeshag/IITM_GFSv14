@@ -44,7 +44,7 @@ ulimit -a
 ln -fs ${datadir}/landcover30.fixed  fort.10
 ln -fs ${datadir}/TOP8M_slm.80I1.asc fort.14
 ln -fs ${datadir}/thirty.second.antarctic.new.bin fort.15
-ln -fs ${datadir}/global_lonsperlat.t${jcap}.${nlon}.${nlat}.txt  fort.20
+#ln -fs ${datadir}/global_lonsperlat.t${jcap}.${nlon}.${nlat}.txt  fort.20
 ln -fs ${datadir}/gtopo30_gg.fine fort.235
 
 echo " mtnres nlon nlat jcap NR NF1 NF2 efac blat "
