@@ -1,0 +1,3 @@
+[submodule "src/gfs_nc_io"]
+	path = src/gfs_nc_io
+	url = https://github.com/iitm-esm/gfs_nc_io.git
