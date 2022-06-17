@@ -3,14 +3,36 @@ set -e
 
 mach=generic_intel
 
-while getopts 'rm:' flag; do
-    case "${flag}" in
-    m) mach="$OPTARG" ;;
-    *)
-        echo "error"
-        exit 1
+
+usage()
+{
+  echo "Usage: $0 -m | --machine <machine_name>
+                [ --fixdir <path to FIX file directory> ]
+        "
+  exit 2
+}
+
+
+VALID_ARGS=$(getopt -o m: --long machine:,fixdir: -- "$@")
+if [[ $? -ne 0 ]]; then
+    usage;
+fi
+
+eval set -- "$VALID_ARGS"
+while [ : ]; do
+  case "$1" in
+    -m | --machine)
+        mach=$2
+        shift 2
         ;;
-    esac
+    --fixdir)
+        FIXDIR=$2
+        shift 2
+        ;;
+    --) shift; 
+        break 
+        ;;
+  esac
 done
 
 if [ -f .env ]; then
@@ -40,5 +62,6 @@ fi
 	
 echo "export rootdir=$rootdir" >> .env
 
-echo "export FIXDIR=   # path to fix directory" >> .env
+echo "export FIXDIR=$FIXDIR   # path to fix directory" >> .env
 
+cat .env

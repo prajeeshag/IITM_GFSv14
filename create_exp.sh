@@ -1,39 +1,59 @@
 #!/bin/bash
 set -e
 
-usage (){
-	echo
-	echo $0 -r model_resolution -e exec_type -o experiment_directory_name 
-	echo
-	echo "options:"
-	echo "-r model_resolution : available resolutions are T254 TCO765 TCO1534 [default: TCO1534]"
-    echo "-e exec_type: real or hs_forcing [default: real]"
-	echo "-o experiment_directory_name"
-	exit 1;
+usage()
+{
+  echo "Usage: $0 -o | --exp_name <experiment_name>
+                [ -r | --resolution <resolution> default: TCO1534 ]
+                [ -e | --exetype <experiment type> default: real ]
+                [ --rundir <path_to_rundir> ]
+                [ --force ]
+        "
+  exit 2
 }
 
-. .env
+basedir=$(dirname "$0")
 
 res="TCO1534"
 expname=""
 EXETYPE="real"
+force="false"
 
-if [[ -z "$@" ]]; then
-	usage
+
+VALID_ARGS=$(getopt -o o:r:e: --long exp_name:,resolution:,exp_type:,rundir:,force -- "$@")
+if [[ $? -ne 0 ]]; then
+    usage;
 fi
 
-
-while getopts 'r:e:o:' flag; do
-    case "${flag}" in
-    o) expname=$OPTARG ;;
-    r) res=$OPTARG ;;
-    e) EXETYPE=$OPTARG ;;
-	*) usage ;;
-    esac
+eval set -- "$VALID_ARGS"
+while [ : ]; do
+  case "$1" in
+    -o | --exp_name)
+        expname=$2
+        shift 2
+        ;;
+    -r | --resolution)
+        res=$2
+        shift 2
+        ;;
+    -e | --exp_type)
+        EXETYPE=$2
+        shift 2
+        ;;
+    --rundir)
+        EXPDIR=$2
+        shift 2
+        ;;
+    --force)
+        force="true"
+        shift 1
+        ;;
+    --) shift; 
+        break 
+        ;;
+  esac
 done
 
-shift $(($OPTIND - 1))
-opts=$@
 
 case "${EXETYPE}" in
 	hs_forcing) EXETYPEdir="HS" ;;
@@ -53,25 +73,26 @@ case "${res}" in
 esac
 
 echo '...............Setting up environment.....................'
-if [ ! -f .env ]; then
+
+if [ ! -f $basedir/.env ]; then
 	echo ".env file does not exist. Run init.sh first."
-	exit
+	exit 1
 fi
 
-source .env
+source $basedir/.env
 source $rootdir/bin/env.$MACH
 
-if [ ! -d "work/$expname" ]; then
-    mkdir -p $rootdir/work/$expname
+EXPDIR=${EXPDIR:-"$rootdir/work/$expname"}
+
+if [[ ! -d "$EXPDIR" ]] || [[ "$force" == "true" ]]; then
+    mkdir -p $EXPDIR
 else
-    echo "Experiment directory work/$expname already exist"
+    echo "Experiment directory $EXPDIR already exist"
     exit 1
 fi
 
-
 nmldir=$rootdir/nml_tbl
 scriptdir=$rootdir/scripts
-EXPDIR=$rootdir/work/$expname
 EXE=$rootdir/exec/$EXETYPEdir/gfs/GSM/nems/gfs.exe
 CHGRES_EXE=$rootdir/exec/preprocessing/chgres/chgres
 

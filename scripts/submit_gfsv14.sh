@@ -1,14 +1,18 @@
 #!/bin/bash
 
 
-START_DATE=_STARTDATE_  # START DATE in YYYYMMDD FORMAT
+START_DATE=${START_DATE:-"_STARTDATE_"}  # START DATE in YYYYMMDD FORMAT
+FHMAX=${FHMAX:-"_FHMAX_"} # Model run hours
+ICdir=${ICDIR:-"_ICDIR_"} # Path to the Initial condition files
+FHOUT=${FHOUT:-"3"}  #OUTPUT frequency in hours
+
+SUBMIT_TASKS=${SUBMIT_TASKS:-"true"}
+
 cyc=00
-FHMAX=_FHMAX_ # Model run hours
 NLON=_NLON_
 NLAT=_NLAT_
 JCAP=_JCAP_
 
-ICdir=_ICDIR_ # Path to the Initial condition files
 
 
 
@@ -269,26 +273,28 @@ cd \$PBS_O_WORKDIR
 aprun -n 1 -N 1 -j 1 -d 24 -cc depth _CHGRESEXE_ 1>OUTPUT.chgres 2>ERROR.chgres
 
 EOFCHA
-echo "Submitting chgres..."
-output=$(qsub < _submit_chres.sh)
-echo $output
-jobid=$(echo $output | awk -F "." '{print $1}')
-if [ "$jobid" -eq "$jobid" ] 2>/dev/null; then
-    echo "" 
+    if [[ "$SUBMIT_TASKS" == "true" ]]; then
+        echo "Submitting chgres..."
+        output=$(qsub < _submit_chres.sh)
+        echo $output
+        jobid=$(echo $output | awk -F "." '{print $1}')
+        if [ "$jobid" -eq "$jobid" ] 2>/dev/null; then
+            echo "" 
+        else
+          echo $jobid
+            echo "Job not submitted" 
+            exit 1
+        fi
+
+        COND="PBS -W depend=afterok:$jobid"
+    fi
+
 else
-  echo $jobid
-    echo "Job not submitted" 
-    exit 1
-fi
 
-COND="PBS -W depend=afterok:$jobid"
-
-else
-
-ln -sf $SIGINP sig_ini
-ln -sf $SFCINP sfc_ini
-ln -sf $NSTINP nst_ini
-COND=""
+    ln -sf $SIGINP sig_ini
+    ln -sf $SFCINP sfc_ini
+    ln -sf $NSTINP nst_ini
+    COND=""
 
 fi
 
@@ -300,7 +306,7 @@ fi
 if [ "$DO_MODEL" = true ] ; then
 cat <<EOF > atm_namelist
  &nam_dyn
-  FHOUT=6, FHMAX=$FHMAX, IGEN=81, DELTIM=450,
+  FHOUT=$FHOUT, FHMAX=$FHMAX, IGEN=81, DELTIM=450,
   FHRES=264, FHROT=0, FHDFI=3, nsout=0,
   nxpt=1, nypt=2, jintmx=2, lonf=$NLON, latg=$NLAT,
   jcap=$JCAP, levs=64,  levr=64,
@@ -315,14 +321,14 @@ cat <<EOF > atm_namelist
   semi_implicit_temp_profile=.false.,
   thermodyn_id=0, sfcpress_id=1,
   dfilevs=64, 
-  FHOUT_HF=6, FHMAX_HF=120,
+  FHOUT_HF=$FHOUT, FHMAX_HF=120,
   SHUM=0.0, -999., -999., -999, -999,SHUM_TAU=2.16E4, 1.728E5, 6.912E5, 7.776E6, 3.1536E7,SHUM_LSCALE=500.E3, 1000.E3, 2000.E3, 2000.E3, 2000.E3,ISEED_SHUM=0,
   SPPT=0.0,0.0,0.0,0.0,0.0,SPPT_TAU=21600,2592500,25925000,7776000,31536000,SPPT_LSCALE=500000,1000000,2000000,2000000,2000000,SPPT_LOGIT=.TRUE.,ISEED_SPPT=0,
   SKEB=0.0, -999., -999., -999, -999,SKEB_TAU=2.164E4, 1.728E5, 2.592E6, 7.776E6, 3.1536E7,SKEB_LSCALE=1000.E3, 1000.E3, 2000.E3, 2000.E3, 2000.E3,SKEB_VFILT=40,SKEB_DISS_SMOOTH=12,ISEED_SKEB=0,
   VC=0.0,VC_TAU=4.32E4, 1.728E5, 2.592E6, 7.776E6, 3.1536E7,VC_LSCALE=1000.E3, 1000.E3, 2000.E3, 2000.E3, 2000.E3,VCAMP=0.0, -999., -999., -999, -999,ISEED_VC=0,
   nemsio_in=.true.,nemsio_out=.true.,sigio_out=.false.,shuff_lats_a=.false.,hdif_fac=1.0,hdif_fac2=1.0,settls_dep3ds=.true.,settls_dep3dg=.true.,redgg_a=.true.,gg_tracers=.false.,sl_epsln=0.02,ref_temp=350.0,yhalo=10,phigs_d=60.0,ldfi_spect=.true.,cdamp=50000,2.0,k2o=32,ref_pres=100.0 /
  &nam_phy
-  FHOUT=6, FHMAX=$FHMAX, IGEN=81, DELTIM=450,
+  FHOUT=$FHOUT, FHMAX=$FHMAX, IGEN=81, DELTIM=450,
   DTPHYS=225,
   FHRES=264, FHROT=0, FHCYC=24, FHDFI=3,
   FHZER=6, FHLWR=3600, FHSWR=3600,nsout=0,
@@ -336,7 +342,7 @@ cat <<EOF > atm_namelist
   ngptc=8, hybrid=.true., tfiltc=0.85,
   gen_coord_hybrid=.false.,
   thermodyn_id=0, sfcpress_id=1,
-  FHOUT_HF=6, FHMAX_HF=120,
+  FHOUT_HF=$FHOUT, FHMAX_HF=120,
   nstf_name=2,0,1,0,5,NST_ANL=.true.,
   SHUM=0.0, -999., -999., -999, -999, SPPT=0.0,0.0,0.0,0.0,0.0,SKEB=0.0, -999., -999., -999, -999, VC=0.0,VCAMP=0.0, -999., -999., -999, -999,
   ialb=1,
@@ -494,8 +500,8 @@ post_gribversion:        grib1      # True--> grib version for post output files
 gocart_aer2post:         .false.
 write_nemsioflag:        .true.      # True--> Write nemsio run history files
 write_fsyncflag:         .false.       # True--> check if output files synced to disk
-nfhout:                  6
-nfhout_hf:               6
+nfhout:                  $FHOUT
+nfhout_hf:               $FHOUT
 nfhmax_hf:               120
 nsout:                   0
 
@@ -611,8 +617,8 @@ post_gribversion:        grib1      # True--> grib version for post output files
 gocart_aer2post:         .false.
 write_nemsioflag:        .true.      # True--> Write nemsio run history files
 write_fsyncflag:         .false.       # True--> check if output files synced to disk
-nfhout:                  6
-nfhout_hf:               6
+nfhout:                  $FHOUT
+nfhout_hf:               $FHOUT
 nfhmax_hf:               120
 nsout:                   0
 
@@ -776,8 +782,8 @@ post_gribversion:        grib1      # True--> grib version for post output files
 gocart_aer2post:         .false.
 write_nemsioflag:        .true.      # True--> Write nemsio run history files
 write_fsyncflag:         .false.       # True--> check if output files synced to disk
-nfhout:                  3
-nfhout_hf:               1
+nfhout:                  $FHOUT
+nfhout_hf:               $FHOUT
 nfhmax_hf:               120
 nsout:                   0
 
@@ -933,22 +939,24 @@ EXE=_EXE_
 aprun -j1 -n 1001 -N 4 -cc depth \$EXE 1> OUTPUT.NEMS 2> ERROR.NEMS
 EOFG
 
-echo "Submiting model run..."
-output=$(qsub < _submit.sh)
-echo $output
-jobid=$(echo $output | awk -F "." '{print $1}')
-if [ "$jobid" -eq "$jobid" ] 2>/dev/null; then
-    echo "" 
-else
-  echo $jobid
-    echo "Job not submitted" 
-    exit 1
-fi
-COND="PBS -W depend=afterok:$jobid"
+    if [[ "$SUBMIT_TASKS" == "true" ]]; then
+        echo "Submiting model run..."
+        output=$(qsub < _submit.sh)
+        echo $output
+        jobid=$(echo $output | awk -F "." '{print $1}')
+        if [ "$jobid" -eq "$jobid" ] 2>/dev/null; then
+            echo "" 
+        else
+          echo $jobid
+            echo "Job not submitted" 
+            exit 1
+        fi
+        COND="PBS -W depend=afterok:$jobid"
+    fi
 
 else
 
-COND=""
+    COND=""
 
 fi
 
@@ -962,10 +970,10 @@ RUNDIR=$(pwd)
 mkdir -p POST
 
 fhr=0
-while (( fhr < FHMAX ))
+while (( 10#${fhr} < FHMAX ))
 do
-    (( fhr = fhr + 6 ))
-    if (( fhr < 10 )); then
+    (( fhr = 10#${fhr} + FHOUT ))
+    if (( 10#${fhr} < 10 )); then
        fhr=0$fhr
     fi
     VDATE=`$NDATE +${fhr} ${START_DATE}${cyc}`
@@ -1030,10 +1038,10 @@ aprun -j 1 -n 24 -N 1 -d 1 -cc depth $ROOTDIR/exec/postprocessing/ncep_post/src/
 mv $OUTFILE $RUNDIR/POST/
 EOF
 
+    if [[ "$SUBMIT_TASKS" == "true" ]]; then
         qsub _submit_post.sh
-
+    fi
         cd $RUNDIR
-
     done
 
 done
