@@ -4,7 +4,7 @@
 
 
 [task parameters]
-    h = 6..{{FHMAX}}..{{FHOUT}}
+    h = {{FHOUT}}..{{FHMAX}}..{{FHOUT}}
     f = pgbf, flxf
 
 [scheduler]
@@ -12,17 +12,22 @@
 
 [scheduling]
     # Start the workflow from 2022-06-01 UTC+05:30
-    initial cycle point = 2022-06-01T00:00Z
-    # Stop the workflow 6 hours after the initial cycle point.
+    initial cycle point = 2022-06-16T00:00Z
     final cycle point = +P2D
+
+    [[xtriggers]]
+        clock_1 = wall_clock(offset=PT9H30M):PT30S # 09:30 UTC = 14:30 IST
+
     [[graph]]
         # Repeat every three hours starting at the initial cycle point.
-         P1D = """
-             check_IC_available => make_rundir
-             make_rundir => change_resolution
-             change_resolution => run_model
-             run_model => post<h,f>
-         """
+        P1D = """
+            @clock_1 => check_IC_available
+            check_IC_available => make_rundir
+            make_rundir => change_resolution
+            change_resolution => run_model
+            run_model => post<h,f> => extract_vars<var> => plot_figures => update_webpage
+        """
+    
         #P1D = """
         #    check_IC_available => make_rundir
         #    make_rundir => post<h,f>
@@ -54,6 +59,7 @@
 
     [[check_IC_available]]
         script = confirm_ics.sh 
+        execution retry delays = 150*PT2M  # retry for 5 hours with 2 minutes interval
         [[[environment]]]
             IC_DIR=/home/PANL/gefsopera/IC/GFS-IC
 
@@ -186,3 +192,24 @@
             NLON=6156
 
 
+    [[extract_vars<var>]]
+        script="""
+            extract_var.sh "UGRD:850 mb"
+            extract_var.sh "VGRD:850 mb"
+            extract_var.sh "UGRD:200 mb"
+            extract_var.sh "VGRD:200 mb"
+            extract_var.sh "RH:700 mb"
+            extract_var.sh "HGT:500 mb"
+            extract_var.sh "TMAX"
+            extract_var.sh "TMIN"
+            extract_var.sh "PRATE"
+            extract_var.sh "MSLET"
+            extract_var.sh "PRES:surface"
+        """
+
+        [[[environment]]]
+            WGRIB2=/home/PANL/gefsopera/bin/wgrib2
+            CDO=/home/apps/cdo_netcdf/1.9.3/intel/17.0.5/bin/cdo
+
+    [[plot_figures]]
+    [[update_webpage]]
