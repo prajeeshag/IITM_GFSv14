@@ -1,6 +1,6 @@
 #!jinja2
 {% set FHOUT = 3 %}  # OUTPUT frequency in hours
-{% set FHMAX = 24 %} # Model simulation hours
+{% set FHMAX = 243 %} # Model simulation hours
 
 
 [task parameters]
@@ -12,8 +12,8 @@
 
 [scheduling]
     # Start the workflow from 2022-06-01 UTC+05:30
-    initial cycle point = 2022-06-16T00:00Z
-    final cycle point = +P2D
+    initial cycle point = 2022-09-09T00:00Z
+    #final cycle point = +P2D
 
     [[xtriggers]]
         clock_1 = wall_clock(offset=PT9H30M):PT30S # 09:30 UTC = 14:30 IST
@@ -25,7 +25,9 @@
             check_IC_available => make_rundir
             make_rundir => change_resolution
             change_resolution => run_model
-            run_model => post<h,f> => extract_vars<var> => plot_figures => update_webpage
+            run_model => post<h,f> => extract_vars
+            extract_vars => plot_figures => update_webpage
+            update_webpage => remove_raw
         """
     
         #P1D = """
@@ -34,7 +36,7 @@
         #"""
     [[queues]]
         [[[default]]]
-            limit = 50
+            limit = 200
 
 [runtime]
     [[FCST_SETTINGS]]
@@ -192,24 +194,91 @@
             NLON=6156
 
 
-    [[extract_vars<var>]]
+    [[extract_vars]]
+        inherit = FCST_SETTINGS, PBS_SETTINGS
         script="""
-            extract_var.sh "UGRD:850 mb"
-            extract_var.sh "VGRD:850 mb"
-            extract_var.sh "UGRD:200 mb"
-            extract_var.sh "VGRD:200 mb"
-            extract_var.sh "RH:700 mb"
-            extract_var.sh "HGT:500 mb"
-            extract_var.sh "TMAX"
-            extract_var.sh "TMIN"
-            extract_var.sh "PRATE"
-            extract_var.sh "MSLET"
-            extract_var.sh "PRES:surface"
+            source ~/module_plot_TCO
+            cd POST
+            
+            for var in PRATE MSLET; do 
+                extract_var.sh $var
+            done
+            for variable in PRES:surface UGRD:850 UGRD:200 VGRD:850 VGRD:200 HGT:500; do 
+                extract_var.sh $variable
+            done
+            for vars in UGRD_850.nc UGRD_200.nc VGRD_850.nc VGRD_200.nc HGT_500.nc ; do 
+                ncwa -a plev $vars tmp.nc
+                mv tmp.nc $vars
+            done
+
         """
+        [[[directives]]]
+            -l select=1:ncpus=36:vntype=cray_compute -l place=scatter
 
         [[[environment]]]
             WGRIB2=/home/PANL/gefsopera/bin/wgrib2
             CDO=/home/apps/cdo_netcdf/1.9.3/intel/17.0.5/bin/cdo
 
     [[plot_figures]]
+        inherit = FCST_SETTINGS, PBS_SETTINGS
+        script="""
+            source ~/module_plot_TCO
+            cd POST
+            grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/precip-TCO.gs
+            grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/mslp.gs
+            grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/wind_vector850.gs
+            grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/wind_vector200-test.gs
+            grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/gh-500-test.gs
+
+            gif.sh
+        """
+        [[[directives]]]
+            -l select=1:ncpus=36:vntype=cray_compute -l place=scatter
+    
     [[update_webpage]]
+        script="""
+            cd POST
+            DA=$START_DATE
+            WEBSERVER=srf@172.25.1.30
+            HGFMDIR=/home/srf/public_html/srf/hgfm/plots
+            ssh $WEBSERVER mkdir -p $HGFMDIR/$DA/gpot500
+            ssh $WEBSERVER mkdir -p $HGFMDIR/$DA/mslp
+            ssh $WEBSERVER mkdir -p $HGFMDIR/$DA/rainfall
+            ssh $WEBSERVER mkdir -p $HGFMDIR/$DA/wind200
+            ssh $WEBSERVER mkdir -p $HGFMDIR/$DA/wind850
+
+            scp GH500* $WEBSERVER:$HGFMDIR/$DA/gpot500
+            scp RAIN* $WEBSERVER:$HGFMDIR/$DA/rainfall
+            scp MSLP* $WEBSERVER:$HGFMDIR/$DA/mslp
+            scp WIND200_TCO-* $WEBSERVER:$HGFMDIR/$DA/wind200
+            scp WIND850_TCO-* $WEBSERVER:$HGFMDIR/$DA/wind850
+            scp wind200* $WEBSERVER:$HGFMDIR/$DA/wind200
+            scp wind850* $WEBSERVER:$HGFMDIR/$DA/wind850
+
+            ssh $WEBSERVER chmod 755 $HGFMDIR/$DA/wind200/*
+            ssh $WEBSERVER chmod 755 $HGFMDIR/$DA/wind850/*
+            ssh $WEBSERVER chmod 755 $HGFMDIR/$DA/mslp/*
+            ssh $WEBSERVER chmod 755 $HGFMDIR/$DA/rainfall/*
+            ssh $WEBSERVER chmod 755 $HGFMDIR/$DA/gpot500/*
+            cat <<EOF > var.php
+            <?php
+
+            \$date ="$DA";
+
+            ?>
+            EOF
+
+            scp var.php $WEBSERVER:~/public_html/srf/hgfm
+            ssh $WEBSERVER chmod 644 public_html/srf/hgfm/var.php
+
+            rm var.php
+
+        """
+
+        [[remove_raw]]
+            script="""
+                shopt -s extglob
+                rm -v !(POST)
+                rm -v POST/ptmp
+            """
+        
