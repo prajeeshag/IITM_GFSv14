@@ -1,0 +1,12 @@
+#typical use with netCDF:
+# mkmf -t template.ibm -c"-Duse_libMPI -Duse_netCDF" path_names /usr/local/include
+FC = ftn
+LD = ftn
+CC = cc
+LIBS=-L$(NETCDF_DIR)/lib -lnetcdf -lnetcdff
+INCL=-I$(NETCDF_DIR)/include
+#
+FFLAGS = -traceback -O3 -r8 -i4 -free -convert big_endian -fp-model precise -fpconstant -save-temps -align dcommons -assume byterecl $(INCL) -Wp,-P   -DCRAYXC_MOES
+	
+CFLAGS = -O3 -save-temps $(INCL)
+LDFLAGS =  $(LIBS) -qopenmp 

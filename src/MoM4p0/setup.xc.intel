@@ -1,0 +1,19 @@
+
+#!/bin/bash
+
+module unload PrgEnv-cray 
+module load PrgEnv-intel
+module swap intel  intel/16.0.3.210
+
+module unload craype-sandybridge craype-ivybridge craype-haswell
+module load craype-broadwell
+
+module load cray-netcdf
+module load cray-hdf5
+module unload craype-hugepages8M
+module list
+
+export CFS_DIR=/home/apps/CFS_T382/cfs.v2.1.18-rfp
+export ESMF_DIR=${CFS_DIR}/lib/sorc/esmf
+export HOME_DIR=${CFS_DIR}/lib/sorc
+

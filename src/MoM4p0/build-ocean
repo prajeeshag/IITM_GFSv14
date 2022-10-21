@@ -1,0 +1,13 @@
+#!/bin/bash
+
+. ./setup.xc.intel
+
+#source $MODULESHOME/init/bash
+export BASEDIR=$CFS_DIR
+
+export LIBDIR=$BASEDIR/lib/sorc/pmb/codes/nwprod/lib/
+
+cd compile
+rm -f -r exec/cfs_ocean_mom4ice exec/cfs_ocean_mom4ice:h
+sh makefile.sh $@
+
