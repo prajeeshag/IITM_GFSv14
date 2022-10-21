@@ -58,6 +58,9 @@
 !-----------------------------------------------------------------------
 !      
 
+#ifdef GFS_MOM_COUPLED   
+       use gfs_comm_mod, only : init_local_comm
+#endif
       IMPLICIT NONE
 !
       INCLUDE 'mpif.h'
@@ -109,6 +112,7 @@
 !
       CHARACTER(LEN=MPI_MAX_PROCESSOR_NAME) :: PROCNAME                    !<-- The processor(host) name
       INTEGER :: PROCNAME_LEN                                              !<-- Actual PROCRNAME string length
+      integer :: comm_local
 !
 !-----------------------------------------------------------------------
 !***********************************************************************
@@ -124,17 +128,26 @@
 !***  Initialize the ESMF framework. 
 !-----------------------------------------------------------------------
 !
+#ifdef GFS_MOM_COUPLED   
+      call init_local_comm('ATM',comm_local)   ! Prajeesh-> for coupling
+#endif
  
       IF(PRINT_ESMF) THEN
         CALL ESMF_Initialize(VM             =VM                         & !<-- The ESMF Virtual Machine
                             ,defaultCalKind =ESMF_CALKIND_GREGORIAN     & !<-- Set up the default calendar.
                             ,logkindflag    =ESMF_LOGKIND_MULTI         & !<-- Define multiple log error output files;
+#ifdef GFS_MOM_COUPLED   
+                            ,mpiCommunicator=comm_local                 & !Prajeesh-> for coupling
+#endif
                             ,rc             =RC)
         ESMF_ERR_ABORT(RC)
       ELSE
         CALL ESMF_Initialize(VM             =VM                         & !<-- The ESMF Virtual Machine
                             ,defaultCalKind =ESMF_CALKIND_GREGORIAN     & !<-- Set up the default calendar.
                             ,logkindflag    =ESMF_LOGKIND_NONE          & !<-- Define no log error output files;
+#ifdef GFS_MOM_COUPLED   
+                            ,mpiCommunicator=comm_local                 & !Prajeesh-> for coupling
+#endif
                             ,rc             =RC)
         ESMF_ERR_ABORT(RC)
       ENDIF

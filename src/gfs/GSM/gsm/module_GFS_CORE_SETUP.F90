@@ -17,6 +17,9 @@
       USE module_DM_PARALLEL_GFS  ,only: SETUP_SERVERS_GFS
       USE module_INCLUDE
 
+#ifdef GFS_MOM_COUPLED
+      use gfs_comm_mod, only: set_gfs_exchange_communicator
+#endif
       use mpp_mod, only: mpp_init
       use fms_mod, only: fms_init
       use fms_io_mod, only: fms_io_init
@@ -305,6 +308,11 @@
       if(mype<num_pes_fcst)then
           i2 = 0
           CALL ESMF_DistGridGet(DistGrid_atmos, indexCountPDe = i2, rc = rc)
+#ifdef GFS_MOM_COUPLED
+          call set_gfs_exchange_communicator()
+      else
+          call set_gfs_exchange_communicator(-1)
+#endif
       endif
 !
 !-----------------------------------------------------------------------

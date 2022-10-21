@@ -156,6 +156,10 @@
       use hs_forcing_mod, only: hs_forcing_init
 #endif
 
+#ifdef GFS_MOM_COUPLED
+      use gfs_comm_mod, only: set_gfs_connector
+#endif
+
 !#ifndef IBM
 !     USE omp_lib
 !#endif
@@ -994,6 +998,9 @@
         do j = 1, gis_phy%lats_node_r                              
            ilats(j) = gis_phy%global_lats_r(gis_phy%ipt_lats_node_r-1+j)
         end do
+#ifdef GFS_MOM_COUPLED
+        call set_gfs_connector(gis_phy%latr,gis_phy%lonr,ilats) !Prajeesh
+#endif
       endif
 
       end subroutine gfs_physics_initialize
