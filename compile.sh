@@ -8,7 +8,7 @@ usage (){
 	echo
 	echo options:
 	echo -j npes : parallel gmake with npes	
-	echo -o exec_type : Executable type [real or hs_forcing] \(default real\)
+	echo -o exec_type : Executable type [real or coupled or hs_forcing] \(default real\)
 	exit 1;
 }
 
@@ -31,6 +31,7 @@ opts=$@
 
 case "${type}" in
 	hs_forcing) typedir="HS";  cppDefextra="-DHS_Forcing" ;;
+	coupled) typedir="coupled"; cppDefextra="-DGFS_MOM_COUPLED" ;;
 	real) typedir="real"; cppDefextra="" ;;
 	*) usage ;;
 esac
@@ -99,6 +100,20 @@ echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
 libs="${builddir}/$libname "$libs
 
+libname='lib_gfs_mom_comm.a'
+libsrc="gfs_mom_comm"
+builddir=$TYPEEXECDIR/$libsrc
+paths=$SRCDIR/$libsrc
+lib=$builddir/$libname
+mkdir -p $builddir
+cd $builddir
+echo "...............Compiling $libname.........................."
+$MKMF -f -c "$cppDef" -p $libname -t $MKMFTEMPLATE -o "$incs -r8" $paths $INCLUDES
+gmake -j $npes
+echo "...............Done compiling $libname....................."
+incs=$incs"-I$builddir "
+libs="${builddir}/$libname "$libs
+
 
 libname='lib_gsmphys.a'
 libsrc="gfs/GSM/gsmphys"
@@ -113,6 +128,7 @@ gmake -j $npes
 echo "...............Done compiling $libname....................."
 incs=$incs"-I$builddir "
 libs="${builddir}/$libname "$libs
+
 
 libname='lib_util.a'
 libsrc="gfs/GSM/libutil"
