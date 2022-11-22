@@ -2,32 +2,38 @@
 {% set FHOUT = 3 %}  # OUTPUT frequency in hours
 {% set FHMAX = 243 %} # Model simulation hours
 
+#Cylc Suit for running TCO1534 shortrange forecast
+#Author: Prajeesh A G 
+#Email: prajeesh.cat@tropmet.res.in
+
 
 [task parameters]
     h = {{FHOUT}}..{{FHMAX}}..{{FHOUT}}
     f = pgbf, flxf
 
 [scheduler]
-    UTC mode = True
+    #UTC mode = True
 
 [scheduling]
     # Start the workflow from 2022-06-01 UTC+05:30
-    initial cycle point = 2022-09-09T00:00Z
+    initial cycle point = 2022-11-20T00:00Z
     #final cycle point = +P2D
 
     [[xtriggers]]
-        clock_1 = wall_clock(offset=PT9H30M):PT30S # 09:30 UTC = 14:30 IST
+        clock_1 = wall_clock(offset=PT8H30M) # 08:30 UTC = 13:30 IST
 
     [[graph]]
         # Repeat every three hours starting at the initial cycle point.
         P1D = """
-            @clock_1 => check_IC_available
+            run_model[-P1D] => check_IC_available
             check_IC_available => make_rundir
             make_rundir => change_resolution
             change_resolution => run_model
             run_model => post<h,f> => extract_vars
-            extract_vars => plot_figures => update_webpage
-            update_webpage => remove_raw
+            extract_vars => plot_figures => make_gif
+            extract_vars => move_to_archive => remove_raw
+
+#            => update_webpage update_webpage => remove_raw
         """
     
         #P1D = """
@@ -40,7 +46,7 @@
 
 [runtime]
     [[FCST_SETTINGS]]
-        work sub-directory = $CYLC_TASK_CYCLE_POINT/shared/
+        work sub-directory = $CYLC_TASK_CYCLE_POINT/
         [[[environment]]]
             SRC_ROOT=/home/PANL/gefsopera/prajeesh/IITM_GFSv14/
             MACHINE=pratyush_intel
@@ -59,9 +65,17 @@
             -q = pnn
             -l walltime=24:00:00
 
+    [[PBS_SETTINGS_POST]]
+        platform = pbs_cluster
+        execution polling intervals = PT1M
+        [[[directives]]]
+            -V =
+            -q = pnn
+            -l walltime=3:00:00
+
     [[check_IC_available]]
         script = confirm_ics.sh 
-        execution retry delays = 150*PT2M  # retry for 5 hours with 2 minutes interval
+        execution retry delays = 720*PT2M  # retry for 24 hours with 2 minutes interval
         [[[environment]]]
             IC_DIR=/home/PANL/gefsopera/IC/GFS-IC
 
@@ -121,7 +135,8 @@
             -l select=251:ncpus=36:vntype=cray_compute -l place=scatter
 
     [[post<h,f>]]
-        inherit = FCST_SETTINGS, PBS_SETTINGS
+        execution retry delays = 360*PT1M  # retry for 6 hours with 1 minutes interval
+        inherit = FCST_SETTINGS, PBS_SETTINGS_POST
 
         script="""
 
@@ -182,7 +197,7 @@
 
             echo "RUNDIR=$RUNDIR"
 
-            aprun -j 1 -n 24 -N 1 -d 1 -cc depth ${SRC_ROOT}/exec/postprocessing/ncep_post/src/ncep_post 
+            aprun -j 1 -n 24 -N 1 -d 1 -cc depth ${SRC_ROOT}/exec/postprocessing/ncep_post/src/ncep_post &> OUTPUT.POST 
             mv $OUTFILE $RUNDIR/POST/
 
         """
@@ -195,9 +210,11 @@
 
 
     [[extract_vars]]
-        inherit = FCST_SETTINGS, PBS_SETTINGS
+        inherit = FCST_SETTINGS, PBS_SETTINGS_POST
         script="""
             source ~/module_plot_TCO
+            module load cray-snplauncher
+
             cd POST
             
             for var in PRATE MSLET; do 
@@ -213,7 +230,7 @@
 
         """
         [[[directives]]]
-            -l select=1:ncpus=36:vntype=cray_compute -l place=scatter
+            -l select=1:ncpus=36:vntype=cray_compute
 
         [[[environment]]]
             WGRIB2=/home/PANL/gefsopera/bin/wgrib2
@@ -229,11 +246,17 @@
             grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/wind_vector850.gs
             grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/wind_vector200-test.gs
             grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/gh-500-test.gs
-
-            gif.sh
         """
         [[[directives]]]
             -l select=1:ncpus=36:vntype=cray_compute -l place=scatter
+
+    [[make_gif]]
+        inherit = FCST_SETTINGS
+        script="""
+            source ~/module_plot_TCO
+            cd POST
+            gif.sh
+        """
     
     [[update_webpage]]
         script="""
@@ -275,10 +298,21 @@
 
         """
 
-        [[remove_raw]]
-            script="""
-                shopt -s extglob
-                rm -v !(POST)
-                rm -v POST/ptmp
-            """
-        
+    [[remove_raw]]
+        inherit = FCST_SETTINGS
+        script="""
+            rm -rf POST/ptmp
+            rm -f *
+            rm -f POST/pgbf_*
+            rm -r POST/flxf_*
+        """
+    [[move_to_archive]]
+        inherit = FCST_SETTINGS
+        script="""
+            cd POST/
+            base_path="/iitmhpss/PANL/gefsopera/TCO1534-prod_archive"
+            archive_path="$base_path/$CYLC_TASK_CYCLE_POINT"
+            ip=10.12.1.51
+            ssh $ip "mkdir -p $archive_path"
+            rsync pgbf_* flxf_* ${ip}:${archive_path}/ 
+        """

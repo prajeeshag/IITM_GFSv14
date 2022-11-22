@@ -16,7 +16,7 @@ for f in $files; do
     fi
 
     date1=$(stat -c %y "$fpath")
-    sleep 2
+    sleep 5
     date2=$(stat -c %y "$fpath")
     if [[ "$date1" != "$date2" ]]; then
         echo "File $fpath is still getting updated"
