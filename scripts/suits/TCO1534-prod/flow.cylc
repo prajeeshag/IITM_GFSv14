@@ -16,7 +16,7 @@
 
 [scheduling]
     # Start the workflow from 2022-06-01 UTC+05:30
-    initial cycle point = 2022-11-20T00:00Z
+    initial cycle point = 2022-12-04T00:00Z
     #final cycle point = +P2D
 
     [[xtriggers]]
@@ -30,8 +30,8 @@
             make_rundir => change_resolution
             change_resolution => run_model
             run_model => post<h,f> => extract_vars
-            extract_vars => plot_figures => make_gif
-            extract_vars => move_to_archive => remove_raw
+            extract_vars => rm_plev => plot_figures => make_gif
+            rm_plev => move_to_archive => remove_raw
 
 #            => update_webpage update_webpage => remove_raw
         """
@@ -223,21 +223,40 @@
             for variable in PRES:surface UGRD:850 UGRD:200 VGRD:850 VGRD:200 HGT:500; do 
                 extract_var.sh $variable
             done
+
+        """
+        [[[directives]]]
+            -l select=1:ncpus=1:vntype=cray_mamu
+
+        [[[environment]]]
+            WGRIB2=/home/PANL/gefsopera/bin/wgrib2
+            CDO=/home/apps/cdo_netcdf/1.9.3/intel/17.0.5/bin/cdo
+
+    [[rm_plev]]
+        inherit = FCST_SETTINGS#, PBS_SETTINGS_POST
+        script="""
+            source ~/module_plot_TCO
+            module load cray-snplauncher
+
+            cd POST
+            
             for vars in UGRD_850.nc UGRD_200.nc VGRD_850.nc VGRD_200.nc HGT_500.nc ; do 
                 ncwa -a plev $vars tmp.nc
                 mv tmp.nc $vars
             done
 
         """
-        [[[directives]]]
-            -l select=1:ncpus=36:vntype=cray_compute
+
+        # [[[directives]]]
+            # -l select=1:ncpus=1:vntype=cray_compute
 
         [[[environment]]]
             WGRIB2=/home/PANL/gefsopera/bin/wgrib2
             CDO=/home/apps/cdo_netcdf/1.9.3/intel/17.0.5/bin/cdo
 
+
     [[plot_figures]]
-        inherit = FCST_SETTINGS, PBS_SETTINGS
+        inherit = FCST_SETTINGS
         script="""
             source ~/module_plot_TCO
             cd POST
@@ -247,8 +266,6 @@
             grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/wind_vector200-test.gs
             grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/gh-500-test.gs
         """
-        [[[directives]]]
-            -l select=1:ncpus=36:vntype=cray_compute -l place=scatter
 
     [[make_gif]]
         inherit = FCST_SETTINGS
@@ -302,9 +319,9 @@
         inherit = FCST_SETTINGS
         script="""
             rm -rf POST/ptmp
-            rm -f *
             rm -f POST/pgbf_*
             rm -r POST/flxf_*
+            rm -f * || true
         """
     [[move_to_archive]]
         inherit = FCST_SETTINGS
