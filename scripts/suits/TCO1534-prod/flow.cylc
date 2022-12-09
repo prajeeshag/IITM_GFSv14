@@ -1,11 +1,13 @@
 #!jinja2
-{% set FHOUT = 3 %}  # OUTPUT frequency in hours
-{% set FHMAX = 243 %} # Model simulation hours
-
 #Cylc Suit for running TCO1534 shortrange forecast
 #Author: Prajeesh A G 
 #Email: prajeesh.cat@tropmet.res.in
 
+
+{% set FHOUT = 3 %}  # OUTPUT frequency in hours
+{% set FHMAX = 243 %} # Model simulation hours
+{% set VARS = 'PRATE', 'MSLET', 'PRES_surface', 'UGRD_850', 'UGRD_200', 'VGRD_850', 'VGRD_200', 'HGT_500' %}
+{% set RMPFILES = 'UGRD_850', 'UGRD_200', 'VGRD_850', 'VGRD_200', 'HGT_500' %}
 
 [task parameters]
     h = {{FHOUT}}..{{FHMAX}}..{{FHOUT}}
@@ -15,9 +17,9 @@
     #UTC mode = True
 
 [scheduling]
-    # Start the workflow from 2022-06-01 UTC+05:30
-    initial cycle point = 2022-12-04T00:00Z
-    #final cycle point = +P2D
+    # Start the workflow 
+    initial cycle point = 2022-12-08T00:00Z
+    # final cycle point = +P1D
 
     [[xtriggers]]
         clock_1 = wall_clock(offset=PT8H30M) # 08:30 UTC = 13:30 IST
@@ -26,20 +28,16 @@
         # Repeat every three hours starting at the initial cycle point.
         P1D = """
             run_model[-P1D] => check_IC_available
+            check_IC_available[-P1D]:fail => check_IC_available
             check_IC_available => make_rundir
             make_rundir => change_resolution
             change_resolution => run_model
-            run_model => post<h,f> => extract_vars
-            extract_vars => rm_plev => plot_figures => make_gif
-            rm_plev => move_to_archive => remove_raw
-
-#            => update_webpage update_webpage => remove_raw
+            run_model => POSTPROCESSING:succeed-all => EXTRACT_VARS
+            EXTRACT_VARS:succeed-all => RM_PLEV
+            RM_PLEV:succeed-all => plot_figures => make_gif => update_webpage
+            RM_PLEV:succeed-all => move_to_archive => remove_raw
         """
     
-        #P1D = """
-        #    check_IC_available => make_rundir
-        #    make_rundir => post<h,f>
-        #"""
     [[queues]]
         [[[default]]]
             limit = 200
@@ -75,7 +73,7 @@
 
     [[check_IC_available]]
         script = confirm_ics.sh 
-        execution retry delays = 720*PT2M  # retry for 24 hours with 2 minutes interval
+        execution retry delays = 288*PT5M  # retry for 24 hours with 5 minutes interval
         [[[environment]]]
             IC_DIR=/home/PANL/gefsopera/IC/GFS-IC
 
@@ -134,9 +132,11 @@
         [[[directives]]]
             -l select=251:ncpus=36:vntype=cray_compute -l place=scatter
 
+    [[POSTPROCESSING]]
+
     [[post<h,f>]]
         execution retry delays = 360*PT1M  # retry for 6 hours with 1 minutes interval
-        inherit = FCST_SETTINGS, PBS_SETTINGS_POST
+        inherit = POSTPROCESSING, FCST_SETTINGS, PBS_SETTINGS_POST
 
         script="""
 
@@ -208,52 +208,46 @@
             NLAT=3070
             NLON=6156
 
-
-    [[extract_vars]]
+    [[EXTRACT_VARS]]
         inherit = FCST_SETTINGS, PBS_SETTINGS_POST
+        [[[directives]]]
+            -l select=1:ncpus=1:vntype=cray_compute
+
+        [[[environment]]]
+            WGRIB2=/home/PANL/gefsopera/bin/wgrib2
+            CDO=/home/apps/cdo_netcdf/1.9.3/intel/17.0.5/bin/cdo
+
+{% for VAR in VARS %}
+    [[exv_{{VAR}}]]
+        inherit = EXTRACT_VARS 
         script="""
             source ~/module_plot_TCO
             module load cray-snplauncher
 
             cd POST
             
-            for var in PRATE MSLET; do 
-                extract_var.sh $var
-            done
-            for variable in PRES:surface UGRD:850 UGRD:200 VGRD:850 VGRD:200 HGT:500; do 
-                extract_var.sh $variable
-            done
+            extract_var.sh {{VAR}}
+        """
+{% endfor %}
 
+    [[RM_PLEV]]
+
+{% for FILE in RMPFILES %}
+    [[rmpl_{{FILE}}]]
+        inherit = RM_PLEV, FCST_SETTINGS, PBS_SETTINGS_POST
+        script="""
+            source ~/module_plot_TCO
+            cd POST
+            aprun -n 1 ncwa -a plev {{FILE}}.nc tmp_{{FILE}}.nc
+            mv tmp_{{FILE}}.nc {{FILE}}.nc
         """
         [[[directives]]]
-            -l select=1:ncpus=1:vntype=cray_mamu
+            -l select=1:ncpus=1:vntype=cray_compute
 
         [[[environment]]]
             WGRIB2=/home/PANL/gefsopera/bin/wgrib2
             CDO=/home/apps/cdo_netcdf/1.9.3/intel/17.0.5/bin/cdo
-
-    [[rm_plev]]
-        inherit = FCST_SETTINGS#, PBS_SETTINGS_POST
-        script="""
-            source ~/module_plot_TCO
-            module load cray-snplauncher
-
-            cd POST
-            
-            for vars in UGRD_850.nc UGRD_200.nc VGRD_850.nc VGRD_200.nc HGT_500.nc ; do 
-                ncwa -a plev $vars tmp.nc
-                mv tmp.nc $vars
-            done
-
-        """
-
-        # [[[directives]]]
-            # -l select=1:ncpus=1:vntype=cray_compute
-
-        [[[environment]]]
-            WGRIB2=/home/PANL/gefsopera/bin/wgrib2
-            CDO=/home/apps/cdo_netcdf/1.9.3/intel/17.0.5/bin/cdo
-
+{% endfor %}
 
     [[plot_figures]]
         inherit = FCST_SETTINGS
@@ -270,12 +264,13 @@
     [[make_gif]]
         inherit = FCST_SETTINGS
         script="""
-            source ~/module_plot_TCO
+            module load ImageMagick-login/7
             cd POST
             gif.sh
         """
     
     [[update_webpage]]
+        inherit = FCST_SETTINGS
         script="""
             cd POST
             DA=$START_DATE

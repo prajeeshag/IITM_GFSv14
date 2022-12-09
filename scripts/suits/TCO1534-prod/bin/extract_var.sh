@@ -3,7 +3,7 @@ set -e
 
 var=$1
 
-fprefix=${var/:/_}
+fprefix=${var/_/:}
 fprefix=${fprefix/ /}
 
 if [ -z "$var" ]; then
@@ -18,12 +18,12 @@ for ifile in pgbf_*; do
 	hh=${datestamp:8:2}
 	echo $datestamp $yy $mm $dd $hh
 	datestampc=${yy}-${mm}-${dd},${hh}:00,1hour
-	$WGRIB2 $ifile | grep -e "$var" | $WGRIB2 -i $ifile -grib_out _out.grib2
-	$CDO -f nc -settaxis,$datestampc _out.grib2 ${fprefix}_${datestamp}.nc
+	$WGRIB2 $ifile | grep -e "$fprefix" | $WGRIB2 -i $ifile -grib_out ${var}_${datestamp}.grib2
+	$CDO -f nc -settaxis,$datestampc ${var}_${datestamp}.grib2 ${var}_${datestamp}.nc
 done
 
-$CDO -mergetime ${fprefix}_*.nc ${fprefix}.nc
-rm -f ${fprefix}_*.nc
+$CDO -mergetime ${var}_*.nc ${var}.nc
+rm -f ${var}_*.nc
 
 
  
