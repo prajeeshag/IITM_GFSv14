@@ -1,0 +1,10 @@
+[platforms]
+    [[pbs_cluster]]
+        job runner = pbs
+        hosts = localhost
+        install target = localhost
+	submission polling intervals = PT1M
+
+    [[elogin04]]
+        hosts = '10.119.14.15'
+        install target = localhost
