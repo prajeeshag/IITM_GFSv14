@@ -21,14 +21,13 @@
     initial cycle point = 2022-12-09T00:00Z
     # final cycle point = +P1D
 
-    [[xtriggers]]
-        clock_1 = wall_clock(offset=PT8H30M) # 08:30 UTC = 13:30 IST
+    # [[xtriggers]]
+    #     clock_1 = wall_clock(offset=PT8H30M) # 08:30 UTC = 13:30 IST
 
     [[graph]]
         # Repeat every three hours starting at the initial cycle point.
         P1D = """
-            run_model[-P1D] => check_IC_available
-            check_IC_available[-P1D]:fail => check_IC_available
+            run_model[-P1D] | check_IC_available[-P1D]:fail => check_IC_available
             check_IC_available => make_rundir
             make_rundir => change_resolution
             change_resolution => run_model
@@ -58,7 +57,7 @@
 
     [[PBS_SETTINGS]]
         platform = pbs_cluster
-        execution polling intervals = PT1M
+        execution polling intervals = PT2M
         [[[directives]]]
             -V =
             -q = pnn
@@ -66,7 +65,7 @@
 
     [[PBS_SETTINGS_POST]]
         platform = pbs_cluster
-        execution polling intervals = PT1M
+        execution polling intervals = PT2M
         [[[directives]]]
             -V =
             -q = pnn
@@ -78,6 +77,8 @@
         confirm_ics.sh 
         """
         execution retry delays = 288*PT5M  # retry for 24 hours with 5 minutes interval
+        submission retry delays = 288*PT5M
+        execution polling intervals = PT2M
         platform = elogin04
         [[[environment]]]
             IC_DIR=/home/PANL/gefsopera/IC/GFS-IC
@@ -140,7 +141,9 @@
     [[POSTPROCESSING]]
 
     [[post<h,f>]]
-        execution retry delays = 360*PT1M  # retry for 6 hours with 1 minutes interval
+        execution retry delays = 180*PT1M  # retry for 3 hours with 1 minutes interval
+        submission retry delays = 180*PT1M # retry for 3 hours with 1 minutes interval
+
         inherit = POSTPROCESSING, FCST_SETTINGS, PBS_SETTINGS_POST
 
         script="""
@@ -206,6 +209,8 @@
             mv $OUTFILE $RUNDIR/POST/
 
         """
+        execution retry delays = 12*PT5M  # retry for 1 hours with 5 minutes interval
+        submission retry delays = 12*PT5M # retry for 1 hours with 5 minutes interval
         [[[directives]]]
             -l select=24:ncpus=36:vntype=cray_compute -l place=scatter
 
@@ -215,6 +220,8 @@
 
     [[EXTRACT_VARS]]
         inherit = FCST_SETTINGS, PBS_SETTINGS_POST
+        execution retry delays = 12*PT5M  # retry for 1 hours with 5 minutes interval
+        submission retry delays = 12*PT5M # retry for 1 hours with 5 minutes interval
         [[[directives]]]
             -l select=1:ncpus=1:vntype=cray_compute
 
@@ -227,7 +234,6 @@
         inherit = EXTRACT_VARS 
         script="""
             source ~/module_plot_TCO
-            module load cray-snplauncher
 
             cd POST
             
@@ -236,6 +242,8 @@
 {% endfor %}
 
     [[RM_PLEV]]
+        execution retry delays = 12*PT5M  # retry for 1 hours with 5 minutes interval
+        submission retry delays = 12*PT5M # retry for 1 hours with 5 minutes interval
 
 {% for FILE in RMPFILES %}
     [[rmpl_{{FILE}}]]
@@ -257,7 +265,9 @@
     [[plot_figures]]
         inherit = FCST_SETTINGS
         script="""
-            source ~/module_plot_TCO
+            # source ~/module_plot_TCO
+            module load GRADS/2.1
+            source /home/apps/modulefiles/GRADS/load_mod
             cd POST
             grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/precip-TCO.gs
             grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/mslp.gs
@@ -265,6 +275,8 @@
             grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/wind_vector200-test.gs
             grads -blc /home/PANL/gefsopera/IITM_GFSv14/work/gh-500-test.gs
         """
+        execution retry delays = 12*PT5M  # retry for 1 hours with 5 minutes interval
+        submission retry delays = 12*PT5M # retry for 1 hours with 5 minutes interval
 
     [[make_gif]]
         inherit = FCST_SETTINGS
@@ -273,6 +285,8 @@
             cd POST
             gif.sh
         """
+        execution retry delays = 12*PT5M  # retry for 1 hours with 5 minutes interval
+        submission retry delays = 12*PT5M # retry for 1 hours with 5 minutes interval
     
     [[update_webpage]]
         inherit = FCST_SETTINGS
@@ -314,6 +328,8 @@
             rm var.php
 
         """
+        execution retry delays = 12*PT5M  # retry for 1 hours with 5 minutes interval
+        submission retry delays = 12*PT5M # retry for 1 hours with 5 minutes interval
 
     [[remove_raw]]
         inherit = FCST_SETTINGS
@@ -333,3 +349,5 @@
             ssh $ip "mkdir -p $archive_path"
             rsync pgbf_* flxf_* ${ip}:${archive_path}/ 
         """
+        execution retry delays = 12*PT5M  # retry for 1 hours with 5 minutes interval
+        submission retry delays = 12*PT5M # retry for 1 hours with 5 minutes interval

@@ -18,9 +18,9 @@ for fs in $filesStr; do
 
     rfpath=${rdir}/gdas1.t00z.${fs}.nemsio
     echo "Checking for $server $rfpath"
-    date1=$(ssh $server stat -c %y ${rfpath}) || (echo $date1; exit 1)
+    date1=$(ssh $server stat -c %y ${rfpath}) || (echo $date1; exit 1) || exit 1
     sleep 5
-    date2=$(ssh $server stat -c %y ${rfpath}) || (echo $date2; exit 1)
+    date2=$(ssh $server stat -c %y ${rfpath}) || (echo $date2; exit 1) || exit 1
     if [[ "$date1" != "$date2" ]]; then
         echo "File $rfpath is still getting updated..."
         exit 1
